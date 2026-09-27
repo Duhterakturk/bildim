@@ -279,7 +279,7 @@ export default function ToggleGridGame({
       {allowCross && <p className="text-slate-500 text-xs mb-2 max-w-md text-center">{play.crossHint}</p>}
       <p className="text-slate-500 text-sm mb-4">{play.clock(seconds)}</p>
 
-      {extra}
+      {typeof extra === "function" ? extra(marked) : extra}
 
       <div
         data-testid="shade-board"

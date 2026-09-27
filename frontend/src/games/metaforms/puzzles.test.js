@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import tr from "../../i18n/locales/tr.json";
+import en from "../../i18n/locales/en.json";
+import { hintFor } from "../hints";
 import { PUZZLE_12, generate, isValid, pieceCode, solve } from "./puzzles";
 
 const SOLUTION = [
@@ -19,6 +22,14 @@ function mulberry32(seed) {
 }
 
 describe("metaforms clues", () => {
+  it("tells the player the pattern sits inside the board", () => {
+    expect(tr.gameRules.metaforms).toContain("desenin tamamı (beyaz kareler dahil) 3×3 tahtanın içine sığar");
+    expect(tr.gameRules.metaforms).toContain("herhangi bir parça olabilir");
+    expect(en.gameRules.metaforms).toContain("fits inside the 3×3 board");
+    expect(hintFor("metaforms", "tr").hint).toContain("3×3");
+    expect(hintFor("metaforms", "en").hint).toContain("blank white cell");
+  });
+
   it("deals a different unique board for each difficulty", () => {
     const totals = { easy: 0, medium: 0, hard: 0 };
     ["easy", "medium", "hard"].forEach((difficulty) => {

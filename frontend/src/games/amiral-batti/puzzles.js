@@ -74,7 +74,7 @@ export function generate(difficulty = "easy") {
       solutionSet.filter((key) => Number(key.split("-")[1]) === c).length
     );
     if (countFleets(rowClues, colClues, ships, factor + 1) !== factor) continue;
-    return { solutionSet, rowClues, colClues, rows, cols };
+    return { solutionSet, rowClues, colClues, rows, cols, ships: ships.slice() };
   }
   throw new Error("Tek çözüm Gizli Filo üretilemedi");
 }

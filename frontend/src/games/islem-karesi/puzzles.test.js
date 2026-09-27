@@ -18,11 +18,17 @@ describe("işlem karesi", () => {
     expect(evaluateLine([1, 3, 4], ["+", "+"])).toBe(8);
   });
 
-  it("builds one board for each difficulty", () => {
-    ["easy", "medium", "hard"].forEach((difficulty, index) => {
-      const puzzle = generate(difficulty, mulberry32(4 + index));
-      expect(countBoards(puzzle, 2)).toBe(1);
-      expect(new Set(puzzle.solution.flat()).size).toBe(puzzle.solution.length ** 2);
+  it("builds one board of positive results for each difficulty", () => {
+    ["easy", "medium", "hard"].forEach((difficulty) => {
+      for (let round = 0; round < 50; round += 1) {
+        const puzzle = generate(difficulty, mulberry32(40 + round * 3 + difficulty.length));
+        expect(countBoards(puzzle, 2)).toBe(1);
+        expect(new Set(puzzle.solution.flat()).size).toBe(puzzle.solution.length ** 2);
+        [...puzzle.rowResults, ...puzzle.colResults].forEach((value) => {
+          expect(Number.isInteger(value)).toBe(true);
+          expect(value).toBeGreaterThanOrEqual(1);
+        });
+      }
     });
-  });
+  }, 180000);
 });

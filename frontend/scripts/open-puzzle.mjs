@@ -55,7 +55,7 @@ function open(slug, difficulty) {
     }
     case "amiral-batti": {
       const puzzle = amiral(difficulty);
-      const pub = { rowClues: puzzle.rowClues, colClues: puzzle.colClues, rows: puzzle.rows, cols: puzzle.cols };
+      const pub = { rowClues: puzzle.rowClues, colClues: puzzle.colClues, rows: puzzle.rows, cols: puzzle.cols, ships: puzzle.ships };
       return sealed(pub, pub, { cells: puzzle.solutionSet });
     }
     case "sihirli-piramit": {

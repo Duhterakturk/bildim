@@ -66,6 +66,7 @@ describe("Yıldız Dizilimi generator", () => {
           }
         }
 
+        expect(positions.every(([r, c]) => regionGrid[r][c] === r)).toBe(false);
         const seenRegions = new Set();
         for (const [r, c] of positions) seenRegions.add(regionGrid[r][c]);
         expect(seenRegions.size).toBe(n);

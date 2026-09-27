@@ -3,7 +3,7 @@
 
 const SIZE = { easy: 2, medium: 3, hard: 3 };
 const KEEP = { easy: 1, medium: 3, hard: 2 };
-const OPS = ["+", "−", "×"];
+const OPS = ["+", "+", "×", "−"];
 
 function shuffle(list, random) {
   const copy = list.slice();
@@ -135,7 +135,7 @@ function randomOps(size, random) {
 export function generate(difficulty = "easy", random = Math.random) {
   const size = SIZE[difficulty] || 2;
   const keep = KEEP[difficulty] ?? 1;
-  for (let attempt = 0; attempt < 40; attempt += 1) {
+  for (let attempt = 0; attempt < 200; attempt += 1) {
     const numbers = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9], random).slice(0, size * size);
     const solution = Array.from({ length: size }, (_, row) => (
       numbers.slice(row * size, row * size + size)
@@ -143,7 +143,8 @@ export function generate(difficulty = "easy", random = Math.random) {
     const { across, down } = randomOps(size, random);
     sprinkleDivision(solution, across, down, random);
     const scored = lineValues(solution, across, down);
-    if (scored.rows.some((value) => value === null) || scored.cols.some((value) => value === null)) continue;
+    const results = [...scored.rows, ...scored.cols];
+    if (results.some((value) => !Number.isInteger(value) || value < 1)) continue;
     let givens = solution.map((row) => row.slice());
     const order = shuffle(givens.flatMap((row, r) => row.map((_, c) => [r, c])), random);
     for (const [row, col] of order) {

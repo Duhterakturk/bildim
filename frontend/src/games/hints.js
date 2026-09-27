@@ -21,8 +21,8 @@ export const HINTS = {
     en: { hint: "A 3 means three sides of that cell are on the loop. The line closes once.", example: "A 2 in a corner often uses the two outer edges." },
   },
   "amiral-batti": {
-    tr: { hint: "0 yazan satır boş kalır. Gemiler birbirine değmez, çapraz da değmez.", example: "Satırda 1 yazıyorsa o satırda tek bir gemi karesi vardır." },
-    en: { hint: "A row marked 0 stays empty. Ships never touch, not even diagonally.", example: "A row marked 1 holds exactly one ship cell." },
+    tr: { hint: "Üstteki gemilerin hepsi yerleştirilir. 0 yazan satır boş kalır. Gemiler yatay, dikey ve çapraz değmez.", example: "Satırda 1 yazıyorsa o satırda tek bir gemi karesi vardır." },
+    en: { hint: "Every ship shown above is placed. A row marked 0 stays empty. Ships do not touch horizontally, vertically, or diagonally.", example: "A row marked 1 holds exactly one ship cell." },
   },
   "sihirli-piramit": {
     tr: { hint: "Yol tepeden iner. Her sırada bir daire durur ve adım yalnız alttaki komşuya değer. Aynı sayı yolda bir kez geçer.", example: "Tepedeki 3 kullanıldıysa alttaki başka bir 3 yola girmez." },
@@ -61,12 +61,12 @@ export const HINTS = {
     en: { hint: "The small end of the sign points at the smaller number. The two cells beside a sign are read first.", example: "If 1 < blank, the blank cannot be 1." },
   },
   pentominolar: {
-    tr: { hint: "Çerçeveye tam oturan köşe parçası önce gelir. Parça döndürülebilir.", example: "Artı şekli ortaya yakın durur; köşeye sığmaz." },
-    en: { hint: "The piece that fits a corner comes first. It can be turned.", example: "The plus shape sits near the middle. It does not fit a corner." },
+    tr: { hint: "Parçalar döndürülebilir ve ters çevrilebilir. Çerçeveye tam oturan köşe parçası önce gelir.", example: "Artı şekli ortaya yakın durur; köşeye sığmaz." },
+    en: { hint: "Pieces can be rotated and flipped. The piece that fits a corner comes first.", example: "The plus shape sits near the middle. It does not fit a corner." },
   },
   metaforms: {
-    tr: { hint: "Tek kareye kilitlenen parça önce oturur. Sonra satır ve sütun işaretleri okunur.", example: "Kırmızı daire yalnızca üst satırdaysa o satırdaki boş karelerden birine girer." },
-    en: { hint: "A piece locked to one cell settles first. Row and column marks are read after that.", example: "If the red circle is only in the top row, it goes in one of those empty cells." },
+    tr: { hint: "Desenin tamamı, beyaz kareler dahil, 3×3 tahtanın içine sığar. Taralı kare öznenin yeridir. Çarpı o kareyi yasaklar. İçi boş şekil o şekildeki parçalardan en az biridir. Renkli kalem o renkteki parçalardan en az biridir. Boş beyaz karede herhangi bir parça durabilir.", example: "Tek kareye kilitlenen parça önce oturur." },
+    en: { hint: "The whole pattern, including the white cells, fits inside the 3×3 board. A hatched cell is where the subject sits. A cross forbids that cell. An empty shape is at least one piece of that shape. A colored pencil is at least one piece of that color. Any piece may sit in a blank white cell.", example: "A piece locked to one cell settles first." },
   },
   numbers: {
     tr: { hint: "Verilen sayı başlangıçtır. İki yıldızın toplamı belliyse boş olan çıkar.", example: "Biri 4 ve toplam 11 ise diğeri 7’dir." },

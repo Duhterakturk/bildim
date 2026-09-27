@@ -223,7 +223,7 @@
     "bolgesel-sudoku": "Her satır, sütun ve renkli bölge 1-4 rakamlarını birer kez içerir.",
     "apartman": "Her satır ve sütun 1-4 yüksekliklerini birer kez içerir. Kenar sayısı, o yönden görünen bina adedidir.",
     "cit": "Sayı, o hücrenin kaç kenarının çizgide olduğunu söyler. Çizgi tek bir kapalı halka olmalı. Boş hücrede sayı yoktur.",
-    "amiral-batti": "Satır ve sütun sayıları, o çizgideki gemi karelerinin adedidir. Gemiler birbirine değmez.",
+    "amiral-batti": "Satır ve sütun sayıları o çizgideki gemi karelerinin adedidir. Üstteki gemilerin hepsi yerleştirilir. Gemiler birbirine yatay, dikey veya çapraz değmez.",
     "sihirli-piramit": "Yol tepeden başlar ve her sıradan bir daireyle tabana iner. Adım yalnız alttaki komşu daireye değer. Yolda 1’den sıra sayısına kadar her sayı bir kez durur.",
     "patika": "Siyah kareler kapalıdır. Beyaz karelerden tek bir kapalı halka geçer. Halka her beyaz kareye bir kez girer, yalnız yatay ve dikey komşuya ilerler, siyah kareye girmez ve kendini kesmez. Başladığı kareye geri döner.",
     "abc-baglama": "Aynı harfleri birbirine bağla. Çizgiler kesişmez, yalnızca yatay ve dikey gider. Tahtadaki bütün kareler kullanılmalı.",
@@ -233,8 +233,8 @@
     "kare-karalamaca": "Satır ve sütun sayıları, boyalı karelerin art arda gelen gruplarını gösterir.",
     "carpmaca": "Her hücre, satır başlığı ile sütun başlığının çarpımıdır.",
     "futoshiki": "Her satır ve sütun 1-{{n}} rakamlarını birer kez içerir. < ve > işaretleri komşu hücrelerin sırasını gösterir.",
-    "pentominolar": "Beş karelik parçalar çerçeveli alanı boşluksuz ve taşmadan örter. Parça seçilir, döndürülür ve ızgaraya oturur.",
-    "metaforms": "Her parça bir kez kullanılır. Soldaki işaret özneyi söyler. Taralı kare öznenin yeridir. Çarpı, öznenin o karede olmadığını söyler. İçi boş şekil o şekildeki herhangi bir parçadır. Renkli kalem o renkteki herhangi bir parçadır. Boş beyaz kare yalnızca uzaklığı gösterir.",
+    "pentominolar": "Beş karelik parçalar çerçeveli alanı boşluksuz ve taşmadan örter. Parçalar döndürülebilir ve ters çevrilebilir.",
+    "metaforms": "Her parça bir kez kullanılır. Soldaki işaret özneyi söyler. İpucu, tahtanın bir parçasıdır: desenin tamamı (beyaz kareler dahil) 3×3 tahtanın içine sığar. Taralı kare öznenin yeridir. Çarpı, öznenin o karede olmadığını söyler. İçi boş şekil o şekildeki parçalardan en az biridir. Renkli kalem o renkteki parçalardan en az biridir. Boş beyaz kare bir kareyi temsil eder, orada herhangi bir parça olabilir.",
     "numbers": "Her kareye 1’den 9’a kadar sayılar birer kez girer. Tek yıldızlı harf işleminde yıldızlı kare, yazılan işleme eşittir. Birden çok yıldız varsa denklem harflerle okunur. Yıldızlı toplam ya da çarpım bir sayıya eşitse o yıldızlar bu sayıyı verir. ★+★=★ ve ★×★=★ işaretinde sıra yoktur; herhangi ikisinin toplamı ya da çarpımı üçüncüsüne eşitse yeter. Bölme tam bölünür.",
     "colours": "Dokuz parçanın hepsi 3×3 kareye birer kez girer, boş kare kalmaz. Soldaki öğeler tikli karelere birebir yerleşir, sıra serbesttir. Çarpılı karelerde bu öğeler bulunmaz. İçinde soru işareti olan kare herhangi bir karedir, daire herhangi bir dairedir. Renkli çizgi o renkten herhangi bir parçadır."
   }

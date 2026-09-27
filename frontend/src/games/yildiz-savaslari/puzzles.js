@@ -75,6 +75,15 @@ export function countSolutions(region, n, limit = 2) {
   return count;
 }
 
+function relabel(region) {
+  const n = region.length;
+  const order = shuffle(Array.from({ length: n }, (_, index) => index));
+  if (n > 1 && order.every((id, index) => id === index)) {
+    [order[0], order[1]] = [order[1], order[0]];
+  }
+  return region.map((row) => row.map((id) => order[id]));
+}
+
 function pack(cols, region, n) {
   return {
     solutionSet: cols.map((c, r) => `${r}-${c}`),
@@ -92,7 +101,7 @@ export function generate(difficulty = "easy") {
     const cols = placeStars(n);
     if (!cols) continue;
     const region = growRegions(cols, n);
-    if (countSolutions(region, n) === 1) return pack(cols, region, n);
+    if (countSolutions(region, n) === 1) return pack(cols, relabel(region), n);
   }
   throw new Error("Tek çözüm Yıldız Dizilimi üretilemedi");
 }

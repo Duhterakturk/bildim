@@ -223,7 +223,7 @@
     "bolgesel-sudoku": "Each row, column, and colored region contains the digits 1–4 once.",
     "apartman": "Each row and column contains heights 1–4 once. An edge number is how many buildings you can see from that side.",
     "cit": "A number says how many of that cell's edges belong to the line. The line is one closed loop. An empty cell has no number.",
-    "amiral-batti": "A row or column number is how many ship cells sit on that line. Ships do not touch.",
+    "amiral-batti": "A row or column number is how many ship cells sit on that line. Every ship shown above is placed. Ships do not touch horizontally, vertically, or diagonally.",
     "sihirli-piramit": "The path starts at the top and reaches the base with one circle on each row. A step only touches the neighboring circle below. Each number from 1 up to the number of rows appears once.",
     "patika": "Black cells are closed. One loop passes through every white cell once. It moves only up, down, left, or right, stays out of black cells, and does not cross itself. It returns to where it started.",
     "abc-baglama": "Join the matching letters. Lines do not cross and move only horizontally or vertically. Every cell on the board must be used.",
@@ -233,8 +233,8 @@
     "kare-karalamaca": "Row and column numbers are the lengths of consecutive shaded groups.",
     "carpmaca": "Each cell is the product of its row header and column header.",
     "futoshiki": "Each row and column contains 1–{{n}} once. The < and > signs order neighboring cells.",
-    "pentominolar": "The five-square pieces cover the outlined area with no gaps or overlaps. A piece is chosen, turned, and set on the grid.",
-    "metaforms": "Each piece is used once. The mark on the left is the subject. A hatched cell is where that subject sits. A cross means the subject is not in that cell. An empty shape is any piece of that shape. A colored pencil is any piece of that color. A blank white cell only shows distance.",
+    "pentominolar": "The five-square pieces cover the outlined area with no gaps or overlaps. Pieces can be rotated and flipped.",
+    "metaforms": "Each piece is used once. The mark on the left names the subject. A clue is part of the board: the whole pattern, including the white cells, fits inside the 3×3 board. A hatched cell is where the subject sits. A cross means the subject is not in that cell. An empty shape is at least one piece of that shape. A colored pencil is at least one piece of that color. A blank white cell stands for one cell, and any piece may sit there.",
     "numbers": "Each cell is a number from 1 to 9, used once. A single star means that cell equals the written sum. Several stars mean the equation is read by its letters. A starred sum or product equals the number beside it. ★+★=★ and ★×★=★ have no order: any two add or multiply to the third. Division comes out even.",
     "colours": "All nine pieces fill the 3×3 grid, each once, with no empty cell. The items on the left match the checked cells one to one, in any order. Those items do not sit in a crossed cell. A question mark in a square is any square, and in a circle any circle. A colored stroke is any piece of that color."
   }

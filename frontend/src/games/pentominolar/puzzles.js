@@ -104,7 +104,7 @@ export function generate(difficulty = "easy") {
     }));
     const rows = Math.max(...normalized.flatMap((piece) => piece.cells.map(([r]) => r))) + 1;
     const cols = Math.max(...normalized.flatMap((piece) => piece.cells.map(([, c]) => c))) + 1;
-    const region = normalized.flatMap((piece) => piece.cells.map(([r, c]) => key(r, c)));
+    const region = shuffle(normalized.flatMap((piece) => piece.cells.map(([r, c]) => key(r, c))));
     const pieceNames = normalized.map((piece) => piece.name);
     if (distinctTilings(pieceNames, region) !== 1) continue;
     return {

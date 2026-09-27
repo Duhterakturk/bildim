@@ -66,14 +66,43 @@ function layout(n, solution, difficulty, random) {
   return pack(cages, solution, difficulty, random);
 }
 
+function connectedGroups(cells) {
+  const set = new Set(cells.map(([r, c]) => `${r}-${c}`));
+  const seen = new Set();
+  const groups = [];
+  cells.forEach(([row, col]) => {
+    const start = `${row}-${col}`;
+    if (seen.has(start)) return;
+    const group = [];
+    const stack = [[row, col]];
+    seen.add(start);
+    while (stack.length) {
+      const [r, c] = stack.pop();
+      group.push([r, c]);
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
+        const key = `${r + dr}-${c + dc}`;
+        if (!set.has(key) || seen.has(key)) return;
+        seen.add(key);
+        stack.push([r + dr, c + dc]);
+      });
+    }
+    groups.push(group);
+  });
+  return groups;
+}
+
 function pin(body, solution, row, col, difficulty, random) {
-  const id = body.cageId[row][col];
-  const cells = body.cageCells[id].filter(([r, c]) => r !== row || c !== col);
-  const cages = Object.values(body.cageCells)
-    .map((group) => (group.some(([r, c]) => r === row && c === col) ? cells : group))
-    .filter((group) => group.length);
+  const cages = [];
+  Object.values(body.cageCells).forEach((group) => {
+    if (!group.some(([r, c]) => r === row && c === col)) {
+      cages.push(group);
+      return;
+    }
+    const rest = group.filter(([r, c]) => r !== row || c !== col);
+    cages.push(...connectedGroups(rest));
+  });
   cages.push([[row, col]]);
-  return pack(cages, solution, difficulty, random);
+  return pack(cages.filter((group) => group.length), solution, difficulty, random);
 }
 
 function attempt(n, difficulty, random, deadline) {
