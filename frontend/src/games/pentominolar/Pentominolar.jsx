@@ -134,6 +134,7 @@ export default function Pentominolar() {
   }
 
   function checkSolution() {
+    if (status === "correct" || status === "submitted") return;
     const covered = new Set(placements.flatMap((piece) => piece.cells.map(([r, c]) => `${r}-${c}`)));
     const solved = placements.length === pieces.length && region.every((key) => covered.has(key)) && covered.size === region.length;
     setStatus(solved ? "correct" : "incorrect");
@@ -237,8 +238,10 @@ export default function Pentominolar() {
 
       <div className="flex gap-3 mt-6">
         <button
+          type="button"
           onClick={checkSolution}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600"
+          disabled={status === "correct" || status === "submitted"}
+          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
@@ -254,6 +257,7 @@ export default function Pentominolar() {
       {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
+      {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
       <ScoreNotice phase={savePhase} onRetry={() => save(placementAnswer())} />
     </div>

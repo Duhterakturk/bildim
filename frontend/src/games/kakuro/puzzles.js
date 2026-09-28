@@ -359,7 +359,7 @@ function buildGrid(white, digits) {
   return { grid, solution, size: n };
 }
 
-export function generate(difficulty = "easy") {
+function dealOnce(difficulty = "easy") {
   const cfg = CONFIG[difficulty] || CONFIG.easy;
   const started = Date.now();
   while (Date.now() - started < cfg.budget) {
@@ -411,4 +411,16 @@ export function generate(difficulty = "easy") {
     }
   }
   throw new Error("Tek çözüm Kakuro üretilemedi");
+}
+
+export function generate(difficulty = "easy") {
+  let failure;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return dealOnce(difficulty);
+    } catch (error) {
+      failure = error;
+    }
+  }
+  throw failure;
 }

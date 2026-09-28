@@ -117,7 +117,12 @@ apiClient.interceptors.response.use(
 );
 
 export function scoreStatus(error) {
-  return error?.response?.status === 400 ? "rejected" : "offline";
+  const status = error?.response?.status;
+  if (status === 400) return "rejected";
+  if (status === 404 || status === 409) return "already";
+  const network = !error?.response || error?.code === "ERR_NETWORK" || error?.code === "ECONNABORTED";
+  if (network || status >= 500) return "offline";
+  return "rejected";
 }
 
 export default apiClient;

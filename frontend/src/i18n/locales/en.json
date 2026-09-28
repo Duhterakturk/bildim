@@ -167,6 +167,7 @@
     "saved": "Score saved.",
     "rejected": "The score was not saved. The solution could not be verified.",
     "offline": "Connection problem, try again",
+    "already": "This puzzle is already complete.",
     "retry": "Send again",
     "loading": "The puzzle is being prepared.",
     "loadingSlow": "The server is waking up and the puzzle is being prepared. This can take a minute.",

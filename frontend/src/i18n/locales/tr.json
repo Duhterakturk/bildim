@@ -167,6 +167,7 @@
     "saved": "Skor kaydedildi.",
     "rejected": "Skor kaydedilemedi. Çözüm doğrulanamadı.",
     "offline": "Bağlantı sorunu, tekrar dene",
+    "already": "Bu bulmaca zaten tamamlandı.",
     "retry": "Tekrar gönder",
     "loading": "Bulmaca hazırlanıyor.",
     "loadingSlow": "Sunucu uyanıyor, bulmaca hazırlanıyor. Bu bir dakika sürebilir.",

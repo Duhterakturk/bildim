@@ -37,6 +37,7 @@ export function ScoreNotice({ phase, onRetry }) {
   if (phase === "saving") return <p className="text-slate-500 mt-3">{play.saving}</p>;
   if (phase === "saved") return <p className="text-emerald-600 mt-3">{play.saved}</p>;
   if (phase === "rejected") return <p className="text-red-500 mt-3">{play.rejected}</p>;
+  if (phase === "already") return <p className="text-red-500 mt-3">{play.already}</p>;
   if (phase === "offline") {
     return (
       <div className="mt-3 text-center">

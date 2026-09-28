@@ -6,6 +6,17 @@ function whites(grid) {
 }
 
 describe("kakuro", () => {
+  it("deals 200 puzzles per difficulty without failing", () => {
+    for (const difficulty of ["easy", "medium", "hard"]) {
+      for (let round = 0; round < 200; round += 1) {
+        const puzzle = generate(difficulty);
+        expect(puzzle.size).toBeGreaterThan(0);
+        expect(puzzle.grid).toHaveLength(puzzle.size);
+        expect(puzzle.solution).toHaveLength(puzzle.size);
+      }
+    }
+  }, 180000);
+
   for (const difficulty of ["easy", "medium", "hard"]) {
     it(`builds 20 unique ${difficulty} boards in time`, () => {
       const limit = difficulty === "easy" ? 1000 : difficulty === "medium" ? 2000 : 3000;

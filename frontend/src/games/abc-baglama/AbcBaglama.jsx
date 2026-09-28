@@ -171,6 +171,7 @@ export default function AbcBaglama() {
   const frameRef = useRef(0);
   const queuedRef = useRef(null);
   const checkedSig = useRef("");
+  const checking = useRef(false);
   const sizeRef = useRef(0);
   const cellRef = useRef(44);
   const fixedRef = useRef({});
@@ -477,14 +478,21 @@ export default function AbcBaglama() {
     return open ? t("play.letterOpen", { letter: open }) : "";
   }
 
+  function outcomeNote(next) {
+    if (next === "rejected") return play.rejected;
+    if (next === "already") return play.already;
+    return play.offline;
+  }
+
   async function checkSolution() {
-    if (!attemptId) return;
+    if (!attemptId || checking.current || status === "correct" || status === "submitted") return;
     const problem = localProblem();
     if (problem) {
       setNote(problem);
       setStatus("incorrect");
       return;
     }
+    checking.current = true;
     try {
       const correct = await checkPuzzle(attemptId, { paths });
       setStatus(correct ? "correct" : "incorrect");
@@ -496,7 +504,9 @@ export default function AbcBaglama() {
     } catch (error) {
       const next = scoreStatus(error);
       setStatus(next);
-      setNote(next === "rejected" ? play.rejected : play.offline);
+      setNote(outcomeNote(next));
+    } finally {
+      checking.current = false;
     }
   }
 
@@ -505,8 +515,9 @@ export default function AbcBaglama() {
     if (status === "correct" || status === "submitted") return undefined;
     if (filled !== size * size || linked !== letters.length) return undefined;
     const signature = JSON.stringify(paths);
-    if (checkedSig.current === signature) return undefined;
+    if (checking.current || checkedSig.current === signature) return undefined;
     checkedSig.current = signature;
+    checking.current = true;
     const token = attemptId;
     const answer = paths;
     (async () => {
@@ -525,7 +536,9 @@ export default function AbcBaglama() {
       } catch (error) {
         const next = scoreStatus(error);
         setStatus(next);
-        setNote(next === "rejected" ? play.rejected : play.offline);
+        setNote(outcomeNote(next));
+      } finally {
+        checking.current = false;
       }
     })();
     return undefined;
@@ -599,7 +612,7 @@ export default function AbcBaglama() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        <button type="button" onClick={checkSolution} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold">{play.check}</button>
+        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         <ClearBoardButton onClick={() => { pathsRef.current = {}; setPaths({}); checkedSig.current = ""; setSelected(null); setStatus("playing"); setNote(""); }} />
         <button type="button" onClick={reload} className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold">{play.newPuzzle}</button>
       </div>

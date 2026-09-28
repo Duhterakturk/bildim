@@ -103,6 +103,7 @@ export default function ToggleGridGame({
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
   const doneSig = useRef("");
+  const checking = useRef(false);
   const { phase: savePhase, save } = useAutoScore(attemptId);
 
   function currentAnswer() {
@@ -164,6 +165,7 @@ export default function ToggleGridGame({
   }
 
   async function checkSolution() {
+    if (status === "correct" || status === "submitted" || checking.current) return;
     const answer = currentAnswer();
     if (validate) {
       const isCorrect = validate(marked, fixedCells);
@@ -175,6 +177,7 @@ export default function ToggleGridGame({
       return;
     }
     if (!attemptId) return;
+    checking.current = true;
     try {
       const correct = await checkPuzzle(attemptId, answer);
       setStatus(correct ? "correct" : "incorrect");
@@ -184,6 +187,8 @@ export default function ToggleGridGame({
       }
     } catch (error) {
       setStatus(scoreStatus(error));
+    } finally {
+      checking.current = false;
     }
   }
 
@@ -212,8 +217,9 @@ export default function ToggleGridGame({
   useEffect(() => {
     if (!cluesHold || !attemptId || status === "correct" || status === "submitted") return undefined;
     const signature = [...marked].sort().join("|");
-    if (doneSig.current === signature) return undefined;
+    if (checking.current || doneSig.current === signature) return undefined;
     doneSig.current = signature;
+    checking.current = true;
     const answer = answerFrom ? answerFrom(marked) : { cells: [...marked] };
     const token = attemptId;
     (async () => {
@@ -228,6 +234,8 @@ export default function ToggleGridGame({
         save(answer);
       } catch (error) {
         setStatus(scoreStatus(error));
+      } finally {
+        checking.current = false;
       }
     })();
     return undefined;
@@ -355,8 +363,10 @@ export default function ToggleGridGame({
 
       <div className="flex gap-3 mt-6">
         <button
+          type="button"
           onClick={checkSolution}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600"
+          disabled={status === "correct" || status === "submitted"}
+          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
@@ -374,6 +384,7 @@ export default function ToggleGridGame({
       {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
+      {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
       <ScoreNotice phase={savePhase} onRetry={() => save(currentAnswer())} />
     </div>

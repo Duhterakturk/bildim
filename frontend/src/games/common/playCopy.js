@@ -26,6 +26,7 @@ export function usePlayCopy() {
     saved: t("play.saved"),
     rejected: t("play.rejected"),
     offline: t("play.offline"),
+    already: t("play.already"),
     retry: t("play.retry"),
     loading: t("play.loading"),
     loadingSlow: t("play.loadingSlow"),

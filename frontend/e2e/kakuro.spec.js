@@ -42,6 +42,7 @@ test("an easy cross-sum solves and saves", async ({ page }, info) => {
   }
   await page.getByRole("button", { name: "Kontrol Et" }).click();
   await expect(page.getByText("Yerinde. Bulmaca tamam.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Kontrol Et" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Skoru Kaydet" })).toHaveCount(0);
   await expect(page.getByText("Skor kaydedildi.")).toBeVisible();
   expect(saved.answer).toEqual(answer);

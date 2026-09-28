@@ -60,7 +60,7 @@ export default function IslemKaresi() {
   }
 
   async function checkSolution() {
-    if (!attemptId || !board) return;
+    if (!attemptId || !board || status === "correct" || status === "submitted") return;
     try {
       const correct = await checkPuzzle(attemptId, board);
       setStatus(correct ? "correct" : "incorrect");
@@ -143,13 +143,14 @@ export default function IslemKaresi() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold">{play.check}</button>
+        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         <ClearBoardButton onClick={() => { setBoard(clone(puzzle.givens)); setStatus("playing"); }} />
         <button type="button" onClick={() => newGame()} className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold">{play.newPuzzle}</button>
       </div>
       {status === "correct" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
+      {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
       <ScoreNotice phase={savePhase} onRetry={() => save(board)} />
     </div>

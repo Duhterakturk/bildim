@@ -37,7 +37,16 @@ def issue(slug, difficulty):
         return public, proof
     ready = _take(slug, difficulty)
     if ready is None:
-        ready = _from_node(slug, difficulty)
+        failure = None
+        for _ in range(3):
+            try:
+                ready = _from_node(slug, difficulty)
+                break
+            except IssueError as exc:
+                failure = exc
+                ready = None
+        if ready is None:
+            raise failure
     threading.Thread(target=_refill, args=(slug, difficulty), daemon=True).start()
     return ready
 

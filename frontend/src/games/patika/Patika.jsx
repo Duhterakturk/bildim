@@ -81,7 +81,7 @@ export default function Patika() {
   }
 
   async function checkSolution() {
-    if (!attemptId) return;
+    if (!attemptId || status === "correct" || status === "submitted") return;
     try {
       const correct = await checkPuzzle(attemptId, { edges: [...edges] });
       setStatus(correct ? "correct" : "incorrect");
@@ -164,13 +164,14 @@ export default function Patika() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold">{play.check}</button>
+        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         <ClearBoardButton onClick={() => { setEdges(new Set()); setStatus("playing"); }} />
         <button type="button" onClick={() => newGame()} className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold">{play.newPuzzle}</button>
       </div>
       {status === "correct" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
+      {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
       <ScoreNotice phase={savePhase} onRetry={() => save({ edges: [...edges] })} />
     </div>
