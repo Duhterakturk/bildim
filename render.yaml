@@ -1,4 +1,5 @@
 # Render Blueprint — ücretsiz katman.
+# API ayrı bir Render workspace'inde (MindArena) çalışır.
 #
 # Veritabanı Render'da değil. Render'ın ücretsiz Postgres'i 30 gün sonra
 # kapanır ve skorlar silinir. Skorlar Neon'da durur (ücretsiz, silinmez).
@@ -15,9 +16,10 @@
 
 services:
   - type: web
-    name: duhterakturk-mindarena-api
+    name: mindarena-api
     runtime: docker
     plan: free
+    region: frankfurt
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /api/health
@@ -53,7 +55,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://duhterakturk-mindarena-api.onrender.com/api
+        value: https://mindarena-api.onrender.com/api
     routes:
       - type: rewrite
         source: /*
