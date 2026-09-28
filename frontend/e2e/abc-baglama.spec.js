@@ -106,6 +106,56 @@ test("an L shaped drag fills both legs", async ({ page }) => {
   await expect(page.getByTestId("link-progress")).toContainText("Bağlanan: 1/2");
 });
 
+async function tap(page, key) {
+  const at = await center(page, key);
+  const touch = page.context()._options?.hasTouch || test.info().project.use.hasTouch;
+  if (touch) {
+    const session = await page.context().newCDPSession(page);
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
+      touchPoints: [{ x: at.x, y: at.y, id: 1 }],
+    });
+    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    return;
+  }
+  await page.mouse.click(at.x, at.y);
+}
+
+async function expectEraseShortcuts(page) {
+  await boot(page, flowPuzzle);
+  await expect(page.getByText("Bir harfe dokunursan o harfin yolu silinir")).toBeVisible();
+  await stroke(page, ["0-0", "0-3"]);
+  await stroke(page, ["2-0", "2-2", "4-2"]);
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "4");
+  await expect(page.getByTestId("path-B")).toHaveAttribute("data-length", "5");
+
+  await tap(page, "0-0");
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "1");
+  await expect(page.getByTestId("path-B")).toHaveAttribute("data-length", "5");
+
+  await stroke(page, ["0-0", "0-3"]);
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "4");
+  await tap(page, "0-1");
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "2");
+  await expect(page.getByTestId("path-B")).toHaveAttribute("data-length", "5");
+
+  await tap(page, "0-1");
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "1");
+  await stroke(page, ["0-0", "0-4"]);
+  await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "5");
+  await expect(page.getByTestId("link-progress")).toContainText("Bağlanan: 2/2");
+}
+
+test("a mouse tap clears one letter and shortens the middle", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop");
+  await expectEraseShortcuts(page);
+});
+
+test("a touch tap clears one letter and shortens the middle", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile");
+  await expectEraseShortcuts(page);
+});
+
 test("dragging back shortens the line to that cell", async ({ page }) => {
   await boot(page, flowPuzzle);
   await stroke(page, ["0-0", "0-3"]);

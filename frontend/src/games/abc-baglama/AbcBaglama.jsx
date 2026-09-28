@@ -468,8 +468,25 @@ export default function AbcBaglama() {
     flushPaths();
     setInk(null);
     if (window.__abcMeasure && window.__abcDragStart) window.__abcDragMs = performance.now() - window.__abcDragStart;
+    if (active && !active.dragged && !active.done && retap(active.key)) return;
     if (active && !active.dragged && !active.drawing) clickCell(active.key);
     else if (active && !active.dragged && active.alreadyTip) clickCell(active.key);
+  }
+
+  function retap(key) {
+    const letterHere = fixedRef.current[key];
+    if (letterHere) {
+      writePaths({ ...pathsRef.current, [letterHere]: [key] });
+      setSelected(letterHere);
+      return true;
+    }
+    const occupied = ownerOf(pathsRef.current, key);
+    if (!occupied) return false;
+    const path = pathsRef.current[occupied.letter] || [];
+    if (occupied.index >= path.length - 1) return false;
+    writePaths({ ...pathsRef.current, [occupied.letter]: path.slice(0, occupied.index + 1) });
+    setSelected(occupied.letter);
+    return true;
   }
 
   function localProblem() {

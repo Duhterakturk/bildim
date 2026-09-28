@@ -227,7 +227,7 @@
     "amiral-batti": "A row or column number is how many ship cells sit on that line. Every ship shown above is placed. Ships do not touch horizontally, vertically, or diagonally.",
     "sihirli-piramit": "The path starts at the top and reaches the base with one circle on each row. A step only touches the neighboring circle below. Each number from 1 up to the number of rows appears once.",
     "patika": "Black cells are closed. One loop passes through every white cell once. It moves only up, down, left, or right, stays out of black cells, and does not cross itself. It returns to where it started.",
-    "abc-baglama": "Join the matching letters. Lines do not cross and move only horizontally or vertically. Every cell on the board must be used.",
+    "abc-baglama": "Join the matching letters. Lines do not cross and move only horizontally or vertically. Every cell on the board must be used. Tap a letter and that letter's path is cleared; tap the middle of a path and the path shortens there.",
     "islem-karesi": "Each row and each column reaches the result on the right or below, using the signs between the numbers. Multiplication and division come before addition and subtraction. The numbers are 1–9, each once.",
     "kendoku": "Each row and column contains 1–{{n}} once. Cages use addition, subtraction, multiplication, or division.",
     "yildiz-savaslari": "One star stands in each row, column, and colored region. Stars do not touch, even diagonally.",

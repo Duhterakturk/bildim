@@ -227,7 +227,7 @@
     "amiral-batti": "Satır ve sütun sayıları o çizgideki gemi karelerinin adedidir. Üstteki gemilerin hepsi yerleştirilir. Gemiler birbirine yatay, dikey veya çapraz değmez.",
     "sihirli-piramit": "Yol tepeden başlar ve her sıradan bir daireyle tabana iner. Adım yalnız alttaki komşu daireye değer. Yolda 1’den sıra sayısına kadar her sayı bir kez durur.",
     "patika": "Siyah kareler kapalıdır. Beyaz karelerden tek bir kapalı halka geçer. Halka her beyaz kareye bir kez girer, yalnız yatay ve dikey komşuya ilerler, siyah kareye girmez ve kendini kesmez. Başladığı kareye geri döner.",
-    "abc-baglama": "Aynı harfleri birbirine bağla. Çizgiler kesişmez, yalnızca yatay ve dikey gider. Tahtadaki bütün kareler kullanılmalı.",
+    "abc-baglama": "Aynı harfleri birbirine bağla. Çizgiler kesişmez, yalnızca yatay ve dikey gider. Tahtadaki bütün kareler kullanılmalı. Bir harfe dokunursan o harfin yolu silinir; yolun ortasına dokunursan yol oradan kısalır.",
     "islem-karesi": "Her satır ve her sütun, aradaki işlemlerle sağdaki ve alttaki sonuca ulaşır. Çarpma ve bölme önce yapılır. Sayılar 1-9 arasındadır ve tekrar etmez.",
     "kendoku": "Her satır ve sütun 1-{{n}} rakamlarını birer kez içerir. Kafesler toplama, çıkarma, çarpma veya bölme ister.",
     "yildiz-savaslari": "Her satırda, her sütunda ve her renkli bölgede bir yıldız durur. İki yıldız yatay, dikey veya çapraz komşu olmaz.",
