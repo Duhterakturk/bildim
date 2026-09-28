@@ -23,11 +23,12 @@ function mulberry32(seed) {
 
 describe("metaforms clues", () => {
   it("tells the player the pattern sits inside the board", () => {
-    expect(tr.gameRules.metaforms).toContain("desenin tamamı (beyaz kareler dahil) 3×3 tahtanın içine sığar");
-    expect(tr.gameRules.metaforms).toContain("herhangi bir parça olabilir");
-    expect(en.gameRules.metaforms).toContain("fits inside the 3×3 board");
-    expect(hintFor("metaforms", "tr").hint).toContain("3×3");
-    expect(hintFor("metaforms", "en").hint).toContain("blank white cell");
+    expect(tr.gameRules.metaforms).toContain("tahtanın bir bölümünü gösterir");
+    expect(tr.gameRules.metaforms).toContain("Desen yalnızca kaydırılır; döndürülmez, ters çevrilmez.");
+    expect(tr.gameRules.metaforms).not.toContain("tahtanın bir parçasıdır");
+    expect(en.gameRules.metaforms).toContain("only slid");
+    expect(hintFor("metaforms", "tr").hint).toContain("Desen yalnızca kaydırılır; döndürülmez, ters çevrilmez.");
+    expect(hintFor("metaforms", "en").hint).toContain("only slid");
   });
 
   it("deals a different unique board for each difficulty", () => {

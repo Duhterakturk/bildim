@@ -233,17 +233,26 @@ export function countFlows(fixedCells, size, limit = 2) {
   return count;
 }
 
+function segmentKey(segments) {
+  return segments.map((segment) => segment.map(([row, col]) => cellKey(row, col)).join(".")).join("|");
+}
+
 export function generate(difficulty = "easy") {
   const { size, pairs } = CONFIG[difficulty] || CONFIG.easy;
-  const deadline = Date.now() + 2800;
+  const deadline = Date.now() + 2900;
   let path = snake(size);
   for (let step = 0; step < 220; step += 1) path = backbite(path);
+  let spins = 0;
   while (Date.now() < deadline) {
     const chorded = chordSplit(path);
+    const seen = new Set();
     const tries = chorded ? 8 : 0;
     for (let index = 0; index < tries && Date.now() < deadline; index += 1) {
       const aimed = retarget(chorded, pairs);
       if (!aimed) break;
+      const key = segmentKey(aimed);
+      if (seen.has(key)) break;
+      seen.add(key);
       const puzzle = pack(aimed, size);
       if (countFlows(puzzle.fixedCells, size) === 1) return puzzle;
     }
@@ -253,7 +262,13 @@ export function generate(difficulty = "easy") {
       const puzzle = pack(split(path, pairCount), size);
       if (countFlows(puzzle.fixedCells, size) === 1) return puzzle;
     }
-    for (let step = 0; step < 50; step += 1) path = backbite(path);
+    spins += 1;
+    if (spins % 5 === 0) {
+      path = snake(size);
+      for (let step = 0; step < 80; step += 1) path = backbite(path);
+    } else {
+      for (let step = 0; step < 50; step += 1) path = backbite(path);
+    }
   }
   throw new Error("Harf bağı üretilemedi");
 }

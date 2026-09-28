@@ -65,8 +65,8 @@ export const HINTS = {
     en: { hint: "Pieces can be rotated and flipped. The piece that fits a corner comes first.", example: "The plus shape sits near the middle. It does not fit a corner." },
   },
   metaforms: {
-    tr: { hint: "Desenin tamamı, beyaz kareler dahil, 3×3 tahtanın içine sığar. Taralı kare öznenin yeridir. Çarpı o kareyi yasaklar. İçi boş şekil o şekildeki parçalardan en az biridir. Renkli kalem o renkteki parçalardan en az biridir. Boş beyaz karede herhangi bir parça durabilir.", example: "Tek kareye kilitlenen parça önce oturur." },
-    en: { hint: "The whole pattern, including the white cells, fits inside the 3×3 board. A hatched cell is where the subject sits. A cross forbids that cell. An empty shape is at least one piece of that shape. A colored pencil is at least one piece of that color. Any piece may sit in a blank white cell.", example: "A piece locked to one cell settles first." },
+    tr: { hint: "İpucu, tahtanın bir bölümünü gösterir. Desenin tamamı, beyaz kareler dahil, 3×3 tahtanın içine sığar. Desen yalnızca kaydırılır; döndürülmez, ters çevrilmez. Taralı kare öznenin yeridir. Çarpı o kareyi yasaklar. İçi boş şekil o şekildeki parçalardan en az biridir. Renkli kalem o renkteki parçalardan en az biridir. Boş beyaz karede herhangi bir parça durabilir.", example: "Tek kareye kilitlenen parça önce oturur." },
+    en: { hint: "A clue shows a section of the board. The whole pattern, including the white cells, fits inside the 3×3 board. The pattern is only slid; it is not rotated or flipped. A hatched cell is where the subject sits. A cross forbids that cell. An empty shape is at least one piece of that shape. A colored pencil is at least one piece of that color. Any piece may sit in a blank white cell.", example: "A piece locked to one cell settles first." },
   },
   numbers: {
     tr: { hint: "Verilen sayı başlangıçtır. İki yıldızın toplamı belliyse boş olan çıkar.", example: "Biri 4 ve toplam 11 ise diğeri 7’dir." },

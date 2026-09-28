@@ -98,6 +98,17 @@ describe("Amiral Battı fleet generator", () => {
     expect(en.gameRules["amiral-batti"]).toContain("Every ship shown above is placed");
   });
 
+  it("deals 300 puzzles per difficulty without failing", () => {
+    for (const difficulty of ["easy", "medium", "hard"]) {
+      for (let round = 0; round < 300; round += 1) {
+        const started = Date.now();
+        const puzzle = generate(difficulty);
+        expect(Date.now() - started).toBeLessThan(2000);
+        expect(puzzle.ships).toEqual(SHIPS[difficulty]);
+      }
+    }
+  }, 180000);
+
   it("has one layout per puzzle once the fleet, clues, and no-touch rule are known", () => {
     for (const difficulty of ["easy", "medium", "hard"]) {
       for (let round = 0; round < 20; round += 1) {

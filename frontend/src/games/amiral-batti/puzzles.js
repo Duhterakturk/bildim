@@ -10,8 +10,8 @@ const CONFIG = {
   hard: { rows: 7, cols: 7, ships: [4, 3, 3, 2, 2, 1, 1] },
 };
 
-function placeFleet(rows, cols, shipSizes) {
-  for (let attempt = 0; attempt < 500; attempt++) {
+function placeFleet(rows, cols, shipSizes, deadline) {
+  for (let attempt = 0; attempt < 80 && Date.now() < deadline; attempt++) {
     const occupied = new Set();
     let success = true;
     for (const size of shipSizes) {
@@ -58,14 +58,16 @@ function placeFleet(rows, cols, shipSizes) {
     }
     if (success) return occupied;
   }
-  throw new Error("Filo yerleştirilemedi");
+  return null;
 }
 
 export function generate(difficulty = "easy") {
   const { rows, cols, ships } = CONFIG[difficulty] || CONFIG.easy;
   const factor = identicalShipFactor(ships);
-  for (let attempt = 0; attempt < 25; attempt++) {
-    const occupied = placeFleet(rows, cols, ships);
+  const deadline = Date.now() + 1900;
+  while (Date.now() < deadline) {
+    const occupied = placeFleet(rows, cols, ships, deadline);
+    if (!occupied) continue;
     const solutionSet = [...occupied];
     const rowClues = Array.from({ length: rows }, (_, r) =>
       solutionSet.filter((key) => Number(key.split("-")[0]) === r).length
