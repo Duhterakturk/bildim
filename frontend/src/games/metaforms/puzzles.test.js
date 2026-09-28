@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import tr from "../../i18n/locales/tr.json";
 import en from "../../i18n/locales/en.json";
 import { hintFor } from "../hints";
-import { PUZZLE_12, generate, isValid, pieceCode, solve } from "./puzzles";
+import { PUZZLE_12, clueStatus, generate, isValid, pieceCode, solve } from "./puzzles";
 
 const SOLUTION = [
   ["RS", "YT", "BC"],
@@ -58,6 +58,20 @@ describe("metaforms clues", () => {
     });
     expect(totals.easy / 20).toBeGreaterThan(totals.medium / 20);
     expect(totals.medium / 20).toBeGreaterThan(totals.hard / 20);
+  });
+
+  it("rejects the subject sitting on a cross in the same pattern", () => {
+    const pieces = ["RS", "RT", "RC", "BS", "BT", "BC", "YS", "YT", "YC"];
+    function layout(first, second) {
+      const rest = pieces.filter((piece) => piece !== first && piece !== second);
+      const cells = [first, second, ...rest];
+      return [cells.slice(0, 3), cells.slice(3, 6), cells.slice(6, 9)];
+    }
+    const clue = { subject: "R?", pattern: [["#", "X", "."], [".", ".", "."], [".", ".", "."]] };
+    const broken = layout("RS", "RT");
+    expect(clueStatus(broken, clue)).toBe("bad");
+    expect(isValid(broken, [clue])).toBe(false);
+    expect(isValid(layout("RS", "BT"), [clue])).toBe(true);
   });
 
   it("accepts the book solution and no other layout", () => {

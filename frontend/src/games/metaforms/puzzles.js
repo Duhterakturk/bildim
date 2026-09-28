@@ -76,8 +76,9 @@ function isPositive(box) {
 
 function positivePossible(board, subject, cells, origin) {
   return cells.every((cell) => {
-    if (cell.token === "." || cell.token === "X") return true;
     const piece = at(board, origin, cell);
+    if (cell.token === "X") return !piece || !matches(piece, subject);
+    if (cell.token === ".") return true;
     if (!piece) return true;
     return matches(piece, cell.token === "#" ? subject : cell.token);
   });
@@ -85,8 +86,9 @@ function positivePossible(board, subject, cells, origin) {
 
 function positiveWitness(board, subject, cells, origin) {
   return cells.every((cell) => {
-    if (cell.token === "." || cell.token === "X") return true;
     const piece = at(board, origin, cell);
+    if (cell.token === "X") return Boolean(piece) && !matches(piece, subject);
+    if (cell.token === ".") return true;
     return piece && matches(piece, cell.token === "#" ? subject : cell.token);
   });
 }
