@@ -108,7 +108,7 @@ export default function HintBar({ slug }) {
   return (
     <div className="mb-6">
       <div className="flex flex-wrap items-center gap-2">
-        <HowTo slug={slug} />
+        <HowTo slug={slug} size={attempt?.size} />
         <button
           type="button"
           onClick={revealCell}

@@ -53,6 +53,28 @@ def test_tampered_answer_is_rejected(client, student, app):
     assert resp.status_code == 400
 
 
+def test_metaforms_rejects_a_cross_beside_the_subject_mark():
+    pieces = [
+        ("square", "red"), ("triangle", "red"), ("circle", "red"),
+        ("square", "blue"), ("triangle", "blue"), ("circle", "blue"),
+        ("square", "yellow"), ("triangle", "yellow"), ("circle", "yellow"),
+    ]
+
+    def layout(first, second):
+        rest = [piece for piece in pieces if piece not in (first, second)]
+        cells = [first, second, *rest]
+        return [[{"shape": shape, "color": color} for shape, color in cells[index:index + 3]] for index in range(0, 9, 3)]
+
+    puzzle = {"clues": [{"subject": "R?", "pattern": [["#", "X", "."], [".", ".", "."], [".", ".", "."]]}]}
+    try:
+        grade("metaforms", "easy", puzzle, {"grid": layout(("square", "red"), ("triangle", "red"))}, 10)
+    except GradeError:
+        pass
+    else:
+        raise AssertionError("çarpıdaki özne kabul edildi")
+    grade("metaforms", "easy", puzzle, {"grid": layout(("square", "red"), ("triangle", "blue"))}, 10)
+
+
 def test_metaforms_rejects_a_swapped_piece():
     assert GAME_CATALOG[16]["slug"] == "metaforms"
     puzzle, answer = reference(17)

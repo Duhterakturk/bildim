@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { hintFor } from "../../games/hints";
 
-export default function HowTo({ slug, className = "" }) {
+export default function HowTo({ slug, size, className = "" }) {
   const { t, i18n } = useTranslation();
   const tr = !i18n.language.startsWith("en");
   const [open, setOpen] = useState(false);
   const copy = hintFor(slug, tr ? "tr" : "en");
-  const rule = t(`gameRules.${slug}`, { n: 4 });
+  const known = Number.isInteger(size) && size > 0;
+  const openEnded = !known && (slug === "kendoku" || slug === "futoshiki");
+  const rule = t(openEnded ? `gameRules.${slug}Any` : `gameRules.${slug}`, known ? { n: size } : {});
 
   return (
     <>

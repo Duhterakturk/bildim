@@ -126,7 +126,8 @@ export function isSimpleCycle(horizontal, vertical, n) {
 export function generate(difficulty = "easy") {
   const n = SIZE_BY_DIFFICULTY[difficulty] || 5;
   const hide = HIDDEN_CLUES[difficulty] || 0;
-  for (let attempt = 0; attempt < 40; attempt++) {
+  const giveUp = Date.now() + 1400;
+  for (let attempt = 0; attempt < 200 && Date.now() < giveUp; attempt++) {
     const cells = growRegion(n);
     if (!cells) continue;
     const { horizontal, vertical } = boundary(cells, n);
@@ -139,7 +140,8 @@ export function generate(difficulty = "easy") {
       [spots[i], spots[j]] = [spots[j], spots[i]];
     }
     for (const [r, c] of spots.slice(0, Math.min(hide, spots.length - 1))) clues[r][c] = null;
-    if (countFences(clues) !== 1) continue;
+    const budget = Math.min(Date.now() + 350, giveUp);
+    if (countFences(clues, 2, budget) !== 1) continue;
     return {
       clues,
       horizontalSolution: horizontal,

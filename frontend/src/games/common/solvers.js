@@ -331,11 +331,12 @@ const EDGE_PATTERNS = {
   4: [[1, 1, 1, 1]],
 };
 
-export function countFences(clues, limit = 2) {
+export function countFences(clues, limit = 2, deadline = Infinity) {
   const n = clues.length;
   const horiz = Array.from({ length: n + 1 }, () => Array(n).fill(null));
   const vert = Array.from({ length: n }, () => Array(n + 1).fill(null));
   let count = 0;
+  let steps = 0;
 
   function agree(current, next) {
     if (current === null) return true;
@@ -343,7 +344,12 @@ export function countFences(clues, limit = 2) {
   }
 
   function search(cell) {
-    if (count >= limit) return;
+    if (count >= limit || count < 0) return;
+    steps += 1;
+    if (deadline < Infinity && (steps & 127) === 0 && Date.now() > deadline) {
+      count = -1;
+      return;
+    }
     if (cell === n * n) {
       if (fenceIsOneLoop(horiz, vert, n)) count++;
       return;
@@ -354,6 +360,7 @@ export function countFences(clues, limit = 2) {
     const options = clue === null || clue === undefined ? null : EDGE_PATTERNS[clue];
     const patterns = options || allPatterns();
     for (const [top, right, bottom, left] of patterns) {
+      if (count >= limit || count < 0) return;
       if (!agree(horiz[r][c], top) || !agree(vert[r][c + 1], right) || !agree(horiz[r + 1][c], bottom) || !agree(vert[r][c], left)) {
         continue;
       }
@@ -364,7 +371,6 @@ export function countFences(clues, limit = 2) {
       vert[r][c] = !!left;
       search(cell + 1);
       [horiz[r][c], vert[r][c + 1], horiz[r + 1][c], vert[r][c]] = prev;
-      if (count >= limit) return;
     }
   }
   search(0);

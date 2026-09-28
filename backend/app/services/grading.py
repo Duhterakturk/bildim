@@ -1512,6 +1512,11 @@ def _form_clue_ok(placed, clue):
     if positive:
         for origin_row in range(4 - height):
             for origin_col in range(4 - width):
+                if any(
+                    token == "X" and _form_matches(piece_at(origin_row, origin_col, row, col), subject)
+                    for row, col, token in cells
+                ):
+                    continue
                 if all(
                     token in (".", "X") or _form_matches(piece_at(origin_row, origin_col, row, col), subject if token == "#" else token)
                     for row, col, token in cells

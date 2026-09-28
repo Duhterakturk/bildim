@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { countFences } from "../common/solvers";
 import { generate, isSimpleCycle } from "./puzzles";
 
 const SIZE = { easy: 5, medium: 5, hard: 6 };
@@ -25,6 +26,19 @@ function isFilledRectangle(keys) {
 }
 
 describe("Çit loop generator", () => {
+  it("deals 300 hard loops within 1.5 seconds, each with one solution", () => {
+    let slowest = 0;
+    for (let round = 0; round < 300; round += 1) {
+      const started = Date.now();
+      const puzzle = generate("hard");
+      const elapsed = Date.now() - started;
+      if (elapsed > slowest) slowest = elapsed;
+      expect(elapsed).toBeLessThan(1500);
+      expect(countFences(puzzle.clues)).toBe(1);
+    }
+    expect(slowest).toBeLessThan(1500);
+  }, 180000);
+
   it("builds one non-rectangular closed loop whose clues match the edges", () => {
     for (const difficulty of ["easy", "medium", "hard"]) {
       const n = SIZE[difficulty];
