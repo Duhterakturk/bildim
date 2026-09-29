@@ -24,9 +24,9 @@ export default function Register() {
     try {
       await register({
         ...form,
-        grade_level: form.grade_level ? Number(form.grade_level) : null,
+        grade_level: form.role === "student" && form.grade_level ? Number(form.grade_level) : null,
       });
-      navigate("/", { replace: true });
+      navigate("/hesabim", { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || "Kayıt tamamlanamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }
@@ -92,13 +92,16 @@ export default function Register() {
           <p className="text-xs text-slate-500 mt-1">{t("auth.reminder_help")}</p>
         </div>
 
+        <label htmlFor="account-type" className="block text-sm font-medium">{t("auth.account_type")}</label>
         <select
+          id="account-type"
           className="w-full border border-slate-200 rounded-lg px-3 py-2"
           value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          onChange={(e) => setForm({ ...form, role: e.target.value, grade_level: e.target.value === "student" ? form.grade_level : "" })}
         >
           <option value="student">{t("auth.role_student")}</option>
           <option value="teacher">{t("auth.role_teacher")}</option>
+          <option value="individual">{t("auth.role_individual")}</option>
         </select>
 
         {form.role === "student" && (

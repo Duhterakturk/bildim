@@ -46,7 +46,7 @@ export default function Board() {
           <button type="button" onClick={toggleFullscreen} className="press-btn !px-4 !py-2 text-sm">
             Tam ekran
           </button>
-          <Link to="/teacher" className="px-4 py-2 text-sm font-bold text-stone-600">
+          <Link to="/hesabim?bolum=siniflar" className="px-4 py-2 text-sm font-bold text-stone-600">
             Çık
           </Link>
         </div>

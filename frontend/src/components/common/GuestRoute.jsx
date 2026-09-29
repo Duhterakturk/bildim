@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function GuestRoute({ children }) {
   const { user, loading, connecting } = useAuth();
   const { t } = useTranslation();
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/hesabim" replace />;
   if (loading || connecting) {
     return <p role="status" className="px-4 py-10 text-center">{t("auth.connecting")}</p>;
   }

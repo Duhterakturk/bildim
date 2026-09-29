@@ -74,10 +74,12 @@ test("review screens stay readable", async ({ page }) => {
     return fulfill(route, {});
   });
 
-  await page.goto("/profil");
+  await page.goto("/hesabim");
   await expect(page.getByRole("heading", { name: "Ayse Hoca" })).toBeVisible();
-  await expect(page.getByRole("main").getByRole("link", { name: "Öğretmen Paneli" })).toBeVisible();
-  await expect(page.getByText("sertifika", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("tab", { name: "Sınıflarım" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Profil" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Panelim" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Öğretmen Paneli" })).toHaveCount(0);
 
   await page.goto("/games");
   const grade = page.getByText("Önerilen en düşük sınıf düzeyi");

@@ -9,7 +9,8 @@
     "logout": "Çıkış Yap",
     "profile": "Profil",
     "shop": "Dükkân",
-    "teacher": "Öğretmen Paneli"
+    "teacher": "Öğretmen Paneli",
+    "account": "Hesabım"
   },
   "owl": { "grew": "Baykuşunuz büyüdü!" },
   "stages": {
@@ -102,6 +103,21 @@
     "login": "Yıldızlarınızı saklamak için giriş yapınız",
     "close": "Tamam"
   },
+  "account": {
+    "play": "Oyunlara Geçin",
+    "exam": "Karışık Deneme",
+    "examHelp": "Üç oyun, on beş dakika.",
+    "classTitle": "Sınıfım",
+    "classHelp": "Sınıf kodunuz varsa buradan katılabilirsiniz. Katılmadan da oyunları oynayabilirsiniz.",
+    "progressHelp": "Tamamladığınız bulmacalar ve rozetler burada görünür.",
+    "section": {
+      "siniflar": "Sınıflarım",
+      "ilerleme": "İlerlemem",
+      "sinif": "Sınıfım",
+      "kazanimlar": "Kazanımlarım",
+      "ayarlar": "Hesap Ayarları"
+    }
+  },
   "home": {
     "title": "Bugün bir bulmaca sizi bekliyor. Hazır mısınız?"
   },
@@ -113,6 +129,8 @@
     "role_student": "Öğrenci",
     "role_parent": "Veli",
     "role_teacher": "Öğretmen",
+    "role_individual": "Bireysel",
+    "account_type": "Hesap türü",
     "grade_level": "Sınıf Seviyesi",
     "connecting": "Sunucuya bağlanılıyor...",
     "login_button": "Giriş Yap",

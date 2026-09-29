@@ -16,7 +16,7 @@ export default function Login() {
     setError(null);
     try {
       await login(form);
-      navigate("/", { replace: true });
+      navigate("/hesabim", { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || "Giriş yapılamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }

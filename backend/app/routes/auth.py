@@ -59,8 +59,11 @@ def register():
     if role == UserRole.PARENT.value:
         return jsonify({"error": "Veli hesabı kapalı. Evde öğrenci hesabı açabilirsiniz."}), 400
 
-    if role not in (UserRole.STUDENT.value, UserRole.TEACHER.value):
+    if role not in (UserRole.STUDENT.value, UserRole.TEACHER.value, UserRole.INDIVIDUAL.value):
         return jsonify({"error": "Seçilen rol geçerli değil."}), 400
+
+    if role != UserRole.STUDENT.value:
+        grade_level = None
 
     reminder = data.get("reminder") or ""
     if len(normalize_reminder(reminder)) < MIN_REMINDER_LENGTH:

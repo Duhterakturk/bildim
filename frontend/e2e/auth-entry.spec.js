@@ -30,10 +30,10 @@ for (const path of ["/register", "/login"]) {
   test(`restored session visiting ${path} goes home`, async ({ page }) => {
     await setup(page);
     await page.goto(path);
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/hesabim$/);
     await expect(page.locator('input[type="password"]')).toHaveCount(0);
     await page.reload();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/hesabim$/);
   });
 }
 
@@ -41,10 +41,10 @@ test("session restoration does not flash a registration form", async ({ page }) 
   await setup(page, { cached: false, delayed: true });
   await page.goto("/register");
   await expect(page.locator('#full-name')).toHaveCount(0);
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/hesabim$/);
 });
 
-test("guest can register and lands at home", async ({ page }) => {
+test("guest can register and lands on their account", async ({ page }) => {
   await setup(page, { signedIn: false });
   await page.goto("/register");
   await expect(page.locator('#full-name')).toHaveAttribute("autocomplete", "name");
@@ -53,21 +53,21 @@ test("guest can register and lands at home", async ({ page }) => {
   await page.locator('#password').fill("Example1234");
   await page.locator('#reminder').fill("school");
   await page.getByRole("button", { name: "Kayıt Ol", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/hesabim$/);
 });
 
-test("guest login lands at home", async ({ page }) => {
+test("guest login lands on their account", async ({ page }) => {
   await setup(page, { signedIn: false });
   await page.goto("/login");
   await page.getByLabel("E-posta", { exact: true }).fill("teacher@example.com");
   await page.getByLabel("Şifre", { exact: true }).fill("Example1234");
   await page.getByRole("button", { name: "Giriş Yap", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/hesabim$/);
 });
 
 test("profile name edit persists through reload", async ({ page }, testInfo) => {
   await setup(page);
-  await page.goto("/profil");
+  await page.goto("/hesabim?bolum=ayarlar");
   await page.getByLabel("Ad Soyad", { exact: true }).fill("Deniz Kaya");
   await page.getByRole("button", { name: "Değişiklikleri Kaydet", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Deniz Kaya", exact: true })).toBeVisible();

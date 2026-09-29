@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/layout/Navbar";
@@ -10,7 +10,6 @@ import BoardTheme from "./components/owl/BoardTheme";
 import TrialBar from "./components/shop/TrialBar";
 import { PhotoBackdrop } from "./components/shop/ThemeScene";
 import Shop from "./pages/Shop";
-import Profile from "./pages/Profile";
 
 import Home from "./pages/Home";
 import Games from "./pages/Games";
@@ -19,10 +18,18 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
-import Dashboard from "./pages/Dashboard";
 import Exam from "./pages/Exam";
-import TeacherPanel from "./pages/TeacherPanel";
 import Board from "./pages/Board";
+import Account, { sectionsFor } from "./pages/Account";
+
+function LegacyAccount({ section }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const allowed = sectionsFor(user?.role);
+  params.set("bolum", allowed.includes(section) ? section : allowed[0]);
+  return <Navigate to={{ pathname: "/hesabim", search: `?${params.toString()}` }} replace />;
+}
 
 function Shell() {
   const { t } = useTranslation();
@@ -46,7 +53,8 @@ function Shell() {
           <Route path="/games" element={<Games />} />
           <Route path="/games/:slug" element={<GamePage />} />
           <Route path="/dukkan" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
-          <Route path="/profil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/hesabim" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+          <Route path="/profil" element={<ProtectedRoute><LegacyAccount section="kazanimlar" /></ProtectedRoute>} />
           <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
           <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
           <Route path="/forgot" element={<Forgot />} />
@@ -59,14 +67,7 @@ function Shell() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<ProtectedRoute><LegacyAccount /></ProtectedRoute>} />
           <Route
             path="/board/:slug"
             element={
@@ -75,14 +76,7 @@ function Shell() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/teacher"
-            element={
-              <ProtectedRoute role="teacher">
-                <TeacherPanel />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/teacher" element={<ProtectedRoute><LegacyAccount section="siniflar" /></ProtectedRoute>} />
         </Routes>
       </main>
       {!onBoard && <BadgeToastHost />}

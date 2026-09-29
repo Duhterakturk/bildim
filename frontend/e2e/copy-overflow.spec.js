@@ -65,7 +65,7 @@ test("register, profile, teacher, and game messages stay inside the screen", asy
     return fulfill(route, {});
   });
 
-  await page.goto("/profil");
+  await page.goto("/hesabim?bolum=ayarlar");
   await expect(page.getByRole("heading", { name: "Profil adınızı düzenleyin" })).toBeVisible();
   await expect(page.getByText("Lütfen bu alana şifrenizi yazmayınız.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Değişiklikleri Kaydet" })).toBeVisible();
@@ -74,7 +74,8 @@ test("register, profile, teacher, and game messages stay inside the screen", asy
   expect(profile.pageOverflow, profile.clipped.join(" | ")).toBe(false);
 
   await page.goto("/teacher");
-  await expect(page.getByRole("heading", { name: "Öğretmen Paneli" })).toBeVisible();
+  await expect(page).toHaveURL(/bolum=siniflar/);
+  await expect(page.getByRole("tab", { name: "Sınıflarım" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Sınıfı Oluşturun" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Notu Kopyalayın" })).toBeVisible();
   await page.screenshot({ path: `test-results/copy-teacher-${tag}.png`, fullPage: true });

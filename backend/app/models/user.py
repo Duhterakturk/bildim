@@ -11,6 +11,7 @@ class UserRole(str, enum.Enum):
     STUDENT = "student"
     PARENT = "parent"
     TEACHER = "teacher"
+    INDIVIDUAL = "individual"
 
 
 class User(db.Model):

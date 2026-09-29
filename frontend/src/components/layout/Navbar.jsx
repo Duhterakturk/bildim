@@ -44,20 +44,12 @@ export default function Navbar() {
 
       {user ? (
         <>
-          <Link to="/profil" className={linkClass} onClick={() => setMenuOpen(false)}>
-            {t("nav.profile")}
-          </Link>
           <Link to="/dukkan" className={linkClass} onClick={() => setMenuOpen(false)}>
             {t("nav.shop")}
           </Link>
-          <Link to="/dashboard" className={linkClass} onClick={() => setMenuOpen(false)}>
-            {t("nav.dashboard")}
+          <Link to="/hesabim" className={linkClass} onClick={() => setMenuOpen(false)}>
+            {t("nav.account")}
           </Link>
-          {user.role === "teacher" && (
-            <Link to="/teacher" className={linkClass} onClick={() => setMenuOpen(false)}>
-              Öğretmen Paneli
-            </Link>
-          )}
           <button onClick={handleLogout} className={`${linkClass} w-full text-left sm:w-auto`}>
             {t("nav.logout")}
           </button>
@@ -93,30 +85,29 @@ export default function Navbar() {
           {t("app.name")}
         </Link>
 
-        {/* sm ve üzeri: yatay bağlantı satırı */}
-        <div className="hidden sm:flex items-center gap-4 text-sm font-medium">
-          {user && <span data-testid="star-balance">⭐ {starBalance}</span>}
-          {links}
+        <div className="flex items-center gap-3">
+          {user && <span data-testid="star-balance" className="text-sm font-medium">⭐ {starBalance}</span>}
+          <div className="hidden sm:flex items-center gap-4 text-sm font-medium">
+            {links}
+          </div>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Menüyü açın veya kapatın"
+            aria-expanded={menuOpen}
+            className="sm:hidden p-2 -mr-2 text-inherit"
+          >
+            {menuOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
-
-        {/* sm altı: hamburger düğmesi */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Menüyü açın veya kapatın"
-          aria-expanded={menuOpen}
-          className="sm:hidden p-2 -mr-2 text-inherit"
-        >
-          {menuOpen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
       </div>
 
       {/* sm altı: açılır menü paneli */}

@@ -9,7 +9,8 @@
     "logout": "Log Out",
     "profile": "Profile",
     "shop": "Shop",
-    "teacher": "Teacher panel"
+    "teacher": "Teacher panel",
+    "account": "My account"
   },
   "owl": { "grew": "Your owl grew!" },
   "stages": {
@@ -102,6 +103,21 @@
     "login": "Log in to keep your stars",
     "close": "OK"
   },
+  "account": {
+    "play": "Go to Games",
+    "exam": "Mixed practice",
+    "examHelp": "Three games, fifteen minutes.",
+    "classTitle": "My class",
+    "classHelp": "If you have a class code, you can join here. You can also play without joining.",
+    "progressHelp": "Finished puzzles and badges appear here.",
+    "section": {
+      "siniflar": "My classes",
+      "ilerleme": "My progress",
+      "sinif": "My class",
+      "kazanimlar": "My achievements",
+      "ayarlar": "Account settings"
+    }
+  },
   "home": {
     "title": "A puzzle is waiting for you today. Ready?"
   },
@@ -113,6 +129,8 @@
     "role_student": "Student",
     "role_parent": "Parent",
     "role_teacher": "Teacher",
+    "role_individual": "Individual",
+    "account_type": "Account type",
     "grade_level": "Grade Level",
     "connecting": "Connecting to the server...",
     "login_button": "Log In",

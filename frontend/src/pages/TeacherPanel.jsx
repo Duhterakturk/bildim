@@ -102,7 +102,7 @@ function StudentPassword({ classroomId, student }) {
   );
 }
 
-export default function TeacherPanel() {
+export default function TeacherPanel({ embedded = false }) {
   const { t } = useTranslation();
   const [classrooms, setClassrooms] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -124,7 +124,7 @@ Katılmak isterseniz aşağıdaki adımları takip edebilirsiniz:
 1. Paylaşacağım adres üzerinden öğrenci olarak kayıt olabilirsiniz: ${registerUrl}
 2. Kayıt sırasında bir şifre belirlemeniz yeterlidir.
 3. Şifrenin unutulması durumunda, belirlediğiniz hatırlatma kelimesini kullanarak yeni bir şifre oluşturabilirsiniz.
-4. Kayıt işlemi tamamlandıktan sonra, paylaşacağım sınıf kodunu “Panelim” sayfasına girerek sınıfa katılabilirsiniz.
+4. Kayıt işlemi tamamlandıktan sonra, paylaşacağım sınıf kodunu “Hesabım” sayfasına girerek sınıfa katılabilirsiniz.
 
 Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil olabilirler.`;
 
@@ -145,8 +145,9 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
   function loadClassrooms() {
     fetchMyClassrooms()
       .then((data) => {
-        setClassrooms(data);
-        if (data.length > 0) setSelectedId((prev) => prev || data[0].id);
+        const rows = Array.isArray(data) ? data : [];
+        setClassrooms(rows);
+        if (rows.length > 0) setSelectedId((prev) => prev || rows[0].id);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -176,14 +177,13 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
     }
   }
 
-  if (loading) return <div className="max-w-4xl mx-auto px-4 py-10 text-slate-500">Yükleniyor...</div>;
+  if (loading) return <div className={embedded ? "text-slate-500" : "max-w-4xl mx-auto px-4 py-10 text-slate-500"}>Yükleniyor...</div>;
 
   const selectedClassroom = classrooms.find((c) => c.id === selectedId);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-2">Öğretmen Paneli</h1>
-      <p className="text-slate-600 mb-8">
+    <div className={embedded ? "" : "max-w-4xl mx-auto px-4 py-10"}>
+      <p className="mb-8 rounded-xl bg-white/95 px-4 py-3 text-slate-700">
         Sınıflarınız burada listelenir. Katılım kodunu paylaştığınızda öğrenciler kendiliğinden görünür.
       </p>
 
@@ -209,7 +209,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
               Şifrenin unutulması durumunda, belirlediğiniz <strong>hatırlatma kelimesini</strong> kullanarak yeni bir şifre oluşturabilirsiniz.
             </li>
             <li>
-              Kayıt işlemi tamamlandıktan sonra, paylaşacağım <strong>sınıf kodunu “Panelim” sayfasına</strong> girerek sınıfa katılabilirsiniz.
+              Kayıt işlemi tamamlandıktan sonra, paylaşacağım <strong>sınıf kodunu “Hesabım” sayfasına</strong> girerek sınıfa katılabilirsiniz.
             </li>
           </ol>
           <p>Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil olabilirler.</p>
@@ -225,18 +225,18 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
 
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
         <h2 className="text-lg font-semibold mb-3">Yeni Sınıf Oluştur</h2>
-        <form onSubmit={handleCreateClassroom} className="flex gap-2">
+        <form onSubmit={handleCreateClassroom} className="flex flex-wrap gap-2">
           <input
             type="text"
             required
             placeholder="Örn. 3-A Sınıfı"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm"
+            className="min-w-[12rem] flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm"
           />
           <button
             type="submit"
-            className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 text-sm"
+            className="shrink-0 bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 text-sm"
           >
             Sınıfı Oluşturun
           </button>
@@ -277,7 +277,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
               <span className="font-mono font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
                 {selectedClassroom.join_code}
               </span>{" "}
-              — öğrenciler bu kodu Panelim sayfasından girebilir.
+              — öğrenciler bu kodu Hesabım sayfasından girebilir.
             </p>
           )}
 

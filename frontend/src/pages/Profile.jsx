@@ -1,34 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import Owl from "../components/owl/Owl";
 import { chooseTitle, fetchProfile } from "../api/shop";
 import { downloadCertificate, fetchMyCertificates } from "../api/certificates";
-import NameCard from "../components/auth/NameCard";
-
-export default function Profile() {
+export default function Profile({ embedded = false }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [certs, setCerts] = useState([]);
 
   useEffect(() => {
-    if (user?.role === "teacher") return undefined;
     fetchProfile().then(setProfile).catch(() => {});
     fetchMyCertificates().then(setCerts).catch(() => {});
-    return undefined;
-  }, [user]);
-
-  if (user?.role === "teacher") {
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="scene-label text-2xl font-bold">{user.full_name}</h1>
-        <NameCard />
-        <Link to="/teacher" className="mt-4 inline-block font-semibold text-inherit underline">{t("nav.teacher")}</Link>
-      </div>
-    );
-  }
+  }, []);
 
   if (!profile) return <p className="px-4 py-10 text-slate-400">{t("shop.loading")}</p>;
 
@@ -38,7 +23,7 @@ export default function Profile() {
     : 100;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className={embedded ? "" : "max-w-3xl mx-auto px-4 py-8"}>
       <div className="bg-white text-slate-900 rounded-2xl p-6 text-center">
         <Owl stage={profile.stage} className="w-48 mx-auto" />
         <p className="mt-2 font-semibold" data-testid="collection-progress">
@@ -64,7 +49,6 @@ export default function Profile() {
         </div>
       </div>
 
-      <NameCard />
       <section className="bg-white text-slate-900 rounded-2xl p-6 mt-4">
         <h2 className="font-semibold mb-3">{t("profile.titles")}</h2>
         {profile.titles.length === 0 ? (
