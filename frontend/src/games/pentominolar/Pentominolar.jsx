@@ -8,6 +8,7 @@ import { useApplyCellHint } from "../common/cellHint";
 import { PuzzlePending, useIssuedPuzzle } from "../common/useIssuedPuzzle";
 import { PENTOMINOES, orient, placementAt, poseMatching } from "./shapes";
 import { useStartingDifficulty } from "../common/useStartingDifficulty";
+import { boardClosed } from "../common/workState";
 
 const PIECE_COLOR = ["bg-brand-500", "bg-amber-500", "bg-emerald-500", "bg-rose-500"];
 
@@ -56,7 +57,7 @@ export default function Pentominolar() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const regionSet = new Set(region);
 
@@ -101,7 +102,7 @@ export default function Pentominolar() {
   }
 
   function place(r, c) {
-    if (status === "correct") return;
+    if (boardClosed(status, savePhase)) return;
     const existing = cellPiece(r, c);
     if (existing) {
       setPlacements((prev) => prev.filter((piece) => piece.name !== existing.name));
@@ -262,12 +263,12 @@ export default function Pentominolar() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(placementAnswer())} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

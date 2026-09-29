@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { cellsDiffer, notesPresent } from "../common/workState";
+import { boardClosed, cellsDiffer, notesPresent } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -39,7 +39,7 @@ export default function Kakuro() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const [renderedPuzzle, setRenderedPuzzle] = useState(null);
   let displayBoard = board;
@@ -82,7 +82,7 @@ export default function Kakuro() {
   }
 
   function handleCellChange(row, col, value) {
-    if (status === "correct" || grid[row][col].given) return;
+    if (boardClosed(status, savePhase) || grid[row][col].given) return;
     const digit = value.replace(/[^1-9]/g, "").slice(-1);
     if (notesMode) {
       if (!digit) return;
@@ -166,7 +166,7 @@ export default function Kakuro() {
                   aria-label={`${r + 1}-${c + 1}`}
                   value={displayBoard[r][c] || ""}
                   onChange={(e) => handleCellChange(r, c, e.target.value)}
-                  readOnly={status === "correct" || Boolean(item.given)}
+                  readOnly={boardClosed(status, savePhase) || Boolean(item.given)}
                   inputMode="numeric"
                   className={[
                     "relative z-10 h-full w-full border border-slate-300 bg-transparent text-center text-base font-semibold text-[var(--ink,#1e1a16)] focus:outline-none focus:bg-brand-100",
@@ -207,12 +207,12 @@ export default function Kakuro() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrectCells}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(answerGrid())} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

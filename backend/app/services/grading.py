@@ -2,8 +2,29 @@
 
 import math
 
+_GRADE_CODES = {
+    "Çözüm kurallara uymuyor": "grade_rules",
+    "Çözüm eksik": "grade_incomplete",
+    "Verilen rakam değiştirilmiş": "grade_given",
+    "Verilen sayı değişmiş": "grade_given",
+    "Izgara boyutu uyuşmuyor": "grade_shape",
+    "Bulmaca eksik": "grade_puzzle",
+    "Sayı geçersiz": "grade_value",
+    "Sayı tekrar ediyor": "grade_repeat",
+    "İpucu sayısı bu zorluğa uymuyor": "grade_hints",
+    "İpucu geçersiz": "grade_hints",
+    "Süre gerekli": "grade_duration",
+    "Süre geçersiz": "grade_duration",
+    "Zorluk geçersiz": "grade_difficulty",
+    "Bu oyun skorlanamıyor": "grade_game",
+    "Bulmaca çok belirsiz": "grade_ambiguous",
+}
+
+
 class GradeError(ValueError):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
+        self.code = _GRADE_CODES.get(message, "grade_rejected")
 
 
 class _Budget:

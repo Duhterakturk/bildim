@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { edgesMarked } from "../common/workState";
+import { boardClosed, edgesMarked } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -38,7 +38,7 @@ export default function Cit() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const [renderedPuzzle, setRenderedPuzzle] = useState(null);
   let displayHEdges = hEdges;
@@ -81,13 +81,13 @@ export default function Cit() {
   }
 
   function toggleH(r, c) {
-    if (status === "correct") return;
+    if (boardClosed(status, savePhase)) return;
     setHEdges((prev) => prev.map((row, ri) => row.map((v, ci) => (ri === r && ci === c ? nextEdgeState(v) : v))));
     setStatus("playing");
   }
 
   function toggleV(r, c) {
-    if (status === "correct") return;
+    if (boardClosed(status, savePhase)) return;
     setVEdges((prev) => prev.map((row, ri) => row.map((v, ci) => (ri === r && ci === c ? nextEdgeState(v) : v))));
     setStatus("playing");
   }
@@ -205,12 +205,12 @@ export default function Cit() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(answerEdges())} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

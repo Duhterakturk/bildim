@@ -9,6 +9,7 @@ import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
 import { PuzzlePending, useIssuedPuzzle } from "../common/useIssuedPuzzle";
 import { useStartingDifficulty } from "../common/useStartingDifficulty";
+import { boardClosed } from "../common/workState";
 import { edgeKey } from "./puzzles";
 
 function adjacent(a, b) {
@@ -30,7 +31,7 @@ export default function Patika() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
   const drag = useRef(null);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function Patika() {
   }
 
   function toggle(edge) {
-    if (status === "correct" || status === "submitted") return;
+    if (boardClosed(status, savePhase)) return;
     setEdges((prev) => {
       const next = new Set(prev);
       if (next.has(edge)) next.delete(edge);
@@ -70,7 +71,7 @@ export default function Patika() {
 
   function addEdge(a, b) {
     if (!white(a) || !white(b) || !adjacent(a, b)) return;
-    if (status === "correct" || status === "submitted") return;
+    if (boardClosed(status, savePhase)) return;
     setEdges((prev) => new Set(prev).add(edgeKey(a, b)));
     setStatus("playing");
   }
@@ -177,12 +178,12 @@ export default function Patika() {
           </>
         )}
       </div>
-      {status === "correct" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save({ edges: [...edges] })} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

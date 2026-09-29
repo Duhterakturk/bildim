@@ -86,7 +86,7 @@ test("fill, notes, and a saved kakuro keep or drop work on purpose", async ({ pa
   await expect(input).toHaveValue("4");
 
   await page.getByRole("button", { name: "Kontrol Et" }).click();
-  await expect(page.getByText("Kaydediliyor...")).toBeVisible();
+  await expect(page.getByText("Skorunuz kaydediliyor…")).toBeVisible();
   await expect(page.getByRole("button", { name: "Yeni Bulmaca" })).toBeDisabled();
   releaseScore();
   await expect(page.getByText("Skor kaydedildi.")).toBeVisible();

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  boardClosed,
   cellsDiffer,
   discardDecision,
   edgesMarked,
@@ -41,9 +42,29 @@ describe("discard decision", () => {
     expect(discardDecision({ hasWork: true, solved: false, savePhase: "idle" })).toBe("ask");
   });
 
-  it("does not replace the board while a score save can still finish", () => {
+  it("holds the board until a failed save is released, then asks once", () => {
     expect(discardDecision({ hasWork: true, solved: true, savePhase: "saving" })).toBe("blocked");
     expect(discardDecision({ hasWork: true, solved: true, savePhase: "offline" })).toBe("blocked");
     expect(discardDecision({ hasWork: false, solved: false, savePhase: "rejected" })).toBe("blocked");
+    expect(discardDecision({ hasWork: true, solved: true, savePhase: "missing" })).toBe("blocked");
+    expect(discardDecision({ hasWork: true, solved: true, savePhase: "released" })).toBe("ask");
+    expect(discardDecision({ hasWork: false, solved: false, savePhase: "released" })).toBe("allow");
+    expect(discardDecision({ hasWork: true, solved: true, savePhase: "already" })).toBe("allow");
+    expect(discardDecision({ hasWork: true, solved: true, savePhase: "saved" })).toBe("allow");
+    expect(discardDecision({ hasWork: true, solved: true, savePhase: "session" })).toBe("allow");
+  });
+});
+
+describe("board closed only while the recorded solution still stands", () => {
+  it("opens the board after a rejection or a release, and keeps it shut while saving", () => {
+    expect(boardClosed("correct", "saving")).toBe(true);
+    expect(boardClosed("correct", "saved")).toBe(true);
+    expect(boardClosed("correct", "offline")).toBe(true);
+    expect(boardClosed("correct", "already")).toBe(true);
+    expect(boardClosed("correct", "rejected")).toBe(false);
+    expect(boardClosed("correct", "released")).toBe(false);
+    expect(boardClosed("correct", "missing")).toBe(false);
+    expect(boardClosed("playing", "rejected")).toBe(false);
+    expect(boardClosed("submitted", "rejected")).toBe(true);
   });
 });

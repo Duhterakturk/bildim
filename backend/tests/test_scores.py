@@ -25,6 +25,7 @@ def test_submit_score_unknown_attempt_returns_404(client, student):
         headers=auth_headers(student["token"]),
     )
     assert resp.status_code == 404
+    assert resp.get_json()["code"] == "puzzle_missing"
 
 
 def test_my_scores_filters_by_user(client, student, app):
@@ -79,3 +80,15 @@ def test_same_attempt_cannot_score_twice(client, student, app):
     assert first.status_code == 201
     assert first.get_json()["score"]["completed"] is False
     assert second.status_code == 409
+    assert second.get_json()["code"] == "score_already"
+    listed = client.get("/api/scores/me", headers=auth)
+    assert len(listed.get_json()) == 1
+
+
+def test_rejected_answer_returns_a_grade_code(client, student, app):
+    auth = auth_headers(student["token"])
+    resp = post_score(client, auth, 1, app, answer={"board": []})
+    assert resp.status_code == 400
+    body = resp.get_json()
+    assert body["error"]
+    assert body["code"].startswith("grade_")

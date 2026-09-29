@@ -39,11 +39,22 @@ export function pathsDrawn(paths) {
 /**
  * allow: işlem hemen yapılır.
  * ask: onay gerekir.
- * blocked: skor kaydı sürüyor veya yeniden denenebilir; tahta değiştirilmez.
+ * blocked: kayıt sürüyor ya da başarısız kayıt henüz bırakılmadı; tahta değiştirilmez.
+ * released: oyuncu kaydı doğrulamadan devam etti. Çözüm durur; silen işlem bir kez sorar.
  */
 export function discardDecision({ hasWork, solved, savePhase }) {
-  if (savePhase === "saving" || savePhase === "offline" || savePhase === "rejected") return "blocked";
+  if (savePhase === "saving" || savePhase === "offline" || savePhase === "rejected" || savePhase === "missing") {
+    return "blocked";
+  }
+  if (savePhase === "released" && (solved || hasWork)) return "ask";
   if (solved) return "allow";
   if (!hasWork) return "allow";
   return "ask";
+}
+
+/** Sunucu çözümü reddettiyse veya oyuncu kaydı bıraktıysa tahta yeniden yazılabilir. */
+export function boardClosed(status, savePhase) {
+  if (status === "submitted") return true;
+  if (status !== "correct") return false;
+  return savePhase !== "rejected" && savePhase !== "released" && savePhase !== "missing";
 }

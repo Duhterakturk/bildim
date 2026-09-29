@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { cellsDiffer, notesPresent } from "../common/workState";
+import { boardClosed, cellsDiffer, notesPresent } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -36,7 +36,7 @@ export default function Apartman() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   useEffect(() => {
     if (!puzzle) return;
@@ -69,7 +69,7 @@ export default function Apartman() {
   }
 
   function handleCellChange(row, col, value) {
-    if (givenMask[row][col] || status === "correct") return;
+    if (givenMask[row][col] || boardClosed(status, savePhase)) return;
     const re = new RegExp(`[^1-${maxDigit}]`, "g");
     const digit = value.replace(re, "").slice(-1);
     if (notesMode) {
@@ -137,7 +137,7 @@ export default function Apartman() {
                 <input
                   value={val || ""}
                   onChange={(e) => handleCellChange(r, c, e.target.value)}
-                  readOnly={givenMask[r][c] || status === "correct"}
+                  readOnly={givenMask[r][c] || boardClosed(status, savePhase)}
                   className={[
                     "board-cell w-12 h-12 relative z-10 text-center text-lg border border-slate-300 focus:outline-none focus:bg-brand-100",
                     givenMask[r][c] ? "font-bold" : "",
@@ -183,12 +183,12 @@ export default function Apartman() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrectCells}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(board)} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

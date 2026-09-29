@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { pyramidMarked } from "../common/workState";
+import { boardClosed, pyramidMarked } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -27,7 +27,7 @@ export default function SihirliPiramit() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const [renderedRows, setRenderedRows] = useState(null);
   let displayMarks = marks;
@@ -69,7 +69,7 @@ export default function SihirliPiramit() {
   }
 
   function choose(row, col) {
-    if (!displayMarks || status === "correct" || row === 0) return;
+    if (!displayMarks || boardClosed(status, savePhase) || row === 0) return;
     const next = [...displayMarks];
     next[row] = next[row] === col ? null : col;
     setMarks(next);
@@ -152,12 +152,12 @@ export default function SihirliPiramit() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrectCells}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save({ path: displayMarks })} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

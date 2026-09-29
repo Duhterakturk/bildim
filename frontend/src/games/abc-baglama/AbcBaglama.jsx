@@ -5,7 +5,7 @@ import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { pathsDrawn } from "../common/workState";
+import { boardClosed, pathsDrawn } from "../common/workState";
 import { useApplyCellHint } from "../common/cellHint";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -162,7 +162,7 @@ export default function AbcBaglama() {
   const [cell, setCell] = useState(44);
   const [ink, setInk] = useState(null);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
   const drag = useRef(null);
   const pointer = useRef(null);
   const pathsRef = useRef(paths);
@@ -383,7 +383,7 @@ export default function AbcBaglama() {
   }
 
   function onPointerDown(event, key) {
-    if (status === "correct" || status === "submitted") return;
+    if (boardClosed(status, savePhase)) return;
     event.preventDefault();
     boardRef.current?.setPointerCapture?.(event.pointerId);
     const letterHere = fixed[key];
@@ -643,9 +643,9 @@ export default function AbcBaglama() {
           </>
         )}
       </div>
-      {note && <p className={`mt-3 ${status === "correct" ? "text-emerald-600" : "text-red-500"}`}>{note}</p>}
+      {note && savePhase !== "rejected" && savePhase !== "missing" && <p className={`mt-3 ${status === "correct" ? "text-emerald-600" : "text-red-500"}`}>{note}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save({ paths })} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

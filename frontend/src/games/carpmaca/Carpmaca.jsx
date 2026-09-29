@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { cellsDiffer } from "../common/workState";
+import { boardClosed, cellsDiffer } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -31,7 +31,7 @@ export default function Carpmaca() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const [renderedGame, setRenderedGame] = useState(null);
   let displayBoard = board;
@@ -67,7 +67,7 @@ export default function Carpmaca() {
   }
 
   function handleCellChange(row, col, value) {
-    if (givenMask[row][col] || status === "correct") return;
+    if (givenMask[row][col] || boardClosed(status, savePhase)) return;
     const digits = value.replace(/[^0-9]/g, "").slice(0, 3);
     const next = cloneBoard(displayBoard);
     next[row][col] = digits ? Number(digits) : 0;
@@ -120,7 +120,7 @@ export default function Carpmaca() {
                 key={`${r}-${c}`}
                 value={val || ""}
                 onChange={(e) => handleCellChange(r, c, e.target.value)}
-                readOnly={givenMask[r][c] || status === "correct"}
+                readOnly={givenMask[r][c] || boardClosed(status, savePhase)}
                 className={[
                   "w-12 h-12 text-center text-lg border border-slate-300 focus:outline-none focus:bg-brand-100",
                   givenMask[r][c] ? "bg-slate-100 font-bold text-slate-700" : "bg-white",
@@ -150,12 +150,12 @@ export default function Carpmaca() {
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrectCells}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(displayBoard)} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

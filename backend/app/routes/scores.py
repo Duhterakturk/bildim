@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.api_error import fail
 from app.extensions import db
 from app.models import Score, Game, PuzzleAttempt, User, UserRole, Classroom
 from app.services.badges import check_and_award_badges
@@ -26,9 +27,9 @@ def submit_score():
 
     attempt = db.session.get(PuzzleAttempt, data.get("attempt_id"))
     if attempt is None or attempt.user_id != user_id:
-        return jsonify({"error": "Bulmaca bulunamadı"}), 404
+        return fail("puzzle_missing", "Bulmaca bulunamadı", 404)
     if attempt.consumed_at is not None:
-        return jsonify({"error": "Bu bulmacanın skoru zaten yazıldı"}), 409
+        return fail("score_already", "Bu bulmacanın skoru zaten yazıldı", 409)
 
     game = attempt.game
     duration = _elapsed(attempt.started_at)
@@ -45,7 +46,7 @@ def submit_score():
         try:
             points, duration = grade(game.slug, attempt.difficulty, attempt.proof_puzzle, data.get("answer"), duration)
         except GradeError as exc:
-            return jsonify({"error": str(exc)}), 400
+            return fail(exc.code, str(exc), 400)
         score = Score(
             user_id=user_id,
             game_id=game.id,

@@ -9,6 +9,7 @@ import { useGameText } from "./gameText";
 import { applyMarkCycle } from "./markCycle";
 import { pathArms } from "./pathValidation";
 import { usePlayCopy } from "./playCopy";
+import { boardClosed } from "./workState";
 
 const REGION_BG = [
   "bg-amber-200",
@@ -104,7 +105,7 @@ export default function ToggleGridGame({
   const timerRef = useRef(null);
   const doneSig = useRef("");
   const checking = useRef(false);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   function currentAnswer() {
     return answerFrom ? answerFrom(marked) : { cells: [...marked] };
@@ -148,7 +149,7 @@ export default function ToggleGridGame({
 
   function toggleCell(r, c) {
     const key = `${r}-${c}`;
-    if (fixedCells[key] !== undefined || status === "correct") return;
+    if (fixedCells[key] !== undefined || boardClosed(status, savePhase)) return;
     if (allowCross) {
       const next = applyMarkCycle(marked, crossed, key);
       setMarked(next.marked);
@@ -402,12 +403,12 @@ export default function ToggleGridGame({
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(currentAnswer())} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

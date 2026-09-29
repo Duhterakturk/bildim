@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "./useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "./ClearBoardButton";
-import { cellsDiffer, notesPresent } from "./workState";
+import { boardClosed, cellsDiffer, notesPresent } from "./workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint, writeFill } from "./cellHint";
 import { useGameText } from "./gameText";
@@ -49,7 +49,7 @@ export default function GridFillGame({
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   const [renderedPuzzle, setRenderedPuzzle] = useState(puzzle);
   let displayBoard = board;
@@ -87,7 +87,7 @@ export default function GridFillGame({
   }
 
   function handleCellChange(row, col, value) {
-    if (givenMask[row][col] || status === "correct") return;
+    if (givenMask[row][col] || boardClosed(status, savePhase)) return;
     const re = new RegExp(`[^1-${maxDigit}]`, "g");
     const digit = value.replace(re, "").slice(-1);
     if (notesMode) {
@@ -162,7 +162,7 @@ export default function GridFillGame({
               <input
                 value={val || ""}
                 onChange={(e) => handleCellChange(r, c, e.target.value)}
-                readOnly={givenMask[r][c] || status === "correct"}
+                readOnly={givenMask[r][c] || boardClosed(status, savePhase)}
                 className={[
                   cellSize,
                   "relative z-10 bg-transparent text-center border border-slate-300 focus:outline-none focus:bg-brand-100 text-[var(--ink,#1e1a16)]",
@@ -208,12 +208,12 @@ export default function GridFillGame({
         )}
       </div>
 
-      {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrectCells}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(displayBoard)} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }

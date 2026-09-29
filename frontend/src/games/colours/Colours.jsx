@@ -3,7 +3,7 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
-import { anyFilled } from "../common/workState";
+import { anyFilled, boardClosed } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint } from "../common/cellHint";
 import { useGameText } from "../common/gameText";
@@ -104,7 +104,7 @@ export default function Colours() {
   const [status, setStatus] = useState("playing");
   const [seconds, setSeconds] = useState(0);
   const timerRef = useRef(null);
-  const { phase: savePhase, save } = useAutoScore(attemptId);
+  const { phase: savePhase, code: saveCode, busy: saveBusy, save, retry: retryScore, release: releaseScore } = useAutoScore(attemptId);
 
   useEffect(() => {
     if (!attemptId) return undefined;
@@ -141,7 +141,7 @@ export default function Colours() {
   }
 
   function place(row, col) {
-    if (status === "correct" || status === "submitted") return;
+    if (boardClosed(status, savePhase)) return;
     const next = board.map((line) => line.slice());
     const current = next[row][col];
     if (!selected) {
@@ -246,12 +246,12 @@ export default function Colours() {
           </>
         )}
       </div>
-      {status === "correct" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
+      {status === "correct" && savePhase !== "rejected" && savePhase !== "missing" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}
       {status === "rejected" && <p className="text-red-500 mt-3">{play.rejected}</p>}
       {status === "already" && <p className="text-red-500 mt-3">{play.already}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}
-      <ScoreNotice phase={savePhase} onRetry={() => save(board)} />
+      <ScoreNotice phase={savePhase} code={saveCode} busy={saveBusy} onRetry={retryScore} onRelease={releaseScore} />
     </div>
   );
 }
