@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { hintFor } from "../../games/hints";
 
@@ -6,6 +6,23 @@ export default function HowTo({ slug, size, className = "" }) {
   const { t, i18n } = useTranslation();
   const tr = !i18n.language.startsWith("en");
   const [open, setOpen] = useState(false);
+  const opener = useRef(null);
+  const dialog = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const previous = document.activeElement;
+    dialog.current?.focus();
+    function onKey(event) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (previous && previous.focus) previous.focus();
+      else opener.current?.focus();
+    };
+  }, [open]);
   const copy = hintFor(slug, tr ? "tr" : "en");
   const known = Number.isInteger(size) && size > 0;
   const openEnded = !known && (slug === "kendoku" || slug === "futoshiki");
@@ -15,6 +32,7 @@ export default function HowTo({ slug, size, className = "" }) {
     <>
       <button
         type="button"
+        ref={opener}
         className={`how-mark ${className}`}
         aria-label={t("games.how")}
         onClick={(event) => {
@@ -32,9 +50,12 @@ export default function HowTo({ slug, size, className = "" }) {
         >
           <div className="absolute inset-0 bg-black/55" />
           <div
+            ref={dialog}
+            tabIndex={-1}
             className="relative w-full max-w-md rounded-2xl bg-[#fffdf8] p-5 text-ink"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
+            aria-modal="true"
             aria-label={t("games.how")}
           >
             <div className="flex items-start justify-between gap-3">

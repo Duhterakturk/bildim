@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { changePassword, saveReminder } from "../../api/auth";
 import { useAuth } from "../../context/AuthContext";
+import { btnPrimary, btnSecondary } from "../common/buttons";
 
 export default function PasswordCard() {
   const { t } = useTranslation();
@@ -48,29 +49,32 @@ export default function PasswordCard() {
     <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
       <h2 className="text-lg font-semibold mb-4">{t("auth.change_password")}</h2>
       <form onSubmit={handleSubmit} className="space-y-3 max-w-sm">
+        <label htmlFor="current-password" className="block text-sm font-medium">{t("auth.current_password")}</label>
         <input
+          id="current-password"
           type="password"
+          autoComplete="current-password"
           placeholder={t("auth.current_password")}
           required
-          className="w-full border border-slate-200 rounded-lg px-3 py-2"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 min-h-[44px]"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
+        <label htmlFor="new-password" className="block text-sm font-medium">{t("auth.new_password")}</label>
         <input
+          id="new-password"
           type="password"
+          autoComplete="new-password"
           placeholder={t("auth.new_password")}
           required
           minLength={8}
-          className="w-full border border-slate-200 rounded-lg px-3 py-2"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 min-h-[44px]"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {message && <p className="text-sm text-slate-700">{message}</p>}
-        <button
-          type="submit"
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600"
-        >
+        {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
+        {message && <p role="status" className="text-sm text-slate-700">{message}</p>}
+        <button type="submit" className={btnPrimary}>
           {t("auth.save_password")}
         </button>
       </form>
@@ -78,30 +82,32 @@ export default function PasswordCard() {
       <form onSubmit={handleReminder} className="space-y-3 max-w-sm mt-6 pt-6 border-t border-slate-100">
         <h3 className="font-semibold">{t("auth.reminder_label")}</h3>
         <p className="text-sm text-slate-500">{t("auth.reminder_help")}</p>
+        <label htmlFor="reminder-password" className="block text-sm font-medium">{t("auth.current_password")}</label>
         <input
+          id="reminder-password"
           type="password"
+          autoComplete="current-password"
           placeholder={t("auth.current_password")}
           required
-          className="w-full border border-slate-200 rounded-lg px-3 py-2"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 min-h-[44px]"
           value={reminderPassword}
           onChange={(e) => setReminderPassword(e.target.value)}
         />
+        <label htmlFor="reminder-word" className="block text-sm font-medium">{t("auth.reminder_label")}</label>
         <input
+          id="reminder-word"
           type="text"
           placeholder={t("auth.reminder_label")}
           required
           minLength={3}
           autoComplete="off"
-          className="w-full border border-slate-200 rounded-lg px-3 py-2"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 min-h-[44px]"
           value={reminder}
           onChange={(e) => setReminder(e.target.value)}
         />
-        {reminderError && <p className="text-red-500 text-sm">{reminderError}</p>}
+        {reminderError && <p role="alert" className="text-red-700 text-sm">{reminderError}</p>}
         {reminderMessage && <p className="text-sm text-slate-700">{reminderMessage}</p>}
-        <button
-          type="submit"
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600"
-        >
+        <button type="submit" className={btnSecondary}>
           {t("auth.save_reminder")}
         </button>
       </form>

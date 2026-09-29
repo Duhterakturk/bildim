@@ -9,6 +9,7 @@ import PasswordCard from "../components/auth/PasswordCard";
 import NameCard from "../components/auth/NameCard";
 import Profile from "./Profile";
 import TeacherPanel from "./TeacherPanel";
+import { btnPrimary, btnSecondary } from "../components/common/buttons";
 
 export function sectionsFor(role) {
   if (role === "teacher") return ["siniflar", "ilerleme", "kazanimlar", "ayarlar"];
@@ -30,34 +31,56 @@ export default function Account() {
     setParams(next, { replace: true });
   }
 
+  function onTabKey(event) {
+    const index = sections.indexOf(section);
+    const nextIndex = {
+      ArrowRight: (index + 1) % sections.length,
+      ArrowLeft: (index - 1 + sections.length) % sections.length,
+      Home: 0,
+      End: sections.length - 1,
+    }[event.key];
+    if (nextIndex == null) return;
+    event.preventDefault();
+    const nextId = sections[nextIndex];
+    open(nextId);
+    requestAnimationFrame(() => document.getElementById(`tab-${nextId}`)?.focus());
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="scene-label text-2xl font-bold">{user?.full_name}</h1>
       <p className="scene-label mt-2 mb-5 text-sm">{t(`auth.role_${user?.role}`, { defaultValue: "" })}</p>
 
-      <div className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label={t("nav.account")}>
+      <div className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label={t("nav.account")} onKeyDown={onTabKey}>
         {sections.map((id) => (
           <button
             key={id}
+            id={`tab-${id}`}
             type="button"
             role="tab"
             aria-selected={section === id}
+            aria-controls={`panel-${id}`}
+            tabIndex={section === id ? 0 : -1}
             onClick={() => open(id)}
-            className={`rounded-full px-3 py-1.5 text-sm font-semibold ${section === id ? "scene-tab-on" : "scene-chip"}`}
+            className={`min-h-[44px] rounded-full px-3 py-1.5 text-sm font-semibold ${section === id ? "scene-tab-on" : "scene-chip"}`}
           >
             {t(`account.section.${id}`)}
           </button>
         ))}
       </div>
 
+      <div id={`panel-${section}`} role="tabpanel" aria-labelledby={`tab-${section}`}>
       {section === "siniflar" && <TeacherPanel embedded />}
 
       {section === "ilerleme" && (
         <div>
-          <p className="mb-4 max-w-xl rounded-xl bg-white/95 px-4 py-3 text-sm text-slate-700">{t("account.progressHelp")}</p>
+          <div className="mb-4 max-w-xl rounded-xl bg-white/95 px-4 py-3">
+            <h2 className="text-lg font-semibold mb-1">{t("account.progressTitle")}</h2>
+            <p className="text-sm text-slate-700">{t("account.progressHelp")}</p>
+          </div>
           <div className="mb-6 flex flex-wrap gap-3">
-            <Link to="/games" className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold">{t("account.play")}</Link>
-            <Link to="/exam" className="bg-white text-slate-800 px-4 py-2 rounded-lg font-semibold border border-slate-200">{t("account.exam")}</Link>
+            <Link to="/games" className={btnPrimary}>{t("account.play")}</Link>
+            <Link to="/exam" className={btnSecondary}>{t("account.exam")}</Link>
           </div>
           <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
             <ProgressSummary />
@@ -74,8 +97,9 @@ export default function Account() {
             <h2 className="text-lg font-semibold mb-1">{t("account.classTitle")}</h2>
             <p className="text-sm text-slate-600 mb-4">{t("account.classHelp")}</p>
             <ClassroomJoin />
+            <Link to="/games" className={`${btnSecondary} mt-4`}>{t("account.play")}</Link>
           </div>
-          <StudentHomework />
+          <StudentHomework classroomId={user?.classroom_id} />
         </div>
       )}
 
@@ -87,6 +111,7 @@ export default function Account() {
           <PasswordCard />
         </div>
       )}
+      </div>
     </div>
   );
 }

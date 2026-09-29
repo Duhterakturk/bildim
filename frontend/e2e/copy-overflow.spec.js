@@ -76,7 +76,10 @@ test("register, profile, teacher, and game messages stay inside the screen", asy
   await page.goto("/teacher");
   await expect(page).toHaveURL(/bolum=siniflar/);
   await expect(page.getByRole("tab", { name: "Sınıflarım" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Yeni Sınıf Oluşturun" })).toBeVisible();
+  await page.getByRole("button", { name: "Yeni Sınıf Oluşturun" }).click();
   await expect(page.getByRole("button", { name: "Sınıfı Oluşturun" })).toBeVisible();
+  await page.getByText("Velilerle Paylaşılacak Mesaj").click();
   await expect(page.getByRole("button", { name: "Notu Kopyalayın" })).toBeVisible();
   await page.screenshot({ path: `test-results/copy-teacher-${tag}.png`, fullPage: true });
   const teacher = await overflows(page);

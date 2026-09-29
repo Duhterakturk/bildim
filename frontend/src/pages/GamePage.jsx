@@ -10,7 +10,7 @@ export default function GamePage() {
   if (!GameComponent) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center text-slate-600">
-        Bu oyun modülü henüz eklenmedi. (`src/games/{slug}/`)
+        Bu oyun şu anda açılamıyor.
       </div>
     );
   }

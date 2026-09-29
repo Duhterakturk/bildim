@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { fetchMyProgress, downloadProgressExport, downloadProgressPdf } from "../../api/progress";
+import { btnSecondary } from "../common/buttons";
 
 function BarChart({ perGame, lang }) {
   if (perGame.length === 0) {
@@ -40,6 +41,8 @@ function BarChart({ perGame, lang }) {
 export default function ProgressSummary({ progress: externalProgress, showExport = true }) {
   const { i18n } = useTranslation();
   const [ownProgress, setOwnProgress] = useState(null);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [exporting, setExporting] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [startDate, setStartDate] = useState("");
@@ -52,15 +55,18 @@ export default function ProgressSummary({ progress: externalProgress, showExport
     // uygula — geç gelen eski bir yanıt, daha yeni bir isteğin sonucunun
     // üzerine yazmasın.
     let cancelled = false;
+    setLoadError(false);
     fetchMyProgress({ startDate, endDate })
       .then((data) => {
         if (!cancelled) setOwnProgress(data);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      });
     return () => {
       cancelled = true;
     };
-  }, [externalProgress, startDate, endDate]);
+  }, [externalProgress, startDate, endDate, reloadKey]);
 
   async function handlePdf() {
     setExportingPdf(true);
@@ -85,7 +91,27 @@ export default function ProgressSummary({ progress: externalProgress, showExport
   }
 
   const progress = externalProgress || ownProgress;
-  if (!progress) return <p className="text-slate-500 text-sm">Yükleniyor...</p>;
+  if (loadError && !externalProgress) {
+    return (
+      <div>
+        <p role="alert" className="text-sm text-slate-700">{i18n.t("account.progressError")}</p>
+        <button type="button" className={`${btnSecondary} mt-3`} onClick={() => setReloadKey((n) => n + 1)}>
+          {i18n.t("account.retry")}
+        </button>
+      </div>
+    );
+  }
+  if (!progress) return <p className="text-slate-600 text-sm" role="status">Yükleniyor...</p>;
+
+  const untouched = !progress.total_completed && !(progress.per_game || []).length && !startDate && !endDate;
+  if (untouched && showExport) {
+    return (
+      <div>
+        <p className="text-sm text-slate-700">{i18n.t("account.progressEmpty")}</p>
+        <p className="text-sm text-slate-600 mt-1">{i18n.t("account.progressEmptyHelp")}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -146,14 +172,14 @@ export default function ProgressSummary({ progress: externalProgress, showExport
           <button
             onClick={handlePdf}
             disabled={exportingPdf}
-            className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
+            className={btnSecondary}
           >
             {exportingPdf ? "İndiriliyor..." : "PDF İndirin"}
           </button>
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300 disabled:opacity-50"
+            className={btnSecondary}
           >
             {exporting ? "İndiriliyor..." : "Excel Olarak İndirin"}
           </button>

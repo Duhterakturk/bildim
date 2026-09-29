@@ -46,6 +46,15 @@ export default function Shop() {
     fetchProfile().then(setProfile).catch(() => {});
   }, [t]);
 
+  useEffect(() => {
+    if (!open) return undefined;
+    function onKey(event) {
+      if (event.key === "Escape") setOpen(null);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   async function buy(id) {
     setError(null);
     try {
@@ -167,7 +176,7 @@ export default function Shop() {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4" data-testid="preview-dialog">
-          <div className="bg-white text-slate-900 rounded-2xl p-5 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white text-slate-900 rounded-2xl p-5 w-full max-w-md max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label={lang === "en" ? open.name_en : open.name_tr}>
             {open.type === "owl" ? <OwlPhoto item={open} owned={open.owned} large /> : <Preview item={open} large />}
             {open.type === "owl" ? (
               <>

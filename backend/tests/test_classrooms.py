@@ -30,7 +30,10 @@ def test_student_can_join_with_valid_code(client, teacher, student):
         headers=auth_headers(student["token"]),
     )
     assert resp.status_code == 200
-    assert resp.get_json()["classroom_id"] == classroom["id"]
+    body = resp.get_json()
+    assert body["classroom_id"] == classroom["id"]
+    assert body["classroom_name"] == "3-A"
+    assert "join_code" not in body
 
 
 def test_join_with_invalid_code_fails(client, student):
@@ -65,7 +68,9 @@ def test_student_can_leave_classroom(client, teacher, student):
     )
     resp = client.post("/api/classrooms/leave", headers=auth_headers(student["token"]))
     assert resp.status_code == 200
-    assert resp.get_json()["classroom_id"] is None
+    body = resp.get_json()
+    assert body["classroom_id"] is None
+    assert body["classroom_name"] is None
 
 
 def test_teacher_only_sees_own_classroom_students(client, teacher, student, app):

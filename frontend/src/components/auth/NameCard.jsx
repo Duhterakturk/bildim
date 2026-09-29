@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
+import { btnPrimary } from "../common/buttons";
 
 export default function NameCard() {
   const { t } = useTranslation();
-  const { saveName } = useAuth();
-  const [name, setName] = useState("");
+  const { saveName, user } = useAuth();
+  const [name, setName] = useState(user?.full_name || "");
+
+  useEffect(() => {
+    if (user?.full_name) setName(user.full_name);
+  }, [user?.full_name]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -18,7 +23,6 @@ export default function NameCard() {
     setSaved(false);
     try {
       await saveName(name.trim());
-      setName("");
       setSaved(true);
     } catch (err) {
       setError(err.response?.data?.error || t("profile.nameError"));
@@ -38,7 +42,7 @@ export default function NameCard() {
           onChange={(event) => { setName(event.target.value); setSaved(false); }}
           className="w-full border border-slate-300 rounded-lg px-3 py-2" />
         <button type="submit" disabled={busy || !name.trim()}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">
+          className={`${btnPrimary} disabled:opacity-50`}>
           {t(busy ? "play.saving" : "profile.saveName")}
         </button>
         {error && <p role="alert" className="text-red-600 text-sm">{error}</p>}

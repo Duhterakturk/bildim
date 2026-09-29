@@ -8,14 +8,33 @@ export default function Profile({ embedded = false }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
-  const [certs, setCerts] = useState([]);
+  const [certs, setCerts] = useState(null);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    fetchProfile().then(setProfile).catch(() => {});
-    fetchMyCertificates().then(setCerts).catch(() => {});
-  }, []);
+    let cancelled = false;
+    setError(false);
+    fetchProfile()
+      .then((data) => { if (!cancelled) setProfile(data); })
+      .catch(() => { if (!cancelled) setError(true); });
+    fetchMyCertificates()
+      .then((data) => { if (!cancelled) setCerts(Array.isArray(data) ? data : []); })
+      .catch(() => { if (!cancelled) setCerts([]); });
+    return () => { cancelled = true; };
+  }, [reloadKey]);
 
-  if (!profile) return <p className="px-4 py-10 text-slate-400">{t("shop.loading")}</p>;
+  if (error) {
+    return (
+      <div className="bg-white rounded-2xl p-6">
+        <p role="alert" className="text-sm text-slate-700">{t("profile.loadError")}</p>
+        <button type="button" className="mt-3 min-h-[44px] font-semibold text-brand-700" onClick={() => setReloadKey((n) => n + 1)}>
+          {t("account.retry")}
+        </button>
+      </div>
+    );
+  }
+  if (!profile) return <p className="px-4 py-10 text-slate-600" role="status">{t("shop.loading")}</p>;
 
   const title = profile.active_title;
   const progress = profile.next
@@ -72,6 +91,11 @@ export default function Profile({ embedded = false }) {
 
       <section className="bg-white text-slate-900 rounded-2xl p-6 mt-4">
         <h2 className="font-semibold mb-3">{t("certs.title")}</h2>
+        {certs == null ? (
+          <p className="text-sm text-slate-600" role="status">{t("shop.loading")}</p>
+        ) : certs.length === 0 ? (
+          <p className="text-sm text-slate-600">{t("profile.certsEmpty")}</p>
+        ) : (
         <ul className="space-y-2">
           {certs.map((row) => (
             <li key={row.kind} className="flex items-center justify-between gap-2 text-sm">
@@ -86,6 +110,7 @@ export default function Profile({ embedded = false }) {
             </li>
           ))}
         </ul>
+        )}
       </section>
 
       <section className="bg-white text-slate-900 rounded-2xl p-6 mt-4 overflow-x-auto">

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "./useAutoScore";
-import ClearBoardButton from "./ClearBoardButton";
+import ClearBoardButton, { NewPuzzleButton } from "./ClearBoardButton";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint, writeFill } from "./cellHint";
 import { useGameText } from "./gameText";
@@ -179,14 +179,15 @@ export default function GridFillGame({
           label={notesMode ? play.notesOn : play.notes}
           hint={play.notesHint}
         />
-        <ClearBoardButton onClick={clearBoard} />
+        <ClearBoardButton
+          onClick={clearBoard}
+          hasWork={board.some((row, r) => row.some((value, c) => !givenMask[r][c] && value)) || notes.some((row) => row.some((cell) => cell.length))}
+        />
         {onRegenerate && (
-          <button
+          <NewPuzzleButton
             onClick={onRegenerate}
-            className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300"
-          >
-            {play.newPuzzle}
-          </button>
+            hasWork={board.some((row, r) => row.some((value, c) => !givenMask[r][c] && value)) || notes.some((row) => row.some((cell) => cell.length))}
+          />
         )}
       </div>
 

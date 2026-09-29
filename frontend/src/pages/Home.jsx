@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { btnPrimary } from "../components/common/buttons";
 import { useTranslation } from "react-i18next";
 
 const MARKS = [
@@ -114,11 +115,12 @@ export default function Home() {
         ))}
       </div>
       <div className="relative z-10 min-h-[calc(100vh-4rem)] flex items-center justify-center px-6">
-        <h1 className="home-line font-hand font-semibold text-center text-balance">
-          <Link to="/games" className="hover:opacity-80">
+        <div className="flex flex-col items-center gap-4">
+          <h1 className="home-line font-hand font-semibold text-center text-balance">
             {t("home.title")}
-          </Link>
-        </h1>
+          </h1>
+          <Link to="/games" className={btnPrimary}>{t("account.play")}</Link>
+        </div>
       </div>
     </div>
   );

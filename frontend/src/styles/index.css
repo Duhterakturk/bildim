@@ -18,6 +18,11 @@ body {
   line-height: 1.55;
 }
 
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Theme IDs such as bg-ink can also match a Tailwind background utility. */
 body.theme-light {
   background-color: var(--room);

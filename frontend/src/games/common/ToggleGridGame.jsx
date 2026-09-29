@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "./useAutoScore";
-import ClearBoardButton from "./ClearBoardButton";
+import ClearBoardButton, { NewPuzzleButton } from "./ClearBoardButton";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint } from "./cellHint";
 import { useGameText } from "./gameText";
@@ -374,14 +374,9 @@ export default function ToggleGridGame({
         >
           {play.check}
         </button>
-        <ClearBoardButton onClick={clearBoard} />
+        <ClearBoardButton onClick={clearBoard} hasWork={marked.size > 0 || crossed.size > 0} />
         {onRegenerate && (
-          <button
-            onClick={onRegenerate}
-            className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300"
-          >
-            {play.newPuzzle}
-          </button>
+          <NewPuzzleButton onClick={onRegenerate} hasWork={marked.size > 0 || crossed.size > 0} />
         )}
       </div>
 

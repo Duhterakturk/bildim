@@ -12,6 +12,7 @@ function userFor(role) {
 
 async function mockAccount(page, role, extras = {}) {
   const user = userFor(role);
+  let joined = Boolean(extras.joined);
   await page.addInitScript((stored) => {
     localStorage.setItem("mindarena_access_token", "access");
     localStorage.setItem("mindarena_refresh_token", "refresh");
@@ -23,12 +24,27 @@ async function mockAccount(page, role, extras = {}) {
       return route.fulfill({ json: { ...user, full_name: "Yeni Ada" } });
     }
     if (url.includes("/auth/password")) return route.fulfill({ json: { ok: true } });
-    if (url.includes("/auth/me")) return route.fulfill({ json: user });
+    if (url.includes("/auth/me")) {
+      return route.fulfill({
+        json: {
+          ...user,
+          classroom_id: joined ? 7 : user.classroom_id,
+          classroom_name: joined ? "3-A" : null,
+        },
+      });
+    }
     if (url.includes("/classrooms/mine")) {
       return route.fulfill({ json: [{ id: 7, name: "3-A", join_code: "KEDI42", student_count: 1 }] });
     }
     if (url.includes("/classrooms/join")) {
-      return route.fulfill({ json: { ...user, classroom_id: 7 } });
+      if (extras.joinFails) return route.fulfill({ status: 404, json: { error: "Sınıf kodu eşleşmedi. Kodu kontrol edip yeniden deneyebilirsiniz." } });
+      joined = true;
+      return route.fulfill({ json: { ...user, classroom_id: 7, classroom_name: "3-A" } });
+    }
+    if (url.includes("/classrooms/leave")) {
+      if (extras.leaveFails) return route.fulfill({ status: 500, json: { error: "Sınıftan ayrılamadınız. Yeniden deneyebilirsiniz." } });
+      joined = false;
+      return route.fulfill({ json: { ...user, classroom_id: null, classroom_name: null } });
     }
     if (url.includes("/progress/unlocked")) {
       return route.fulfill({ json: { unlocked: { easy: true, medium: false, hard: false }, progress: { easy: 0, medium: 0, hard: 0 }, threshold: 5, games: {} } });
@@ -38,7 +54,10 @@ async function mockAccount(page, role, extras = {}) {
       return route.fulfill({ json: { total_completed: 0, total_points: 0, distinct_games_completed: 0, per_game: [] } });
     }
     if (url.includes("/badges")) return route.fulfill({ json: [] });
-    if (url.includes("/assignment")) return route.fulfill({ json: extras.assignment || { assignments: [] } });
+    if (url.includes("/assignment")) {
+      const pack = joined ? (extras.assignment || { assignments: [] }) : { assignments: [] };
+      return route.fulfill({ json: pack });
+    }
     if (url.includes("/profile")) {
       return route.fulfill({
         json: {
@@ -103,7 +122,9 @@ test("old account links land on the matching section", async ({ page }) => {
   await page.goto("/teacher?kaynak=mektup");
   await expect(page).toHaveURL(/\/hesabim\?.*bolum=siniflar/);
   await expect(page).toHaveURL(/kaynak=mektup/);
-  await expect(page.getByRole("button", { name: "Sınıfı Oluşturun" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Yeni Sınıf Oluşturun" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Kodu Kopyalayın" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Notu Kopyalayın" })).toBeHidden();
 
   await page.goto("/profil?ad=1");
   await expect(page).toHaveURL(/bolum=kazanimlar/);
@@ -114,6 +135,7 @@ test("old account links land on the matching section", async ({ page }) => {
   await page.goto("/teacher");
   await expect(page).toHaveURL(/bolum=ilerleme/);
   await expect(page.getByRole("button", { name: "Sınıfı Oluşturun" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Yeni Sınıf Oluşturun" })).toHaveCount(0);
 
   await mockAccount(page, "individual");
   await page.goto("/dashboard");
@@ -137,9 +159,15 @@ test("student can open class join and a teacher can open a game", async ({ page 
   });
   await page.goto("/hesabim?bolum=sinif");
   await expect(page.getByRole("button", { name: "Katılın" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toHaveCount(0);
   await page.getByPlaceholder("Sınıf kodu").fill("kedi42");
   await page.getByRole("button", { name: "Katılın" }).click();
+  await expect(page.getByText("3-A sınıfındasınız.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toBeVisible();
+  await page.getByRole("button", { name: "Sınıftan Ayrılın" }).click();
+  await page.getByRole("button", { name: "Ayrılın" }).click();
+  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Katılın" })).toBeVisible();
 
   await mockAccount(page, "teacher");
   await page.goto("/games/kakuro");
@@ -168,6 +196,31 @@ test("individual plays without a class and can edit the account", async ({ page 
   if (await menu.isVisible()) await menu.click();
   await expect(page.getByRole("link", { name: "Giriş Yap" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Hesabım" })).toHaveCount(0);
+});
+
+test("a failed leave keeps the current homework", async ({ page }) => {
+  await mockAccount(page, "student", {
+    joined: true,
+    leaveFails: true,
+    assignment: {
+      assignments: [{
+        id: 1,
+        slug: "kakuro",
+        name_tr: "Kakuro",
+        difficulty_label: "Kolay",
+        target_count: 2,
+        done_count: 0,
+        finished: false,
+      }],
+    },
+  });
+  await page.goto("/hesabim?bolum=sinif");
+  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toBeVisible();
+  await page.getByRole("button", { name: "Sınıftan Ayrılın" }).click();
+  await page.getByRole("button", { name: "Ayrılın" }).click();
+  await expect(page.getByText("Sınıftan ayrılamadınız. Yeniden deneyebilirsiniz.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Bulmacaya Geçin" })).toBeVisible();
+  await expect(page.getByText("3-A sınıfındasınız.")).toBeVisible();
 });
 
 test("account survives a reload", async ({ page }) => {

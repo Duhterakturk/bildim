@@ -68,6 +68,7 @@ class User(db.Model):
             "grade_level": self.grade_level,
             "parent_id": self.parent_id,
             "classroom_id": self.classroom_id,
+            "classroom_name": self.classroom.name if self.classroom_id and self.classroom else None,
             "has_reminder": bool(self.reminder_hash),
             "hint_balance": self.hint_balance,
             "star_balance": self.star_balance,

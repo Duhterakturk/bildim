@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { fetchGames } from "../../api/games";
 import { createAssignment, fetchAssignment, fetchMyAssignment } from "../../api/classrooms";
+import { btnPrimary, btnSecondary } from "../common/buttons";
 
 async function copyText(text) {
   try {
@@ -151,15 +153,64 @@ export function ClassHomework({ classroomId, classroomName }) {
   );
 }
 
-export function StudentHomework() {
-  const [pack, setPack] = useState(undefined);
+export function StudentHomework({ classroomId }) {
+  const { t } = useTranslation();
+  const [pack, setPack] = useState(null);
+  const [phase, setPhase] = useState("idle");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    fetchMyAssignment().then(setPack).catch(() => setPack(null));
-  }, []);
+    if (!classroomId) {
+      setPack(null);
+      setPhase("idle");
+      return undefined;
+    }
+    let cancelled = false;
+    setPhase("loading");
+    setPack(null);
+    fetchMyAssignment()
+      .then((data) => {
+        if (!cancelled) {
+          setPack(data);
+          setPhase("ready");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPack(null);
+          setPhase("error");
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [classroomId, reloadKey]);
+
+  if (!classroomId || phase === "idle") return null;
+  if (phase === "loading") {
+    return <p className="text-sm text-slate-600" role="status">{t("account.homeworkLoading")}</p>;
+  }
+  if (phase === "error") {
+    return (
+      <div className="bg-white rounded-2xl border border-slate-100 p-6">
+        <p role="alert" className="text-sm text-slate-700">{t("account.homeworkError")}</p>
+        <button type="button" className={`${btnSecondary} mt-3`} onClick={() => setReloadKey((n) => n + 1)}>
+          {t("account.retry")}
+        </button>
+      </div>
+    );
+  }
 
   const assignments = pack?.assignments?.length ? pack.assignments : pack?.assignment ? [pack.assignment] : [];
-  if (!assignments.length) return null;
+  if (!assignments.length) {
+    return (
+      <section className="bg-white rounded-2xl border border-slate-100 p-6">
+        <h2 className="font-display text-2xl text-ink mb-2">Bu haftanın ödevi</h2>
+        <p className="text-sm text-slate-600 mb-4">{t("account.homeworkEmpty")}</p>
+        <Link to="/games" className={btnSecondary}>{t("account.play")}</Link>
+      </section>
+    );
+  }
   const finished = assignments.every((item) => item.finished);
 
   return (
@@ -176,7 +227,7 @@ export function StudentHomework() {
               <span className="text-2xl text-stone-400"> / {item.target_count}</span>
             </p>
             {!item.finished && (
-              <Link to={`/games/${item.slug}`} className="press-btn mt-2 !px-4 !py-2 text-sm">
+              <Link to={`/games/${item.slug}`} className={`${btnPrimary} mt-2`}>
                 Bulmacaya Geçin
               </Link>
             )}
