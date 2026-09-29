@@ -2,7 +2,7 @@
 
 Türkçe ve İngilizce arayüzü bulunan, 19 mantık bulmacası oyunundan oluşan React + Vite / Flask web uygulaması.
 
-**Uygulama:** https://mindarena-app.onrender.com
+**Uygulama:** https://bildim.onrender.com
 
 **GitHub:** https://github.com/Duhterakturk/bildim
 

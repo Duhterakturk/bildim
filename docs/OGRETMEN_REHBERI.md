@@ -1,6 +1,6 @@
 # Bildim — Öğretmen için hızlı başlangıç
 
-Uygulama: https://mindarena-app.onrender.com
+Uygulama: https://bildim.onrender.com
 
 Bildim, çocukların mantık bulmacaları çözebildiği 19 oyunlu bir web uygulamasıdır. Telefon, tablet veya bilgisayardaki tarayıcıdan açılır; kurulum gerekmez. İnternet bağlantısı gerekir.
 

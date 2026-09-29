@@ -204,7 +204,7 @@ def forgot_password():
             current_app.config["LAST_RESET_TOKEN"] = raw
         else:
             base = os.environ.get(
-                "PUBLIC_APP_URL", "https://mindarena-app.onrender.com"
+                "PUBLIC_APP_URL", "https://bildim.onrender.com"
             ).rstrip("/")
             send_password_reset(user.email, f"{base}/reset?token={raw}")
 
