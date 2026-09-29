@@ -56,9 +56,32 @@ body.theme-light {
   top: -6px;
 }
 
-/* The wordmark is foreground paint, like menu text. Mobile auto-darkening
-   can recolor it without leaving a dark raster word on a dark surface. */
-.brand-logo { color: inherit; }
+.site-nav { color: #000; }
+@media (prefers-color-scheme: dark) {
+  .site-nav { background: #161616; color: #fff; border-color: #454545; }
+}
+.brand-emblem { clip-path: inset(0 65% 0 0); }
+.brand-punctuation { clip-path: inset(0 0 0 85.8%); }
+/* Real text participates in the browser's automatic foreground recoloring. */
+@font-face {
+  font-family: "Bildim Rounded";
+  src: url("/fonts/nunito-900.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+.brand-wordmark {
+  position: absolute;
+  left: 45px;
+  top: 3px;
+  width: 92px;
+  font-family: "Bildim Rounded", ui-rounded, Arial, sans-serif;
+  font-size: 33px;
+  font-weight: 900;
+  letter-spacing: -1.7px;
+  line-height: 40px;
+  color: inherit;
+}
 
 /* Legacy game labels used a fixed light text color on the old dark canvas. */
 .play-room .text-\[\#f4efe6\] {

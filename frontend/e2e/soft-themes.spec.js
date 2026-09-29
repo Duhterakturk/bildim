@@ -34,7 +34,7 @@ for (const theme of themes) {
     });
     await page.goto("/games/kare-karalamaca");
     await expect(page.locator("html")).toHaveAttribute("data-board-theme", theme.id);
-    await expect(page.locator(".brand-wordmark")).toHaveAttribute("fill", "currentColor");
+    await expect(page.locator(".brand-wordmark")).toHaveCSS("color", "rgb(0, 0, 0)");
     const brand = await page.getByRole("link", { name: "Bildim", exact: true }).boundingBox();
     expect(brand.width).toBeLessThanOrEqual(150);
     expect(brand.height).toBeLessThanOrEqual(44);

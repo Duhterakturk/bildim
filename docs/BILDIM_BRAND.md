@@ -27,14 +27,14 @@ Menüdeki logo alanı 150 × 44 CSS pikseldir. Görselin şeffaf dış boşluğu
 ile kırpılır; yazı veya beyin ayrı ayrı büyütülmez. Mevcut bütün temaların
 menüsü açık zeminlidir; koyu yazılı logo bu yüzey için hazırlanmıştır.
 
-`BrandLogo` ortak menüde tek SVG olarak kullanılır. Beyin ve ünlem özgün
-resimden korunur; yazının alfa maskesi SVG `fill="currentColor"` ile boyanır.
-Yazı böylece menü metninin rengini alır; raster yazı rengi, blend-mode, filtre,
-kenarlık veya JavaScript zemin tahmini kullanılmaz. Boyut 150 × 44 kalır.
-Chromium, Firefox ve WebKit üzerinde açık/koyu zemin; telefon, tablet ve
-masaüstü boyutları kontrol edilmiştir. Sekiz tema dahil 21 test geçmiştir.
-Bu testler fiziksel Samsung/Apple cihaz testinin yerine geçmez; Samsung
-Internet'in zorunlu koyu modu gerçek telefonda ayrıca doğrulanmalıdır.
+`BrandLogo` tüm sayfalardaki ortak menüde kullanılır. Beyin ve ünlem özgün
+resimden korunur; bildim yazısı gerçek HTML metnidir. Yerel Nunito 900 fontu
+ve OFL lisansı `frontend/public/fonts/` içindedir. Logo alanı 150 × 44 kalır.
+Açık menüde siyah (#000), cihazın koyu görünümünde koyu menü üzerinde beyaz
+(#fff) kullanılır. Resim filtresi, SVG maske ve blend-mode kaldırılmıştır.
+Yazı tarayıcının otomatik metin rengi dönüşümüne katılır. Chromium, Firefox,
+WebKit telefon/tablet boyutlarında açık-koyu sistem geçişleri test edilmiştir.
+Fiziksel Samsung cihazındaki özel koyu mod ayrıca doğrulanmalıdır.
 
 ## Görsel üretim metni
 
