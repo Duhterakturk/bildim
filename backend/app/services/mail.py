@@ -14,7 +14,7 @@ def send_password_reset(to_email: str, link: str) -> bool:
         return False
 
     message = EmailMessage()
-    message["Subject"] = "MindArena şifre yenileme"
+    message["Subject"] = "Bildim şifre yenileme"
     message["From"] = sender
     message["To"] = to_email
     message.set_content(

@@ -1,8 +1,8 @@
-# MindArena — Öğretmen için hızlı başlangıç
+# Bildim — Öğretmen için hızlı başlangıç
 
 Uygulama: https://mindarena-app.onrender.com
 
-MindArena, çocukların mantık bulmacaları çözebildiği 19 oyunlu bir web uygulamasıdır. Telefon, tablet veya bilgisayardaki tarayıcıdan açılır; kurulum gerekmez. İnternet bağlantısı gerekir.
+Bildim, çocukların mantık bulmacaları çözebildiği 19 oyunlu bir web uygulamasıdır. Telefon, tablet veya bilgisayardaki tarayıcıdan açılır; kurulum gerekmez. İnternet bağlantısı gerekir.
 
 ## 1. Öğretmen hesabınızı açın
 

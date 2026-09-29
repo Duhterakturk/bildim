@@ -1,7 +1,7 @@
-# MindArena – Teknik Proje Dokümantasyonu
+# Bildim – Teknik Proje Dokümantasyonu
 
 ## Genel Tanım
-- **Proje Adı:** MindArena
+- **Proje Adı:** Bildim
 - **Amaç:** 2. sınıf seviyesinden başlayarak ileri düzeye kadar akıl oyunları sunan, TaZOf sınavına hazırlık için profesyonel bir web platformu geliştirmek.
 
 ## İçerik Modülleri

@@ -41,6 +41,6 @@ def download(certificate_id):
     return send_file(
         payload,
         as_attachment=True,
-        download_name="mindarena-sertifika.pdf",
+        download_name="bildim-sertifika.pdf",
         mimetype="application/pdf",
     )

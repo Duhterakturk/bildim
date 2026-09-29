@@ -1,4 +1,4 @@
-# MindArena
+# Bildim
 
 Türkçe ve İngilizce arayüzü bulunan, 19 mantık bulmacası oyunundan oluşan React + Vite / Flask web uygulaması.
 

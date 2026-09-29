@@ -81,8 +81,8 @@ export default function Navbar() {
   return (
     <nav className="site-nav sticky top-0 z-10 border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl font-semibold text-inherit" onClick={() => setMenuOpen(false)}>
-          {t("app.name")}
+        <Link to="/" className="brand-link" aria-label={t("app.name")} onClick={() => setMenuOpen(false)}>
+          <img className="brand-logo" src="/brand/bildim-logo-light.png" alt="" width="2169" height="725" fetchPriority="high" />
         </Link>
 
         <div className="flex items-center gap-3">

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="brain" x1="0" y1="0" x2="0.3" y2="1">
+      <stop stop-color="#ffd43b"/>
+      <stop offset="1" stop-color="#ff7900"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="#171717"/>
+  <g stroke="url(#brain)" stroke-width="3" stroke-linecap="round">
+    <path d="M32 10v4M18 14l3 3M46 14l-3 3M13 27h4"/>
+  </g>
+  <g fill="url(#brain)">
+    <path d="M31 21C26 17 21 21 21 25C15 27 16 32 17 34C13 39 17 44 21 44C20 50 26 54 31 50Z"/>
+    <path d="M33 21C38 17 43 21 43 25C49 27 48 32 47 34C51 39 47 44 43 44C44 50 38 54 33 50Z"/>
+  </g>
+  <g fill="none" stroke="#20232a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 24c-5 0-5 6-2 7M25 31c-8-3-9 7-3 7l3-1c-1 4 4 5 2 8l-3 1M37 24c5 0 5 6 2 7M39 31c8-3 9 7 3 7l-3-1c1 4-4 5-2 8l3 1"/>
+  </g>
+</svg>

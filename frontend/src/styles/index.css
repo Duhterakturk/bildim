@@ -35,6 +35,26 @@ body.theme-light {
   border-color: color-mix(in srgb, var(--line) 55%, transparent);
 }
 
+/* Keep the approved logo compact; trim only its transparent canvas in layout. */
+.brand-link {
+  position: relative;
+  display: block;
+  flex: 0 0 150px;
+  width: 150px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.brand-logo {
+  position: absolute;
+  width: 180px;
+  max-width: none;
+  height: auto;
+  left: -17px;
+  top: -6px;
+}
+
 /* Legacy game labels used a fixed light text color on the old dark canvas. */
 .play-room .text-\[\#f4efe6\] {
   color: var(--ink);

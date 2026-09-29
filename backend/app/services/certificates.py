@@ -217,7 +217,7 @@ def render_pdf(user, certificate):
     pen.rect(28, 28, width - 56, height - 56, stroke=1, fill=0)
     pen.setFillColorRGB(0.2, 0.35, 0.75)
     pen.setFont(_FONT, 28)
-    pen.drawCentredString(width / 2, height - 90, "MindArena")
+    pen.drawCentredString(width / 2, height - 90, "Bildim")
     pen.setFillColorRGB(0.12, 0.1, 0.08)
     pen.setFont(_FONT, 36)
     pen.drawCentredString(width / 2, height - 170, user.full_name)

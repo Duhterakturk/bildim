@@ -1,5 +1,5 @@
 {
-  "app": { "name": "MindArena" },
+  "app": { "name": "Bildim" },
   "nav": {
     "home": "Home",
     "games": "Games",
@@ -180,7 +180,7 @@
       "close": "Close",
       "inviteNote": "This note can be left with families once. Registration and the password stay with the family.",
       "inviteGreeting": "Dear families,",
-      "inviteBody": "MindArena is an app of puzzles and thinking activities that our children can use whenever they like. I may also share practice work through the app from time to time.",
+      "inviteBody": "Bildim is an app of puzzles and thinking activities that our children can use whenever they like. I may also share practice work through the app from time to time.",
       "inviteStepsTitle": "If you would like to join, you can follow these steps:",
       "inviteStep1": "You can register as a student at the address I will share: {{url}}",
       "inviteStep1Html": "You can <b>register as a student</b> at the address I will share: <url>{{url}}</url>",

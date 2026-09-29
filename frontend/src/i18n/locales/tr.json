@@ -1,5 +1,5 @@
 {
-  "app": { "name": "MindArena" },
+  "app": { "name": "Bildim" },
   "nav": {
     "home": "Ana Sayfa",
     "games": "Oyunlar",
@@ -180,7 +180,7 @@
       "close": "Kapatın",
       "inviteNote": "Bu not ailelere bir kez bırakılabilir. Kayıt ve şifre ailede kalır.",
       "inviteGreeting": "Sayın Velilerim,",
-      "inviteBody": "MindArena, çocuklarımızın diledikleri zaman kullanabilecekleri, bulmaca ve düşünme etkinlikleri içeren bir uygulamadır. Ayrıca uygulama üzerinden zaman zaman deneme çalışmaları da paylaşabilirim.",
+      "inviteBody": "Bildim, çocuklarımızın diledikleri zaman kullanabilecekleri, bulmaca ve düşünme etkinlikleri içeren bir uygulamadır. Ayrıca uygulama üzerinden zaman zaman deneme çalışmaları da paylaşabilirim.",
       "inviteStepsTitle": "Katılmak isterseniz aşağıdaki adımları takip edebilirsiniz:",
       "inviteStep1": "Paylaşacağım adres üzerinden öğrenci olarak kayıt olabilirsiniz: {{url}}",
       "inviteStep1Html": "Paylaşacağım adres üzerinden <b>öğrenci olarak kayıt</b> olabilirsiniz: <url>{{url}}</url>",

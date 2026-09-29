@@ -151,7 +151,7 @@ def export_progress():
     return send_file(
         buffer,
         as_attachment=True,
-        download_name="mindarena-ilerleme.xlsx",
+        download_name="bildim-ilerleme.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
@@ -175,7 +175,7 @@ def _build_pdf(user, scores, games):
     pdf.add_font("Body", "", font)
     pdf.set_font("Body", size=16)
     pdf.add_page()
-    pdf.cell(0, 10, f"MindArena — {user.full_name}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 10, f"Bildim — {user.full_name}", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Body", size=11)
     pdf.cell(0, 8, "İlerleme raporu", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
@@ -205,7 +205,7 @@ def export_progress_pdf():
     return send_file(
         io.BytesIO(payload),
         as_attachment=True,
-        download_name="mindarena-ilerleme.pdf",
+        download_name="bildim-ilerleme.pdf",
         mimetype="application/pdf",
     )
 

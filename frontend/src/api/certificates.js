@@ -15,7 +15,7 @@ export async function downloadCertificate(id) {
   const url = URL.createObjectURL(data);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "mindarena-sertifika.pdf";
+  link.download = "bildim-sertifika.pdf";
   link.click();
   URL.revokeObjectURL(url);
 }
