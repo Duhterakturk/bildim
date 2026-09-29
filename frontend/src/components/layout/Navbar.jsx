@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import BrandLogo from "./BrandLogo";
+import { LANGUAGE_STORAGE_KEY } from "../../i18n";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
@@ -26,7 +27,7 @@ export default function Navbar() {
   function toggleLanguage() {
     const next = i18n.language === "tr" ? "en" : "tr";
     i18n.changeLanguage(next);
-    localStorage.setItem("mindarena_lang", next);
+    try { localStorage.setItem(LANGUAGE_STORAGE_KEY, next); } catch { /* Keep the current-session selection. */ }
   }
 
   function handleLogout() {
