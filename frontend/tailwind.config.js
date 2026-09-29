@@ -21,8 +21,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Newsreader", "Georgia", "serif"],
-        display: ["Fraunces", "Georgia", "serif"],
+        sans: ["Manrope", "system-ui", "sans-serif"],
+        display: ["Manrope", "system-ui", "sans-serif"],
         hand: ["Dancing Script", "cursive"],
       },
     },

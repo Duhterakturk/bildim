@@ -14,7 +14,7 @@
 body {
   background-color: var(--room);
   color: var(--ink);
-  font-family: Newsreader, Georgia, serif;
+  font-family: "Manrope", system-ui, sans-serif;
   line-height: 1.55;
 }
 
@@ -662,4 +662,18 @@ html[data-board-theme] .play-scale .text-slate-600 {
     animation: none;
     transition: none;
   }
+}
+
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/manrope-400.ttf") format("truetype"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/manrope-500.ttf") format("truetype"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/manrope-600.ttf") format("truetype"); }
+@font-face { font-family: "Manrope"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/manrope-700.ttf") format("truetype"); }
+/* A consistent reading voice across cards, forms and navigation. */
+body { -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { letter-spacing: -0.025em; }
+.game-card h3 { font-weight: 700; line-height: 1.4; letter-spacing: -0.015em; }
+.game-pill { font-size: 11px; line-height: 1.6; font-weight: 500; }
+/* Preserve the established puzzle glyphs rather than changing gameplay typography. */
+.play-room .grid, .play-room svg, .board-cell, [data-book-cell] {
+  font-family: Newsreader, Georgia, serif;
 }
