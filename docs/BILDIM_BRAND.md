@@ -2,8 +2,12 @@
 
 Kullanıcıya görünen ad **Bildim**, logodaki yazım **bildim!** şeklindedir.
 Ünlem web adresinin parçası değildir. GitHub deposu `Duhterakturk/bildim`,
-yerel proje klasörü `Bildim` olarak yeniden adlandırılmıştır. Render adresleri
-ve API adresleri henüz eskisiyle çalışmaktadır. Veritabanı, oturum saklama
+yerel proje klasörü `Bildim` olarak yeniden adlandırılmıştır. Render servisleri
+`bildim-app` ve `bildim-api`, API çalışma alanı `Bildim`, Blueprint adı `bildim`
+olarak güncellenmiştir. Kullanıcının kararıyla mevcut site bağlantısı
+`https://mindarena-app.onrender.com` ve API adresi korunmuştur.
+Servislerin görünen adının değişmesi mevcut Render adresini değiştirmemiştir.
+Veritabanı, oturum saklama
 anahtarları ve Android paket kimliği korunmuştur.
 
 ## Görseller
@@ -51,6 +55,12 @@ aynı oldukları doğrulanarak korunmuştur. İmzalama anahtarları ve mevcut
 kullanıcı kayıtları değiştirilmez.
 
 Eski tarihli denetim raporları tarihsel kayıt olarak eski adı taşıyabilir.
+
+`render.yaml` içindeki eski kaynak adları mevcut dağıtımın tarihsel
+eşlemesidir; bu dosya marka değişikliği sırasında yeniden eşitlenmemiştir.
+API ve ön yüz ayrı çalışma alanlarındadır. Yeni bir Blueprint kurulumu veya
+adres geçişi yapılacaksa mevcut servis eşlemesi ve ortam değişkenleri önce
+kontrol edilmelidir; yalnız metin değiştirerek yeni servis oluşturulmamalıdır.
 
 ## Doğrulama
 
