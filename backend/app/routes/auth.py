@@ -11,6 +11,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
+from app.api_error import fail
 from app.extensions import db, limiter
 from app.models import User, UserRole
 from app.models.password_reset import PasswordReset, fresh_expiry, hash_token
@@ -43,34 +44,34 @@ def register():
     grade_level = data.get("grade_level")
 
     if not email or not password or not full_name:
-        return jsonify({"error": "E-posta, şifre ve ad soyad gerekli."}), 400
+        return fail("register_required", "E-posta, şifre ve ad soyad gerekli.")
 
     if not EMAIL_RE.match(email):
-        return jsonify({"error": "E-posta adresi geçerli görünmüyor. Adresi kontrol ediniz."}), 400
+        return fail("email_invalid", "E-posta adresi geçerli görünmüyor. Adresi kontrol ediniz.")
 
     if len(password) < MIN_PASSWORD_LENGTH:
-        return jsonify({"error": f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır"}), 400
+        return fail("password_short", f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır", count=MIN_PASSWORD_LENGTH)
 
     if len(full_name) > 255:
-        return jsonify({"error": "Ad soyad en fazla 255 karakter olabilir"}), 400
+        return fail("name_long", "Ad soyad en fazla 255 karakter olabilir")
     if password in _name_candidates(full_name):
-        return jsonify({"error": "Lütfen ad soyad alanına şifrenizi yazmayınız."}), 400
+        return fail("name_is_password", "Lütfen ad soyad alanına şifrenizi yazmayınız.")
 
     if role == UserRole.PARENT.value:
-        return jsonify({"error": "Veli hesabı kapalı. Evde öğrenci hesabı açabilirsiniz."}), 400
+        return fail("parent_closed", "Veli hesabı kapalı. Evde öğrenci hesabı açabilirsiniz.")
 
     if role not in (UserRole.STUDENT.value, UserRole.TEACHER.value, UserRole.INDIVIDUAL.value):
-        return jsonify({"error": "Seçilen rol geçerli değil."}), 400
+        return fail("role_invalid", "Seçilen rol geçerli değil.")
 
     if role != UserRole.STUDENT.value:
         grade_level = None
 
     reminder = data.get("reminder") or ""
     if len(normalize_reminder(reminder)) < MIN_REMINDER_LENGTH:
-        return jsonify({"error": "Hatırlatma kelimesi en az 3 karakter olmalıdır"}), 400
+        return fail("reminder_short", "Hatırlatma kelimesi en az 3 karakter olmalıdır")
 
     if User.query.filter_by(email=email).first():
-        return jsonify({"error": "Bu e-posta zaten kayıtlı. Giriş yapabilirsiniz."}), 409
+        return fail("email_taken", "Bu e-posta zaten kayıtlı. Giriş yapabilirsiniz.", 409)
 
     user = User(email=email, full_name=full_name, role=UserRole(role), grade_level=grade_level)
     user.set_password(password)
@@ -94,7 +95,7 @@ def login():
 
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
-        return jsonify({"error": "E-posta veya şifre eşleşmedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz."}), 401
+        return fail("login_failed", "E-posta veya şifre eşleşmedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.", 401)
 
     access_token = create_access_token(identity=user.id)
     refresh_token = create_refresh_token(identity=user.id)
@@ -117,7 +118,7 @@ def refresh():
 def me():
     user = db.session.get(User, get_jwt_identity())
     if not user:
-        return jsonify({"error": "Hesap bulunamadı."}), 404
+        return fail("user_missing", "Hesap bulunamadı.", 404)
     return jsonify(user.to_dict())
 
 
@@ -127,14 +128,14 @@ def me():
 def update_name():
     user = db.session.get(User, get_jwt_identity())
     if not user:
-        return jsonify({"error": "Hesap bulunamadı."}), 404
+        return fail("user_missing", "Hesap bulunamadı.", 404)
     data = request.get_json(silent=True) or {}
     raw_name = data.get("full_name") if isinstance(data, dict) else None
     full_name = " ".join(raw_name.split()) if isinstance(raw_name, str) else ""
     if not full_name or len(full_name) > 255:
-        return jsonify({"error": "Ad soyad 1–255 karakter olmalıdır"}), 400
+        return fail("name_length", "Ad soyad 1–255 karakter olmalıdır")
     if any(user.check_password(candidate) for candidate in _name_candidates(full_name)):
-        return jsonify({"error": "Lütfen ad soyad alanına şifrenizi yazmayınız."}), 400
+        return fail("name_is_password", "Lütfen ad soyad alanına şifrenizi yazmayınız.")
     user.full_name = full_name
     db.session.commit()
     return jsonify(user.to_dict())
@@ -150,9 +151,9 @@ def change_password():
 
     user = db.session.get(User, get_jwt_identity())
     if not user or not user.check_password(current_password):
-        return jsonify({"error": "Mevcut şifre eşleşmedi. Şifrenizi kontrol edip yeniden deneyebilirsiniz."}), 400
+        return fail("password_current", "Mevcut şifre eşleşmedi. Şifrenizi kontrol edip yeniden deneyebilirsiniz.")
     if len(new_password) < MIN_PASSWORD_LENGTH:
-        return jsonify({"error": f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır"}), 400
+        return fail("password_short", f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır", count=MIN_PASSWORD_LENGTH)
 
     user.set_password(new_password)
     db.session.commit()
@@ -169,9 +170,9 @@ def set_reminder():
 
     user = db.session.get(User, get_jwt_identity())
     if not user or not user.check_password(current_password):
-        return jsonify({"error": "Mevcut şifre eşleşmedi. Şifrenizi kontrol edip yeniden deneyebilirsiniz."}), 400
+        return fail("password_current", "Mevcut şifre eşleşmedi. Şifrenizi kontrol edip yeniden deneyebilirsiniz.")
     if len(normalize_reminder(reminder)) < MIN_REMINDER_LENGTH:
-        return jsonify({"error": "Hatırlatma kelimesi en az 3 karakter olmalıdır"}), 400
+        return fail("reminder_short", "Hatırlatma kelimesi en az 3 karakter olmalıdır")
 
     user.set_reminder(reminder)
     db.session.commit()
@@ -218,11 +219,11 @@ def recover_password():
     reminder = data.get("reminder") or ""
     new_password = data.get("password") or ""
     if len(new_password) < MIN_PASSWORD_LENGTH:
-        return jsonify({"error": f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır"}), 400
+        return fail("password_short", f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır", count=MIN_PASSWORD_LENGTH)
 
     user = User.query.filter_by(email=email).first() if email else None
     if not user or not user.check_reminder(reminder):
-        return jsonify({"error": RECOVER_ERROR}), 400
+        return fail("reminder_mismatch", RECOVER_ERROR)
 
     user.set_password(new_password)
     db.session.commit()
@@ -236,17 +237,17 @@ def reset_password():
     raw = (data.get("token") or "").strip()
     new_password = data.get("password") or ""
     if not raw:
-        return jsonify({"error": "Bağlantı geçersiz"}), 400
+        return fail("reset_invalid", "Bağlantı geçersiz")
     if len(new_password) < MIN_PASSWORD_LENGTH:
-        return jsonify({"error": f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır"}), 400
+        return fail("password_short", f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır", count=MIN_PASSWORD_LENGTH)
 
     row = PasswordReset.query.filter_by(token_hash=hash_token(raw)).first()
     if not row or not row.is_open():
-        return jsonify({"error": "Bağlantının süresi dolmuş. Giriş sayfasından yeni bir bağlantı isteyebilirsiniz."}), 400
+        return fail("reset_expired", "Bağlantının süresi dolmuş. Giriş sayfasından yeni bir bağlantı isteyebilirsiniz.")
 
     user = db.session.get(User, row.user_id)
     if not user:
-        return jsonify({"error": "Bağlantı geçersiz"}), 400
+        return fail("reset_invalid", "Bağlantı geçersiz")
 
     user.set_password(new_password)
     row.used_at = datetime.utcnow()

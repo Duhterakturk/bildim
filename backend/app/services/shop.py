@@ -11,9 +11,10 @@ from app.models.star import StarLedger
 
 
 class ShopError(Exception):
-    def __init__(self, message, status):
+    def __init__(self, message, status, code="shop_failed"):
         super().__init__(message)
         self.status = status
+        self.code = code
 
 
 # Açık, yumuşak zeminler; oyunlarda koyu yazı ve belirgin işaretler.
@@ -96,11 +97,11 @@ def owned_rows(user_id):
 def purchase(user, item_id):
     item = item_by_id(item_id)
     if item is None:
-        raise ShopError("Ürün bulunamadı", 404)
+        raise ShopError("Ürün bulunamadı", 404, "shop_missing")
     if UserItem.query.filter_by(user_id=user.id, item_id=item_id).first():
-        raise ShopError("Bu ürün zaten alınmış", 409)
+        raise ShopError("Bu ürün zaten alınmış", 409, "shop_owned")
     if int(user.star_balance or 0) < item["price"]:
-        raise ShopError("Yıldız bakiyeniz bu ürün için yetmiyor.", 402)
+        raise ShopError("Yıldız bakiyeniz bu ürün için yetmiyor.", 402, "shop_short")
     user.star_balance = int(user.star_balance or 0) - item["price"]
     db.session.add(StarLedger(
         user_id=user.id,
@@ -153,7 +154,7 @@ def refund_accessories(connection):
 def equip(user, item_id):
     row = UserItem.query.filter_by(user_id=user.id, item_id=item_id).first()
     if row is None:
-        raise ShopError("Bu ürün hesabınızda yok.", 404)
+        raise ShopError("Bu ürün hesabınızda yok.", 404, "shop_not_owned")
     item = item_by_id(item_id)
     if row.equipped:
         row.equipped = False

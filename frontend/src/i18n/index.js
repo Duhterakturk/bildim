@@ -11,7 +11,15 @@ i18n.use(initReactI18next).init({
   },
   lng: localStorage.getItem("mindarena_lang") || "tr",
   fallbackLng: "tr",
-  interpolation: { escapeValue: false },
+  interpolation: {
+    escapeValue: false,
+    format(value, format, lng) {
+      if (format === "number" && typeof value === "number") {
+        return new Intl.NumberFormat(lng?.startsWith("en") ? "en" : "tr").format(value);
+      }
+      return value;
+    },
+  },
 });
 
 export default i18n;

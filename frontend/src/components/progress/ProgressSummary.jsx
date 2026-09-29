@@ -3,20 +3,21 @@ import { useTranslation } from "react-i18next";
 import { fetchMyProgress, downloadProgressExport, downloadProgressPdf } from "../../api/progress";
 import { btnSecondary } from "../common/buttons";
 
-function BarChart({ perGame, lang }) {
+function BarChart({ perGame, language, empty }) {
   if (perGame.length === 0) {
-    return <p className="text-slate-400 text-sm">Henüz tamamlanmış oyun yok.</p>;
+    return <p className="text-slate-400 text-sm">{empty}</p>;
   }
+  const english = String(language || "").startsWith("en");
   const max = Math.max(...perGame.map((g) => g.best_points), 1);
 
   return (
     <div className="flex items-end gap-3 h-40 mt-2">
       {perGame.slice(0, 8).map((g) => {
         const height = Math.round((g.best_points / max) * 100);
-        const name = lang === "tr" ? g.name_tr : g.name_en;
+        const name = english ? (g.name_en || g.name_tr) : (g.name_tr || g.name_en);
         return (
           <div key={g.game_slug} className="flex flex-col items-center flex-1 min-w-0">
-            <span className="text-[10px] text-slate-500 mb-1">{g.best_points}</span>
+            <span className="text-[10px] text-slate-500 mb-1">{new Intl.NumberFormat(english ? "en" : "tr").format(g.best_points)}</span>
             <div
               className="w-full bg-brand-500 rounded-t"
               style={{ height: `${height}%`, minHeight: 4 }}
@@ -39,7 +40,9 @@ function BarChart({ perGame, lang }) {
  * gösterilir.
  */
 export default function ProgressSummary({ progress: externalProgress, showExport = true }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language?.startsWith("en") ? "en" : "tr";
+  const formatCount = (value) => new Intl.NumberFormat(locale).format(value ?? 0);
   const [ownProgress, setOwnProgress] = useState(null);
   const [loadError, setLoadError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -101,7 +104,7 @@ export default function ProgressSummary({ progress: externalProgress, showExport
       </div>
     );
   }
-  if (!progress) return <p className="text-slate-600 text-sm" role="status">Yükleniyor...</p>;
+  if (!progress) return <p className="text-slate-600 text-sm" role="status">{t("progress.loading")}</p>;
 
   const untouched = !progress.total_completed && !(progress.per_game || []).length && !startDate && !endDate;
   if (untouched && showExport) {
@@ -118,18 +121,20 @@ export default function ProgressSummary({ progress: externalProgress, showExport
       {showExport && (
         <div className="flex flex-wrap items-end gap-3 mb-4 text-sm">
           <label className="flex flex-col text-xs text-slate-500">
-            Başlangıç
+            {t("progress.start")}
             <input
               type="date"
+              lang={locale}
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="border border-slate-200 rounded-lg px-2 py-1 mt-1"
             />
           </label>
           <label className="flex flex-col text-xs text-slate-500">
-            Bitiş
+            {t("progress.end")}
             <input
               type="date"
+              lang={locale}
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className="border border-slate-200 rounded-lg px-2 py-1 mt-1"
@@ -143,7 +148,7 @@ export default function ProgressSummary({ progress: externalProgress, showExport
               }}
               className="text-xs text-slate-500 hover:underline pb-2"
             >
-              Filtreyi temizle
+              {t("progress.clear")}
             </button>
           )}
         </div>
@@ -151,21 +156,21 @@ export default function ProgressSummary({ progress: externalProgress, showExport
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-brand-50 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-brand-700">{progress.total_completed}</p>
-          <p className="text-xs text-slate-500">Tamamlanan Oyun</p>
+          <p className="text-2xl font-bold text-brand-700">{formatCount(progress.total_completed)}</p>
+          <p className="text-xs text-slate-500">{t("progress.completed")}</p>
         </div>
         <div className="bg-brand-50 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-brand-700">{progress.total_points}</p>
-          <p className="text-xs text-slate-500">Toplam Puan</p>
+          <p className="text-2xl font-bold text-brand-700">{formatCount(progress.total_points)}</p>
+          <p className="text-xs text-slate-500">{t("progress.points")}</p>
         </div>
         <div className="bg-brand-50 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-brand-700">{progress.distinct_games_completed}</p>
-          <p className="text-xs text-slate-500">Farklı Oyun Türü</p>
+          <p className="text-2xl font-bold text-brand-700">{formatCount(progress.distinct_games_completed)}</p>
+          <p className="text-xs text-slate-500">{t("progress.kinds")}</p>
         </div>
       </div>
 
-      <h3 className="text-sm font-semibold text-slate-700 mb-1">Oyun Bazlı En İyi Puanlar</h3>
-      <BarChart perGame={progress.per_game} lang={i18n.language} />
+      <h3 className="text-sm font-semibold text-slate-700 mb-1">{t("progress.best")}</h3>
+      <BarChart perGame={progress.per_game} language={i18n.language} empty={t("progress.empty")} />
 
       {showExport && (
         <div className="mt-6 flex flex-wrap gap-2">
@@ -174,14 +179,14 @@ export default function ProgressSummary({ progress: externalProgress, showExport
             disabled={exportingPdf}
             className={btnSecondary}
           >
-            {exportingPdf ? "İndiriliyor..." : "PDF İndirin"}
+            {exportingPdf ? t("progress.downloading") : t("progress.pdf")}
           </button>
           <button
             onClick={handleExport}
             disabled={exporting}
             className={btnSecondary}
           >
-            {exporting ? "İndiriliyor..." : "Excel Olarak İndirin"}
+            {exporting ? t("progress.downloading") : t("progress.excel")}
           </button>
         </div>
       )}

@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { joinClassroom, leaveClassroom } from "../../api/classrooms";
 import { btnDanger, btnPrimary, btnSecondary } from "../common/buttons";
+import { apiErrorText, apiFailure } from "../../i18n/apiError";
 
 export default function ClassroomJoin() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, refreshUser } = useAuth();
   const [code, setCode] = useState("");
   const [error, setError] = useState(null);
@@ -21,7 +22,7 @@ export default function ClassroomJoin() {
       await refreshUser();
       setCode("");
     } catch (err) {
-      setError(err.response?.data?.error || "Sınıfa katılınamadı. Kodu kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     } finally {
       setBusy(false);
     }
@@ -35,7 +36,7 @@ export default function ClassroomJoin() {
       await refreshUser();
       setConfirmLeave(false);
     } catch (err) {
-      setError(err.response?.data?.error || t("account.leaveError"));
+      setError(apiFailure(err, "account.leaveError"));
     } finally {
       setBusy(false);
     }
@@ -55,7 +56,7 @@ export default function ClassroomJoin() {
         ) : (
           <div className="mt-3">
             <p className="text-sm text-slate-600 mb-3">{t("account.leaveHelp")}</p>
-            {error && <p role="alert" className="text-red-700 text-sm mb-2">{error}</p>}
+            {error && <p role="alert" className="text-red-700 text-sm mb-2">{apiErrorText(error, t, i18n)}</p>}
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={handleLeave} disabled={busy} className={btnDanger}>
                 {t("account.leaveConfirm")}
@@ -84,10 +85,10 @@ export default function ClassroomJoin() {
           className="min-w-[12rem] flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm uppercase min-h-[44px]"
         />
         <button type="submit" disabled={busy} className={btnPrimary}>
-          Katılın
+          {t("account.join")}
         </button>
       </div>
-      {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
+      {error && <p role="alert" className="text-red-700 text-sm">{apiErrorText(error, t, i18n)}</p>}
     </form>
   );
 }

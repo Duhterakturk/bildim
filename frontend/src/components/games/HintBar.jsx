@@ -4,76 +4,55 @@ import { openCellHint } from "../../api/games";
 import HowTo from "./HowTo";
 import { currentHintFocus, publishCellHint } from "../../games/common/cellHint";
 import { hintFor } from "../../games/hints";
+import { apiErrorText } from "../../i18n/apiError";
 
-function describe(hint, tr) {
+function describe(hint, t, language) {
   if (!hint) return "";
   const row = (hint.row ?? 0) + 1;
   const col = (hint.col ?? 0) + 1;
-  if (hint.kind === "fill") {
-    return tr
-      ? `Bu kareye ${hint.value} düşer: ${row}. satır, ${col}. sütun.`
-      : `${hint.value} belongs in row ${row}, column ${col}.`;
-  }
-  if (hint.kind === "mark" && hint.note === "step") {
-    return tr ? `${hint.label}’den sonraki adım bu kare.` : `The step after ${hint.label} is this cell.`;
-  }
-  if (hint.kind === "mark" && hint.note === "ship") {
-    return tr ? "Bu karede gemi var." : "A ship sits in this cell.";
-  }
-  if (hint.kind === "mark" && hint.note === "star") {
-    return tr ? "Bu karede bir yıldız durur." : "A star belongs in this cell.";
-  }
-  if (hint.kind === "mark" && hint.note === "shade") {
-    return tr ? "Bu kare boyalı." : "This cell is shaded.";
-  }
-  if (hint.kind === "mark" && hint.note === "path") {
-    return tr ? "Bu daire yolda." : "This circle is on the path.";
-  }
-  if (hint.kind === "marks") {
-    return tr
-      ? `${hint.label} harfinin yolu bu karelerden geçer.`
-      : `The ${hint.label} path runs through these cells.`;
-  }
-  if (hint.kind === "edge") {
-    return tr ? "Bu kenar çitin bir parçası." : "This side is part of the fence.";
-  }
-  if (hint.kind === "piece") {
-    return tr
-      ? `${hint.name} parçası durması gereken yere kondu.`
-      : `The ${hint.name} piece is placed where it belongs.`;
-  }
-  if (hint.kind === "spot") {
-    return tr ? "1 burada." : "1 is here.";
-  }
+  if (hint.kind === "fill") return t("play.hintFill", { value: hint.value, row, col });
+  if (hint.kind === "mark" && hint.note === "step") return t("play.hintStep", { label: hint.label });
+  if (hint.kind === "mark" && hint.note === "ship") return t("play.hintShip");
+  if (hint.kind === "mark" && hint.note === "star") return t("play.hintStar");
+  if (hint.kind === "mark" && hint.note === "shade") return t("play.hintShade");
+  if (hint.kind === "mark" && hint.note === "path") return t("play.hintPath");
+  if (hint.kind === "marks") return t("play.hintMarks", { label: hint.label });
+  if (hint.kind === "edge") return t("play.hintEdge");
+  if (hint.kind === "piece") return t("play.hintPiece", { name: hint.name });
+  if (hint.kind === "spot") return t("play.hintSpot");
   if (hint.kind === "form") {
-    const shape = { circle: ["daire", "circle"], square: ["kare", "square"], triangle: ["üçgen", "triangle"] }[hint.shape];
-    const color = { red: ["Kırmızı", "Red"], yellow: ["Sarı", "Yellow"], blue: ["Mavi", "Blue"] }[hint.color];
+    const shape = hint.shape ? t(`shapes.${hint.shape}`, { defaultValue: "" }) : "";
+    const color = hint.color ? t(`colors.${hint.color}`, { defaultValue: "" }) : "";
     if (shape && color) {
-      return tr ? `${color[0]} ${shape[0]} bu kareye konur.` : `The ${color[1].toLowerCase()} ${shape[1]} belongs in this cell.`;
+      const english = String(language || "").startsWith("en");
+      return t("play.hintForm", {
+        color: english ? color.toLocaleLowerCase("en") : color,
+        shape: english ? shape.toLocaleLowerCase("en") : shape,
+      });
     }
-    return tr ? "Bu parça bu kareye konur." : "This piece belongs in this cell.";
+    return t("play.hintFormPlain");
   }
-  if (hint.kind === "choice" && hint.value) {
-    return tr ? "Doğru renk işaretlendi." : "The right color is marked.";
-  }
+  if (hint.kind === "choice" && hint.value) return t("play.hintChoice");
   return "";
 }
 
 export default function HintBar({ slug }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const tr = !i18n.language.startsWith("en");
   const copy = hintFor(slug, tr ? "tr" : "en");
   const [attempt, setAttempt] = useState(null);
   const [balance, setBalance] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [note, setNote] = useState("");
+  const [hint, setHint] = useState(null);
+  const [fault, setFault] = useState(null);
 
   useEffect(() => {
     function handle(event) {
       const detail = event.detail;
       setAttempt(detail);
       if (typeof detail?.hint_balance === "number") setBalance(detail.hint_balance);
-      setNote(detail?.hint ? describe(detail.hint, tr) : "");
+      setFault(null);
+      setHint(detail?.hint || null);
     }
     function handleBalance(event) {
       if (typeof event.detail?.balance === "number") setBalance(event.detail.balance);
@@ -84,7 +63,7 @@ export default function HintBar({ slug }) {
       window.removeEventListener("mindarena:attempt", handle);
       window.removeEventListener("mindarena:hints", handleBalance);
     };
-  }, [tr]);
+  }, []);
 
   async function revealCell() {
     if (!attempt?.id || busy || balance === 0) return;
@@ -92,18 +71,21 @@ export default function HintBar({ slug }) {
     try {
       const data = await openCellHint(attempt.id, currentHintFocus());
       publishCellHint(data.hint, data.hint_balance);
-      setNote(describe(data.hint, tr));
+      setFault(null);
+      setHint(data.hint);
     } catch (error) {
       const body = error.response?.data;
       if (typeof body?.hint_balance === "number") setBalance(body.hint_balance);
-      setNote(body?.error || (tr ? "Şu an bir ipucu yok. Bir süre sonra yeniden deneyebilirsiniz." : "A hint is not available just now. You can try again in a moment."));
+      setHint(null);
+      setFault(body?.code ? { code: body.code, fallback: "errors.hint_unavailable" } : { fallback: "errors.hint_unavailable" });
     } finally {
       setBusy(false);
     }
   }
 
   if (!copy) return null;
-  const hintLabel = balance == null ? (tr ? "İpucu" : "Hint") : (tr ? `İpucu · ${balance}` : `Hint · ${balance}`);
+  const hintLabel = balance == null ? t("play.hint") : t("play.hintCount", { count: balance });
+  const note = fault ? apiErrorText(fault, t, i18n) : describe(hint, t, i18n.language);
 
   return (
     <div className="mb-6">

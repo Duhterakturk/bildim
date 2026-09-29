@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { changePassword, saveReminder } from "../../api/auth";
 import { useAuth } from "../../context/AuthContext";
 import { btnPrimary, btnSecondary } from "../common/buttons";
+import { apiErrorText, apiFailure } from "../../i18n/apiError";
 
 export default function PasswordCard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { refreshUser } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -26,7 +27,7 @@ export default function PasswordCard() {
       setNewPassword("");
       setMessage(t("auth.password_changed"));
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre değiştirilemedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -41,7 +42,7 @@ export default function PasswordCard() {
       setReminderMessage(t("auth.reminder_saved"));
       await refreshUser();
     } catch (err) {
-      setReminderError(err.response?.data?.error || "Hatırlatma kelimesi kaydedilemedi. Yeniden deneyebilirsiniz.");
+      setReminderError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -72,7 +73,7 @@ export default function PasswordCard() {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
+        {error && <p role="alert" className="text-red-700 text-sm">{apiErrorText(error, t, i18n)}</p>}
         {message && <p role="status" className="text-sm text-slate-700">{message}</p>}
         <button type="submit" className={btnPrimary}>
           {t("auth.save_password")}
@@ -105,7 +106,7 @@ export default function PasswordCard() {
           value={reminder}
           onChange={(e) => setReminder(e.target.value)}
         />
-        {reminderError && <p role="alert" className="text-red-700 text-sm">{reminderError}</p>}
+        {reminderError && <p role="alert" className="text-red-700 text-sm">{apiErrorText(reminderError, t, i18n)}</p>}
         {reminderMessage && <p className="text-sm text-slate-700">{reminderMessage}</p>}
         <button type="submit" className={btnSecondary}>
           {t("auth.save_reminder")}

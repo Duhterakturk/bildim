@@ -19,15 +19,15 @@ export default function Dashboard() {
       </p>
 
       <Link to="/exam" className="board-card mb-6 block p-5">
-        <span className="font-display text-2xl">Karışık Deneme</span>
-        <span className="block text-sm text-stone-600 mt-1">Üç oyun, on beş dakika.</span>
+        <span className="font-display text-2xl">{t("exam.title")}</span>
+        <span className="block text-sm text-stone-600 mt-1">{t("exam.short")}</span>
       </Link>
 
       {user?.role === "student" && <StudentHomework />}
 
       {user?.role === "student" && (
         <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
-          <h2 className="text-lg font-semibold mb-3">Sınıf</h2>
+          <h2 className="text-lg font-semibold mb-3">{t("exam.class")}</h2>
           <ClassroomJoin />
         </div>
       )}
@@ -35,12 +35,12 @@ export default function Dashboard() {
       <PasswordCard />
 
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
-        <h2 className="text-lg font-semibold mb-4">İlerleme</h2>
+        <h2 className="text-lg font-semibold mb-4">{t("exam.progress")}</h2>
         <ProgressSummary />
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
-        <h2 className="text-lg font-semibold mb-4">Rozetler</h2>
+        <h2 className="text-lg font-semibold mb-4">{t("exam.badges")}</h2>
         <BadgeGrid />
       </div>
     </div>

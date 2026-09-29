@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { resetPassword } from "../api/auth";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 export default function Reset() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [params] = useSearchParams();
   const token = params.get("token") || "";
   const [password, setPassword] = useState("");
@@ -18,7 +19,7 @@ export default function Reset() {
       await resetPassword(token, password);
       setDone(true);
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre yenilenemedi. Yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -47,7 +48,7 @@ export default function Reset() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p role="alert" className="text-red-500 text-sm">{apiErrorText(error, t, i18n)}</p>}
             <button
               type="submit"
               className="w-full bg-brand-500 text-white py-2 rounded-lg font-semibold hover:bg-brand-600"

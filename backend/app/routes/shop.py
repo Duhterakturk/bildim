@@ -4,6 +4,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from app.extensions import db
 from app.models import User
+from app.api_error import fail
 from app.services.shop import CATALOG, ShopError, equip, owned_rows, public_item, purchase
 
 shop_bp = Blueprint("shop", __name__, url_prefix="/api/shop")
@@ -25,7 +26,7 @@ def _state(user):
 def catalog():
     user = db.session.get(User, get_jwt_identity())
     if user is None:
-        return jsonify({"error": "Kullanıcı bulunamadı"}), 404
+        return fail("user_missing", "Kullanıcı bulunamadı", 404)
     return jsonify(_state(user))
 
 
@@ -34,17 +35,17 @@ def catalog():
 def buy():
     user = db.session.get(User, get_jwt_identity())
     if user is None:
-        return jsonify({"error": "Kullanıcı bulunamadı"}), 404
+        return fail("user_missing", "Kullanıcı bulunamadı", 404)
     data = request.get_json(force=True) or {}
     try:
         purchase(user, data.get("item_id"))
         db.session.commit()
     except ShopError as exc:
         db.session.rollback()
-        return jsonify({"error": str(exc)}), exc.status
+        return fail(getattr(exc, "code", "shop_failed"), str(exc), exc.status)
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"error": "Bu ürün zaten hesabınızda."}), 409
+        return fail("shop_owned", "Bu ürün zaten hesabınızda.", 409)
     return jsonify(_state(user))
 
 
@@ -53,12 +54,12 @@ def buy():
 def wear():
     user = db.session.get(User, get_jwt_identity())
     if user is None:
-        return jsonify({"error": "Kullanıcı bulunamadı"}), 404
+        return fail("user_missing", "Kullanıcı bulunamadı", 404)
     data = request.get_json(force=True) or {}
     try:
         equip(user, data.get("item_id"))
         db.session.commit()
     except ShopError as exc:
         db.session.rollback()
-        return jsonify({"error": str(exc)}), exc.status
+        return fail(getattr(exc, "code", "shop_failed"), str(exc), exc.status)
     return jsonify(_state(user))

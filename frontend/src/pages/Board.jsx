@@ -3,14 +3,13 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getGameComponent } from "../games/registry";
 
-const LEVELS = { easy: "Kolay", medium: "Orta", hard: "Zor" };
-
 export default function Board() {
   const { slug } = useParams();
   const [params] = useSearchParams();
   const { t } = useTranslation();
   const GameComponent = getGameComponent(slug);
-  const level = LEVELS[params.get("difficulty")] || LEVELS.easy;
+  const levelKey = params.get("difficulty") || "easy";
+  const level = t(`difficulty.${levelKey}`, { defaultValue: t("difficulty.easy") });
   const title = t(`gameTitle.${slug}`, { defaultValue: slug });
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function Board() {
   }
 
   if (!GameComponent) {
-    return <p className="p-10 text-center">Bu oyun tahtaya alınamadı.</p>;
+    return <p className="p-10 text-center">{t("board.missing")}</p>;
   }
 
   return (
@@ -44,15 +43,15 @@ export default function Board() {
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={toggleFullscreen} className="press-btn !px-4 !py-2 text-sm">
-            Tam ekran
+            {t("board.fullscreen")}
           </button>
-          <Link to="/hesabim?bolum=siniflar" className="px-4 py-2 text-sm font-bold text-stone-600">
-            Çık
+          <Link to="/hesabim?bolum=siniflar" className="inline-flex min-h-[44px] items-center px-4 py-2 text-sm font-bold text-stone-600">
+            {t("board.exit")}
           </Link>
         </div>
       </header>
       <div className="board-play flex justify-center px-4 pb-16">
-        <Suspense fallback={<p>Yükleniyor...</p>}>
+        <Suspense fallback={<p>{t("common.loading")}</p>}>
           <GameComponent />
         </Suspense>
       </div>

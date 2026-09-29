@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { recoverPassword } from "../api/auth";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 export default function Forgot() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [reminder, setReminder] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +19,7 @@ export default function Forgot() {
       await recoverPassword(email, reminder, password);
       setDone(true);
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre yenilenemedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -63,7 +64,7 @@ export default function Forgot() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p role="alert" className="text-red-500 text-sm">{apiErrorText(error, t, i18n)}</p>}
           <button
             type="submit"
             className="w-full bg-brand-500 text-white py-2 rounded-lg font-semibold hover:bg-brand-600"

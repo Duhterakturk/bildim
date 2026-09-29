@@ -4,10 +4,11 @@ import { useTranslation } from "react-i18next";
 import { fetchGames } from "../api/games";
 import { fetchAllUnlocked } from "../api/difficulty";
 import { useAuth } from "../context/AuthContext";
+import { apiErrorText } from "../i18n/apiError";
 import GameCard from "../components/games/GameCard";
 
 export default function Games() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const userId = user?.id;
   const [games, setGames] = useState([]);
@@ -28,7 +29,7 @@ export default function Games() {
         setLoading(false);
       })
       .catch(() => {
-        setError(t("games.loadError"));
+        setError({ fallback: "games.loadError" });
         setLoading(false);
       });
   }, [t]);
@@ -56,11 +57,11 @@ export default function Games() {
       <div className="flex items-end justify-between gap-4 mb-6">
         <h1 className="scene-label font-display text-4xl font-semibold">{t("games.title")}</h1>
         <Link to="/exam" className="press-btn text-sm" style={{ padding: "0.55rem 1rem" }}>
-          Karışık Deneme
+          {t("exam.title")}
         </Link>
       </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p role="alert" className="text-red-500">{apiErrorText(error, t, i18n)}</p>}
 
       {loading && (
         <>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { fetchMyClassrooms, createClassroom, setStudentPassword } from "../api/classrooms";
 import { ClassHomework } from "../components/classroom/ClassHomework";
 import { fetchStudentsOverview } from "../api/progress";
@@ -9,9 +9,10 @@ import { stageFor } from "../components/owl/stages";
 import { downloadCertificate, fetchStudentCertificates } from "../api/certificates";
 import { btnPrimary, btnSecondary } from "../components/common/buttons";
 import { copyText } from "../components/common/copyText";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 function StudentPassword({ classroomId, student }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState(null);
@@ -32,7 +33,7 @@ function StudentPassword({ classroomId, student }) {
       setShown(chosen);
       setPasswordCopy(null);
     } catch (err) {
-      setError(err.response?.data?.error || t("account.teacher.passwordError"));
+      setError(apiFailure(err, "account.teacher.passwordError"));
     } finally {
       setBusy(false);
     }
@@ -42,7 +43,7 @@ function StudentPassword({ classroomId, student }) {
     return (
       <div className="text-left">
         <p className="text-slate-700">
-          Yeni şifre: <span className="font-mono font-bold">{shown}</span>
+          <Trans i18nKey="account.teacher.newPasswordValue" values={{ password: shown }} components={{ code: <span className="font-mono font-bold" /> }} />
         </p>
         <div className="flex flex-wrap gap-2 mt-1">
           <button
@@ -50,12 +51,12 @@ function StudentPassword({ classroomId, student }) {
             onClick={async () => setPasswordCopy((await copyText(shown)) ? "ok" : "fail")}
             className="min-h-[44px] font-semibold text-brand-700"
           >
-            Şifreyi Kopyalayın
+            {t("account.teacher.copyPassword")}
           </button>
           {passwordCopy === "ok" && <p role="status" className="text-sm text-emerald-700">{t("account.teacher.copied")}</p>}
           {passwordCopy === "fail" && <p role="alert" className="text-sm text-red-700">{t("account.teacher.copyError")}</p>}
           <button type="button" onClick={() => setShown(null)} className="text-slate-600 min-h-[44px]">
-            Kapatın
+            {t("account.teacher.close")}
           </button>
         </div>
       </div>
@@ -73,7 +74,7 @@ function StudentPassword({ classroomId, student }) {
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-2 items-stretch sm:items-end">
       <p className="text-xs text-slate-500">{t("account.teacher.passwordHelp")}</p>
-      <label className="text-xs text-slate-600" htmlFor={`pw-${student.id}`}>Yeni şifre</label>
+      <label className="text-xs text-slate-600" htmlFor={`pw-${student.id}`}>{t("account.teacher.newPassword")}</label>
       <input
         id={`pw-${student.id}`}
         type="password"
@@ -84,7 +85,7 @@ function StudentPassword({ classroomId, student }) {
         onChange={(e) => setPassword(e.target.value)}
         className="border border-slate-200 rounded-lg px-2 py-2 text-sm w-full sm:w-40 min-h-[44px]"
       />
-      {error && <p role="alert" className="text-red-700 text-xs">{error}</p>}
+      {error && <p role="alert" className="text-red-700 text-xs">{apiErrorText(error, t, i18n)}</p>}
       <div className="flex flex-wrap gap-2">
         <button type="submit" disabled={busy} className={btnSecondary}>{t("account.teacher.passwordSave")}</button>
         <button
@@ -103,7 +104,7 @@ function StudentPassword({ classroomId, student }) {
 }
 
 export default function TeacherPanel({ embedded = false }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [classrooms, setClassrooms] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [students, setStudents] = useState([]);
@@ -121,18 +122,20 @@ export default function TeacherPanel({ embedded = false }) {
   const [certs, setCerts] = useState({});
 
   const registerUrl = `${window.location.origin}/register`;
-  const inviteText = `Sayın Velilerim,
-
-MindArena, çocuklarımızın diledikleri zaman kullanabilecekleri, bulmaca ve düşünme etkinlikleri içeren bir uygulamadır. Ayrıca uygulama üzerinden zaman zaman deneme çalışmaları da paylaşabilirim.
-
-Katılmak isterseniz aşağıdaki adımları takip edebilirsiniz:
-
-1. Paylaşacağım adres üzerinden öğrenci olarak kayıt olabilirsiniz: ${registerUrl}
-2. Kayıt sırasında bir şifre belirlemeniz yeterlidir.
-3. Şifrenin unutulması durumunda, belirlediğiniz hatırlatma kelimesini kullanarak yeni bir şifre oluşturabilirsiniz.
-4. Kayıt işlemi tamamlandıktan sonra, paylaşacağım sınıf kodunu “Hesabım” sayfasına girerek sınıfa katılabilirsiniz.
-
-Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil olabilirler.`;
+  const inviteText = [
+    t("account.teacher.inviteGreeting"),
+    "",
+    t("account.teacher.inviteBody"),
+    "",
+    t("account.teacher.inviteStepsTitle"),
+    "",
+    `1. ${t("account.teacher.inviteStep1", { url: registerUrl })}`,
+    `2. ${t("account.teacher.inviteStep2")}`,
+    `3. ${t("account.teacher.inviteStep3")}`,
+    `4. ${t("account.teacher.inviteStep4")}`,
+    "",
+    t("account.teacher.inviteClose"),
+  ].join("\n");
 
   function loadClassrooms() {
     setLoading(true);
@@ -187,13 +190,16 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
       setClassrooms((prev) => [...prev, classroom]);
       setSelectedId(classroom.id);
     } catch (err) {
-      setError(err.response?.data?.error || t("account.teacher.createError"));
+      setError(apiFailure(err, "account.teacher.createError"));
     } finally {
       setBusy(false);
     }
   }
 
-  if (loading) return <p className={embedded ? "text-slate-600" : "max-w-4xl mx-auto px-4 py-10 text-slate-600"} role="status">Yükleniyor...</p>;
+  const locale = i18n.language?.startsWith("en") ? "en" : "tr";
+  const formatCount = (value) => new Intl.NumberFormat(locale).format(value ?? 0);
+
+  if (loading) return <p className={embedded ? "text-slate-600" : "max-w-4xl mx-auto px-4 py-10 text-slate-600"} role="status">{t("account.teacher.loading")}</p>;
 
   if (loadError) {
     return (
@@ -300,9 +306,9 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
           )}
 
           <section className="mb-4">
-            <h3 className="mb-2 text-base font-semibold">Öğrenciler</h3>
+            <h3 className="mb-2 text-base font-semibold">{t("account.teacher.students")}</h3>
             {studentsLoading ? (
-              <p className="text-sm text-slate-600" role="status">Yükleniyor...</p>
+              <p className="text-sm text-slate-600" role="status">{t("account.teacher.loading")}</p>
             ) : studentsError ? (
               <div>
                 <p role="alert" className="text-sm text-slate-700">{t("account.teacher.studentsError")}</p>
@@ -315,13 +321,13 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 text-slate-500 text-left">
                     <tr>
-                      <th className="px-4 py-2 whitespace-nowrap">Öğrenci</th>
-                      <th className="px-4 py-2 whitespace-nowrap">Sınıf Seviyesi</th>
-                      <th className="px-4 py-2 text-right whitespace-nowrap">Tamamlanan</th>
-                      <th className="px-4 py-2 text-right whitespace-nowrap">Farklı Oyun</th>
-                      <th className="px-4 py-2 text-right whitespace-nowrap">Toplam Puan</th>
-                      <th className="px-4 py-2 text-right whitespace-nowrap">Sertifika</th>
-                      <th className="px-4 py-2 text-right whitespace-nowrap">Şifre</th>
+                      <th className="px-4 py-2 whitespace-nowrap">{t("account.teacher.student")}</th>
+                      <th className="px-4 py-2 whitespace-nowrap">{t("account.teacher.grade")}</th>
+                      <th className="px-4 py-2 text-right whitespace-nowrap">{t("account.teacher.completed")}</th>
+                      <th className="px-4 py-2 text-right whitespace-nowrap">{t("account.teacher.distinctGames")}</th>
+                      <th className="px-4 py-2 text-right whitespace-nowrap">{t("account.teacher.points")}</th>
+                      <th className="px-4 py-2 text-right whitespace-nowrap">{t("account.teacher.certificate")}</th>
+                      <th className="px-4 py-2 text-right whitespace-nowrap">{t("account.teacher.passwordColumn")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -338,21 +344,21 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
                             </span>
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-slate-500 whitespace-nowrap">{row.student.grade_level ?? "-"}</td>
-                        <td className="px-4 py-2 text-right whitespace-nowrap">{row.total_completed}</td>
-                        <td className="px-4 py-2 text-right whitespace-nowrap">{row.distinct_games_completed}</td>
-                        <td className="px-4 py-2 text-right font-semibold text-brand-700 whitespace-nowrap">{row.total_points}</td>
+                        <td className="px-4 py-2 text-slate-500 whitespace-nowrap">{row.student.grade_level == null ? "-" : formatCount(row.student.grade_level)}</td>
+                        <td className="px-4 py-2 text-right whitespace-nowrap">{formatCount(row.total_completed)}</td>
+                        <td className="px-4 py-2 text-right whitespace-nowrap">{formatCount(row.distinct_games_completed)}</td>
+                        <td className="px-4 py-2 text-right font-semibold text-brand-700 whitespace-nowrap">{formatCount(row.total_points)}</td>
                         <td className="px-4 py-2 text-right">
                           <button
                             type="button"
                             className="text-slate-700 font-semibold min-h-[44px]"
                             onClick={() => fetchStudentCertificates(row.student.id).then((list) => setCerts((prev) => ({ ...prev, [row.student.id]: list }))).catch(() => {})}
                           >
-                            Sertifikalar
+                            {t("account.teacher.certificates")}
                           </button>
                           {(certs[row.student.id] || []).filter((item) => item.earned).map((item) => (
                             <button key={item.id} type="button" className="block ml-auto text-xs text-slate-600 min-h-[44px]" onClick={() => downloadCertificate(item.id)}>
-                              {item.kind}
+                              {t(`certs.${item.kind}`, { defaultValue: item.kind })}
                             </button>
                           ))}
                         </td>
@@ -371,20 +377,18 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
 
       <details className="rounded-xl border border-slate-200 bg-white px-4 py-2">
         <summary className="cursor-pointer font-semibold min-h-[44px] flex items-center">{t("account.teacher.invite")}</summary>
-        <p className="text-sm text-slate-600 mt-3 mb-3">Bu not ailelere bir kez bırakılabilir. Kayıt ve şifre ailede kalır.</p>
-        <div className="text-sm whitespace-pre-wrap mb-3 space-y-3">
-          <p>Sayın Velilerim,</p>
-          <p>
-            MindArena, çocuklarımızın diledikleri zaman kullanabilecekleri, bulmaca ve düşünme etkinlikleri içeren bir uygulamadır. Ayrıca uygulama üzerinden zaman zaman deneme çalışmaları da paylaşabilirim.
-          </p>
-          <p>Katılmak isterseniz aşağıdaki adımları takip edebilirsiniz:</p>
+        <p className="text-sm text-slate-600 mt-3 mb-3">{t("account.teacher.inviteNote")}</p>
+        <div className="text-sm mb-3 space-y-3">
+          <p>{t("account.teacher.inviteGreeting")}</p>
+          <p>{t("account.teacher.inviteBody")}</p>
+          <p>{t("account.teacher.inviteStepsTitle")}</p>
           <ol className="list-decimal pl-5 space-y-1">
-            <li>Paylaşacağım adres üzerinden <strong>öğrenci olarak kayıt</strong> olabilirsiniz: {registerUrl}</li>
-            <li>Kayıt sırasında bir <strong>şifre belirlemeniz</strong> yeterlidir.</li>
-            <li>Şifrenin unutulması durumunda, belirlediğiniz <strong>hatırlatma kelimesini</strong> kullanarak yeni bir şifre oluşturabilirsiniz.</li>
-            <li>Kayıt işlemi tamamlandıktan sonra, paylaşacağım <strong>sınıf kodunu “Hesabım” sayfasına</strong> girerek sınıfa katılabilirsiniz.</li>
+            <li><Trans i18nKey="account.teacher.inviteStep1Html" values={{ url: registerUrl }} components={{ b: <strong />, url: <span className="break-all" /> }} /></li>
+            <li><Trans i18nKey="account.teacher.inviteStep2Html" components={{ b: <strong /> }} /></li>
+            <li><Trans i18nKey="account.teacher.inviteStep3Html" components={{ b: <strong /> }} /></li>
+            <li><Trans i18nKey="account.teacher.inviteStep4Html" components={{ b: <strong /> }} /></li>
           </ol>
-          <p>Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil olabilirler.</p>
+          <p>{t("account.teacher.inviteClose")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" onClick={async () => setInviteCopy((await copyText(inviteText)) ? "ok" : "fail")} className={btnSecondary}>
@@ -399,7 +403,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
 }
 
 function CreateForm({ name, setName, busy, error, onSubmit, onCancel }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <label htmlFor="class-name" className="block text-sm font-medium">{t("account.teacher.name")}</label>
@@ -412,7 +416,7 @@ function CreateForm({ name, setName, busy, error, onSubmit, onCancel }) {
         onChange={(e) => setName(e.target.value)}
         className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm min-h-[44px]"
       />
-      {error && <p role="alert" className="text-red-700 text-sm">{error}</p>}
+      {error && <p role="alert" className="text-red-700 text-sm">{apiErrorText(error, t, i18n)}</p>}
       <div className="flex flex-wrap gap-2">
         <button type="submit" disabled={busy} className={btnPrimary}>
           {busy ? t("account.teacher.saving") : t("account.teacher.save")}

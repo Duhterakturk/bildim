@@ -95,11 +95,12 @@ def reveal_cell(attempt_id):
     if not _can_see(attempt):
         return jsonify({"error": "Bulmaca bulunamadı"}), 404
     if not attempt.user_id:
-        return jsonify({"error": "İpuçları giriş yaptıktan sonra kullanılabilir."}), 403
+        return jsonify({"error": "İpuçları giriş yaptıktan sonra kullanılabilir.", "code": "hint_login"}), 403
     user = db.session.get(User, attempt.user_id)
     if user is None or not spend(user):
         return jsonify({
             "error": "İpucu hakkı kalmadı. Bir bulmaca çözülünce bir hak daha gelir.",
+            "code": "hint_empty",
             "hint_balance": 0 if user is None else int(user.hint_balance or 0),
         }), 409
     focus = (request.get_json(silent=True) or {}).get("round")
@@ -114,11 +115,12 @@ def reveal_cell(attempt_id):
                 break
     except HintError as exc:
         db.session.rollback()
-        return jsonify({"error": str(exc)}), 400
+        return jsonify({"error": str(exc), "code": getattr(exc, "code", "hint_unavailable")}), 400
     if hint is None:
         db.session.rollback()
         return jsonify({
             "error": "Bu bulmacada açılacak başka kare kalmadı.",
+            "code": "hint_done",
             "hint_balance": balance_of(attempt.user_id),
         }), 409
     stored = _stored_hints(attempt)

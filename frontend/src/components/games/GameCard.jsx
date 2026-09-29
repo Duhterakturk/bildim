@@ -20,7 +20,7 @@ function levelText(t, level, state) {
 
 export default function GameCard({ game, index = 0, progress = null }) {
   const { t, i18n } = useTranslation();
-  const name = i18n.language === "tr" ? game.name_tr : game.name_en;
+  const name = i18n.language?.startsWith("en") ? (game.name_en || game.name_tr) : (game.name_tr || game.name_en);
   const state = progress?.games?.[game.slug]
     ? { ...progress.games[game.slug], threshold: progress.threshold }
     : null;

@@ -5,9 +5,22 @@ import { fetchGames } from "../../api/games";
 import { createAssignment, fetchAssignment, fetchMyAssignment } from "../../api/classrooms";
 import { btnPrimary, btnSecondary } from "../common/buttons";
 import { copyText } from "../common/copyText";
+import { apiErrorText, apiFailure } from "../../i18n/apiError";
+
+function gameLabel(game, language) {
+  const english = String(language || "").startsWith("en");
+  if (english) return game.name_en || game.name_tr || game.slug;
+  return game.name_tr || game.name_en || game.slug;
+}
+
+function levelLabel(t, difficulty) {
+  const key = `difficulty.inline.${difficulty}`;
+  const value = t(key);
+  return value === key ? "" : value;
+}
 
 export function ClassHomework({ classroomId, classroomName }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [games, setGames] = useState([]);
   const [form, setForm] = useState({ slugs: [], difficulty: "easy", target_count: 3 });
   const [board, setBoard] = useState(null);
@@ -57,16 +70,19 @@ export function ClassHomework({ classroomId, classroomName }) {
       });
       setBoard(next);
     } catch (err) {
-      setError(err.response?.data?.error || "Ödev kaydedilemedi. Seçiminizi kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "account.teacher.saveError"));
     }
   }
 
-  async function handleCopy() {
-    if (!board?.sentence) return;
-    setCopied((await copyText(board.sentence)) ? "ok" : "fail");
-  }
-
   const assignments = board?.assignments?.length ? board.assignments : board?.assignment ? [board.assignment] : [];
+  const shareText = phase === "ready" && assignments.length
+    ? `${t("account.teacher.weekSentence", { name: classroomName, count: board.class_total })} ${t("account.teacher.pendingSentence", { count: board.pending_count })}`
+    : "";
+
+  async function handleCopy() {
+    if (!shareText) return;
+    setCopied((await copyText(shareText)) ? "ok" : "fail");
+  }
 
   function toggleSlug(slug) {
     setForm((current) => ({
@@ -79,9 +95,9 @@ export function ClassHomework({ classroomId, classroomName }) {
 
   return (
     <section className="mb-4 rounded-xl border border-line bg-[#fffdf8] p-4">
-      <h2 className="mb-1 text-lg font-semibold text-ink">Bu haftanın ödevi</h2>
+      <h2 className="mb-1 text-lg font-semibold text-ink">{t("account.teacher.homeworkTitle")}</h2>
       <p className="mb-3 text-sm text-stone-500">
-        {classroomName} için bir veya birkaç oyun seçilir. Sayı her oyun için geçerlidir. Sayım, ödevin bırakıldığı andan başlar. Kolay kademe herkese açıktır.
+        {t("account.teacher.homeworkIntro", { name: classroomName })}
       </p>
 
       <form onSubmit={handleCreate} className="mb-5">
@@ -95,7 +111,7 @@ export function ClassHomework({ classroomId, classroomName }) {
                 onClick={() => toggleSlug(game.slug)}
                 className={`inline-flex min-h-[44px] items-center rounded-full border px-3 text-sm ${on ? "border-brand-500 bg-brand-500 text-white" : "border-line bg-white text-ink"}`}
               >
-                {game.name_tr}
+                {gameLabel(game, i18n.language)}
               </button>
             );
           })}
@@ -106,9 +122,9 @@ export function ClassHomework({ classroomId, classroomName }) {
           value={form.difficulty}
           onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
         >
-          <option value="easy">Kolay</option>
-          <option value="medium">Orta</option>
-          <option value="hard">Zor</option>
+          <option value="easy">{t("difficulty.easy")}</option>
+          <option value="medium">{t("difficulty.medium")}</option>
+          <option value="hard">{t("difficulty.hard")}</option>
         </select>
         <input
           type="number"
@@ -119,10 +135,10 @@ export function ClassHomework({ classroomId, classroomName }) {
           onChange={(e) => setForm({ ...form, target_count: e.target.value })}
           className="min-h-[44px] w-20 rounded-lg border border-line bg-white px-3 text-sm"
         />
-        <button type="submit" className="press-btn inline-flex min-h-[44px] items-center !px-4 !py-2 text-sm" disabled={form.slugs.length === 0}>Ödevi Kaydedin</button>
+        <button type="submit" className="press-btn inline-flex min-h-[44px] items-center !px-4 !py-2 text-sm" disabled={form.slugs.length === 0}>{t("account.teacher.saveHomework")}</button>
         </div>
       </form>
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {error && <p role="alert" className="text-red-500 text-sm mb-4">{apiErrorText(error, t, i18n)}</p>}
 
       {phase === "loading" && <p className="text-sm text-slate-600" role="status">{t("account.teacher.homeworkLoading")}</p>}
       {phase === "error" && (
@@ -132,22 +148,22 @@ export function ClassHomework({ classroomId, classroomName }) {
         </div>
       )}
       {phase === "ready" && assignments.length === 0 && (
-        <p className="text-sm text-stone-500">Bu hafta henüz bir ödev yok.</p>
+        <p className="text-sm text-stone-500">{t("account.teacher.homeworkEmpty")}</p>
       )}
       {phase === "ready" && assignments.length > 0 && (
         <div>
           <ul className="mb-3 space-y-2">
             {assignments.map((item) => (
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 text-sm text-stone-600">
-                <span>Hedef: {item.target_count} {item.difficulty_label.toLowerCase()} {item.name_tr}</span>
+                <span>{t("account.teacher.target", { count: item.target_count, level: levelLabel(t, item.difficulty), game: gameLabel(item, i18n.language) })}</span>
                 <Link to={`/board/${item.slug}?difficulty=${item.difficulty}`} className="inline-flex min-h-[44px] items-center font-bold text-brand-700">
-                  Tahtada Açın
+                  {t("account.teacher.openBoard")}
                 </Link>
               </li>
             ))}
           </ul>
-          <p className="text-3xl font-semibold leading-none text-ink">{board.class_total}</p>
-          <p className="mb-3 text-sm text-stone-500">bu hafta biten bulmaca</p>
+          <p className="text-3xl font-semibold leading-none text-ink">{new Intl.NumberFormat(i18n.language?.startsWith("en") ? "en" : "tr").format(board.class_total)}</p>
+          <p className="mb-3 text-sm text-stone-500">{t("account.teacher.weekFinished", { count: board.class_total })}</p>
 
           {(board.finished || []).length > 0 && (
             <ul className="flex flex-wrap gap-2 mb-4">
@@ -158,11 +174,11 @@ export function ClassHomework({ classroomId, classroomName }) {
               ))}
             </ul>
           )}
-          <p className="text-sm text-stone-600 mb-4">Ödevi henüz tamamlamayan {board.pending_count} kişi var.</p>
-          <p className="bg-white border border-line rounded-xl px-4 py-3 text-sm mb-3">{board.sentence}</p>
+          <p className="text-sm text-stone-600 mb-4">{t("account.teacher.pending", { count: board.pending_count })}</p>
+          <p className="bg-white border border-line rounded-xl px-4 py-3 text-sm mb-3">{shareText}</p>
           <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={handleCopy} className="inline-flex min-h-[44px] items-center text-sm font-bold text-brand-700">
-              Metni Kopyalayın
+              {t("account.teacher.copyText")}
             </button>
             {copied === "ok" && <p role="status" className="text-sm text-emerald-700">{t("account.teacher.copied")}</p>}
             {copied === "fail" && <p role="alert" className="text-sm text-red-700">{t("account.teacher.copyError")}</p>}
@@ -174,7 +190,7 @@ export function ClassHomework({ classroomId, classroomName }) {
 }
 
 export function StudentHomework({ classroomId }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [pack, setPack] = useState(null);
   const [phase, setPhase] = useState("idle");
   const [reloadKey, setReloadKey] = useState(0);
@@ -225,7 +241,7 @@ export function StudentHomework({ classroomId }) {
   if (!assignments.length) {
     return (
       <section className="bg-white rounded-2xl border border-slate-100 p-6">
-        <h2 className="font-display text-2xl text-ink mb-2">Bu haftanın ödevi</h2>
+        <h2 className="font-display text-2xl text-ink mb-2">{t("account.teacher.homeworkTitle")}</h2>
         <p className="text-sm text-slate-600 mb-4">{t("account.homeworkEmpty")}</p>
         <Link to="/games" className={btnSecondary}>{t("account.play")}</Link>
       </section>
@@ -235,12 +251,12 @@ export function StudentHomework({ classroomId }) {
 
   return (
     <section className="bg-[#fffdf8] rounded-2xl border border-line p-6 mb-6">
-      <h2 className="font-display text-2xl text-ink mb-3">Bu haftanın ödevi</h2>
+      <h2 className="font-display text-2xl text-ink mb-3">{t("account.teacher.homeworkTitle")}</h2>
       <ul className="space-y-4">
         {assignments.map((item) => (
           <li key={item.id}>
             <p className="text-stone-600 mb-1">
-              {item.target_count} {item.difficulty_label.toLowerCase()} {item.name_tr}
+              {t("account.homeworkTarget", { count: item.target_count, level: levelLabel(t, item.difficulty), game: gameLabel(item, i18n.language) })}
             </p>
             <p className="font-display text-4xl text-ink">
               {Math.min(item.done_count, item.target_count)}
@@ -248,14 +264,14 @@ export function StudentHomework({ classroomId }) {
             </p>
             {!item.finished && (
               <Link to={`/games/${item.slug}`} className={`${btnPrimary} mt-2`}>
-                Bulmacaya Geçin
+                {t("account.homeworkGo")}
               </Link>
             )}
           </li>
         ))}
       </ul>
       <p className="text-sm text-stone-500 mt-4">
-        {finished ? "Ödev tamamlandı." : "Tamamlandığında burada görünür."}
+        {finished ? t("account.homeworkDone") : t("account.homeworkWaiting")}
       </p>
     </section>
   );

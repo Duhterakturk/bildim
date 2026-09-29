@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.api_error import fail
 from app.extensions import db
 from app.models import Assignment, Classroom, Game, User, UserRole
 from app.services.assignments import DIFFICULTY_LABELS, assignment_payload, board, completed_count
@@ -14,10 +15,10 @@ assignments_bp = Blueprint("assignments", __name__, url_prefix="/api")
 def _teacher_classroom(classroom_id):
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return None, (jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403)
+        return None, fail("teacher_only", "Bu işlem yalnızca öğretmen hesabı içindir.", 403)
     classroom = db.session.get(Classroom, classroom_id)
     if not classroom or classroom.teacher_id != teacher.id:
-        return None, (jsonify({"error": "Bu sınıf size ait değil"}), 403)
+        return None, fail("class_forbidden", "Bu sınıf size ait değil", 403)
     return classroom, None
 
 
@@ -62,17 +63,17 @@ def create_assignment(classroom_id):
         target_count = 0
 
     if not slugs:
-        return jsonify({"error": "En az bir oyun seçiniz."}), 400
+        return fail("assignment_games", "En az bir oyun seçiniz.")
     if difficulty not in DIFFICULTY_LABELS:
-        return jsonify({"error": "Seçilen zorluk geçerli değil."}), 400
+        return fail("difficulty_invalid", "Seçilen zorluk geçerli değil.")
     if target_count < 1 or target_count > 10:
-        return jsonify({"error": "Hedef 1 ile 10 arasında olmalıdır"}), 400
+        return fail("assignment_target", "Hedef 1 ile 10 arasında olmalıdır")
 
     games = []
     for slug in slugs:
         game = Game.query.filter_by(slug=slug, is_active=True).first()
         if not game:
-            return jsonify({"error": "Oyun bulunamadı"}), 404
+            return fail("game_missing", "Oyun bulunamadı", 404)
         games.append(game)
 
     stamp = datetime.utcnow()
@@ -117,7 +118,7 @@ def current_assignment(classroom_id):
 def my_assignment():
     student = db.session.get(User, get_jwt_identity())
     if not student or student.role != UserRole.STUDENT:
-        return jsonify({"error": "Bu işlem yalnızca öğrenci hesabı içindir."}), 403
+        return fail("student_only", "Bu işlem yalnızca öğrenci hesabı içindir.", 403)
     if not student.classroom_id:
         return jsonify({"assignment": None, "assignments": []})
     rows = _current(student.classroom_id)

@@ -61,8 +61,9 @@ export default function BadgeGrid() {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {badges.map((badge) => {
         const earned = Boolean(earnedMap[badge.slug]);
-        const name = i18n.language === "tr" ? badge.name_tr : badge.name_en;
-        const description = i18n.language === "tr" ? badge.description_tr : badge.description_en;
+        const english = i18n.language?.startsWith("en");
+        const name = english ? badge.name_en : badge.name_tr;
+        const description = english ? badge.description_en : badge.description_tr;
         return (
           <div
             key={badge.slug}

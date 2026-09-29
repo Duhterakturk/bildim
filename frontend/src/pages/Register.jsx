@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 export default function Register() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ export default function Register() {
       });
       navigate("/hesabim", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.error || "Kayıt tamamlanamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -69,7 +70,7 @@ export default function Register() {
           placeholder={t("auth.password")}
           required
           minLength={8}
-          title="Şifre en az 8 karakter olmalıdır"
+          title={t("errors.password_short", { count: 8 })}
           className="w-full border border-slate-200 rounded-lg px-3 py-2"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -116,7 +117,7 @@ export default function Register() {
           />
         )}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p role="alert" className="text-red-500 text-sm">{apiErrorText(error, t, i18n)}</p>}
 
         <button
           type="submit"

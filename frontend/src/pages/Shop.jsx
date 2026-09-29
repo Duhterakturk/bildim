@@ -5,6 +5,7 @@ import Owl from "../components/owl/Owl";
 import ThemePreview from "../components/shop/ThemePreview";
 import { buyItem, equipItem, fetchProfile, fetchShop } from "../api/shop";
 import { startTrial } from "../components/shop/themeTrial";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 const TABS = ["theme", "collection", "background"];
 
@@ -46,7 +47,7 @@ export default function Shop() {
         setState(data);
         window.dispatchEvent(new CustomEvent("mindarena:stars", { detail: { star_balance: data.star_balance } }));
       })
-      .catch(() => setError(t("shop.loadError")));
+      .catch(() => setError({ fallback: "shop.loadError" }));
     fetchProfile().then(setProfile).catch(() => {});
   }, [t]);
 
@@ -64,7 +65,7 @@ export default function Shop() {
       setOpen((current) => next.items.find((item) => item.id === current?.id) || null);
       fetchProfile().then(setProfile).catch(() => {});
     } catch (err) {
-      setError(err.response?.data?.error || t("shop.fail"));
+      setError(apiFailure(err, "shop.fail"));
     }
   }
 
@@ -75,7 +76,7 @@ export default function Shop() {
       setState(next);
       setOpen((current) => next.items.find((item) => item.id === current?.id) || null);
     } catch (err) {
-      setError(err.response?.data?.error || t("shop.fail"));
+      setError(apiFailure(err, "shop.fail"));
     }
   }
 
@@ -97,7 +98,7 @@ export default function Shop() {
       <div className="mb-4 flex justify-center">
         <Owl stage={stage} className="w-28" data-shop-owl="1" />
       </div>
-      {error && <p className="mb-4 text-red-400">{error}</p>}
+      {error && <p role="alert" className="mb-4 text-red-400">{apiErrorText(error, t, i18n)}</p>}
       <div className="flex gap-2 mb-4 overflow-x-auto">
         {TABS.map((key) => (
           <button
@@ -137,8 +138,7 @@ export default function Shop() {
                 {item.type === "owl" ? <OwlPhoto item={item} owned={item.owned} /> : <Preview item={item} />}
                 {item.type === "owl" ? (
                   <>
-                    <p className="font-semibold mt-2">{item.name_tr}</p>
-                    <p className="text-sm text-slate-500">{item.name_en}</p>
+                    <p className="font-semibold mt-2">{lang === "en" ? item.name_en : item.name_tr}</p>
                     <p className="text-sm mt-1">{lang === "en" ? item.fact_en : item.fact_tr}</p>
                     <p className="text-sm font-semibold mt-1">{t(`shop.rarity.${item.rarity}`)}</p>
                   </>
@@ -208,8 +208,7 @@ export default function Shop() {
           {open.type === "owl" ? <OwlPhoto item={open} owned={open.owned} large /> : <Preview item={open} large />}
           {open.type === "owl" ? (
             <>
-              <h2 id={titleId} className="mt-3 text-center text-lg font-bold">{open.name_tr}</h2>
-              <p className="text-center text-slate-500">{open.name_en}</p>
+              <h2 id={titleId} className="mt-3 text-center text-lg font-bold">{lang === "en" ? open.name_en : open.name_tr}</h2>
               <p id={bodyId} className="mt-2 text-center text-sm">{lang === "en" ? open.fact_en : open.fact_tr}</p>
               <p className="mt-1 text-center text-sm font-semibold">{t(`shop.rarity.${open.rarity}`)}</p>
             </>

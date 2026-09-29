@@ -2,7 +2,9 @@ import random
 
 
 class HintError(Exception):
-    pass
+    def __init__(self, message, code="hint_unavailable"):
+        super().__init__(message)
+        self.code = code
 
 
 _FILL = {
@@ -46,13 +48,13 @@ def pick_hint(slug, public, proof, focus=None):
         return _form(public, solution)
     if slug == "sihirli-piramit":
         return _pyramid(solution)
-    raise HintError("Bu bulmacada kullanılacak bir ipucu yok.")
+    raise HintError("Bu bulmacada kullanılacak bir ipucu yok.", "hint_none")
 
 
 def _fill(public, solution):
     solution = _aligned(public, solution)
     if not isinstance(solution, list):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     blanks = []
     for row_index, row in enumerate(solution):
         if not isinstance(row, list):
@@ -63,7 +65,7 @@ def _fill(public, solution):
             if _blank(public, row_index, col_index):
                 blanks.append((row_index, col_index, value))
     if not blanks:
-        raise HintError("İpucu verilecek boş kare kalmadı")
+        raise HintError("İpucu verilecek boş kare kalmadı", "hint_no_cell")
     row_index, col_index, value = random.choice(blanks)
     return {"kind": "fill", "row": row_index, "col": col_index, "value": value}
 
@@ -88,7 +90,7 @@ def _jagged(rows):
 def _kakuro(public, solution):
     grid = (public or {}).get("grid") or []
     if not isinstance(solution, list):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     blanks = []
     for row_index, row in enumerate(solution):
         if not isinstance(row, list):
@@ -105,7 +107,7 @@ def _kakuro(public, solution):
                 continue
             blanks.append((row_index, col_index, value))
     if not blanks:
-        raise HintError("İpucu verilecek boş kare kalmadı")
+        raise HintError("İpucu verilecek boş kare kalmadı", "hint_no_cell")
     row_index, col_index, value = random.choice(blanks)
     return {"kind": "fill", "row": row_index, "col": col_index, "value": value}
 
@@ -116,7 +118,7 @@ def _aligned(_public, solution):
 
 def _edge(solution):
     if not isinstance(solution, dict):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     spots = []
     for axis, key in (("horizontal", "h"), ("vertical", "v")):
         grid = solution.get(axis) or []
@@ -125,7 +127,7 @@ def _edge(solution):
                 if flag:
                     spots.append((key, row_index, col_index))
     if not spots:
-        raise HintError("İpucu verilecek çizgi kalmadı")
+        raise HintError("İpucu verilecek çizgi kalmadı", "hint_no_edge")
     axis, row_index, col_index = random.choice(spots)
     return {"kind": "edge", "axis": axis, "row": row_index, "col": col_index}
 
@@ -133,7 +135,7 @@ def _edge(solution):
 def _mark(public, solution, note):
     cells = _cells(solution)
     if not cells:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     fixed = set((public.get("fixedCells") or {}).keys())
     spots = []
     for key in cells:
@@ -144,7 +146,7 @@ def _mark(public, solution, note):
             continue
         spots.append((int(parts[0]), int(parts[1])))
     if not spots:
-        raise HintError("İpucu verilecek boş kare kalmadı")
+        raise HintError("İpucu verilecek boş kare kalmadı", "hint_no_cell")
     row_index, col_index = random.choice(spots)
     return {"kind": "mark", "row": row_index, "col": col_index, "note": note}
 
@@ -152,7 +154,7 @@ def _mark(public, solution, note):
 def _loop_edge(solution):
     edges = solution.get("edges") if isinstance(solution, dict) else None
     if not isinstance(edges, list) or not edges:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     edge = random.choice([str(item) for item in edges])
     left, right = edge.split("|")
     return {"kind": "edge", "a": left, "b": right}
@@ -163,7 +165,7 @@ def _step(public, solution):
     fixed = _fixed(public)
     start = next((key for key, label in fixed.items() if label == "1"), None)
     if start not in cells:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     previous = "1"
     for key in cells[cells.index(start) + 1:]:
         if key in fixed:
@@ -171,29 +173,29 @@ def _step(public, solution):
             continue
         row_index, col_index = (int(part) for part in key.split("-"))
         return {"kind": "mark", "row": row_index, "col": col_index, "note": "step", "label": previous}
-    raise HintError("İpucu verilecek boş kare kalmadı")
+    raise HintError("İpucu verilecek boş kare kalmadı", "hint_no_cell")
 
 
 def _letter_path(_public, solution):
     paths = solution.get("paths") if isinstance(solution, dict) else None
     if not isinstance(paths, dict) or not paths:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     label = random.choice(list(paths))
     path = [str(cell) for cell in paths[label]]
     if len(path) < 2:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     return {"kind": "marks", "cells": path[:3], "label": str(label)}
 
 
 def _piece(solution):
     placements = solution.get("placements") if isinstance(solution, dict) else None
     if not placements or not isinstance(placements, list):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     piece = placements[0] or {}
     cells = [str(key) for key in (piece.get("cells") or [])]
     name = piece.get("name")
     if not name or len(cells) != 5:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     return {"kind": "piece", "name": name, "cells": cells}
 
 
@@ -215,18 +217,18 @@ def _cells(solution):
 def _pyramid(solution):
     path = solution.get("path") if isinstance(solution, dict) else None
     if not isinstance(path, list) or len(path) < 2:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     row_index = random.randrange(1, len(path))
     col_index = path[row_index]
     if isinstance(col_index, bool) or not isinstance(col_index, int):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     return {"kind": "mark", "row": row_index, "col": col_index, "note": "path"}
 
 
 def _palette(solution):
     grid = solution.get("grid") if isinstance(solution, dict) else solution
     if not isinstance(grid, list):
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     spots = []
     for row_index, row in enumerate(grid):
         if not isinstance(row, list):
@@ -235,7 +237,7 @@ def _palette(solution):
             if isinstance(cell, dict) and cell.get("shape") and cell.get("color"):
                 spots.append((row_index, col_index, cell))
     if not spots:
-        raise HintError("İpucu verilecek parça kalmadı")
+        raise HintError("İpucu verilecek parça kalmadı", "hint_no_piece")
     row_index, col_index, cell = random.choice(spots)
     return {"kind": "form", "row": row_index, "col": col_index, "shape": cell["shape"], "color": cell["color"]}
 
@@ -243,7 +245,7 @@ def _palette(solution):
 def _form(public, solution):
     grid = solution.get("grid") if isinstance(solution, dict) else None
     if not isinstance(grid, list) or len(grid) != 3:
-        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.")
+        raise HintError("Bu bulmaca ipucuna hazır değil. Yeni bir bulmaca açabilirsiniz.", "hint_not_ready")
     pinned = set()
     for clue in (public or {}).get("clues") or []:
         if not isinstance(clue, dict):
@@ -266,6 +268,6 @@ def _form(public, solution):
             for col_index, cell in enumerate(row):
                 spots.append((row_index, col_index, cell))
     if not spots:
-        raise HintError("İpucu verilecek boş kare kalmadı")
+        raise HintError("İpucu verilecek boş kare kalmadı", "hint_no_cell")
     row_index, col_index, cell = random.choice(spots)
     return {"kind": "form", "row": row_index, "col": col_index, "shape": cell.get("shape"), "color": cell.get("color")}

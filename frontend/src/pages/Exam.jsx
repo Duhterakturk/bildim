@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { fetchCurrentExam, startExam } from "../api/exams";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 function clock(total) {
   const safe = Math.max(0, total);
@@ -10,6 +12,7 @@ function clock(total) {
 }
 
 export default function Exam() {
+  const { t, i18n } = useTranslation();
   const [exam, setExam] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [base, setBase] = useState(null);
@@ -26,7 +29,7 @@ export default function Exam() {
   function load() {
     return fetchCurrentExam()
       .then(apply)
-      .catch(() => setError("Deneme yüklenemedi. Yeniden deneyebilirsiniz."));
+      .catch(() => setError({ fallback: "exam.loadError" }));
   }
 
   useEffect(() => {
@@ -45,11 +48,11 @@ export default function Exam() {
     try {
       apply(await startExam());
     } catch (err) {
-      setError(err.response?.data?.error || "Deneme açılamadı. Yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "exam.startError"));
     }
   }
 
-  if (!loaded) return <div className="max-w-3xl mx-auto px-4 py-10 text-slate-500">Yükleniyor...</div>;
+  if (!loaded) return <div className="max-w-3xl mx-auto px-4 py-10 text-slate-500">{t("exam.loading")}</div>;
 
   const elapsed = exam?.finished_at
     ? exam.elapsed_seconds
@@ -58,14 +61,14 @@ export default function Exam() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="font-display text-4xl font-semibold mb-2">Karışık Deneme</h1>
+      <h1 className="font-display text-4xl font-semibold mb-2">{t("exam.title")}</h1>
       <p className="text-stone-600 mb-6">
-        Üç ayrı oyun, on beş dakika. Kolay kademede ilerlenir; bitince bu sayfaya dönebilirsiniz.
+        {t("exam.help")}
       </p>
 
       {!exam && (
         <button type="button" onClick={handleStart} className="press-btn">
-          Denemeyi Açın
+          {t("exam.start")}
         </button>
       )}
 
@@ -79,10 +82,10 @@ export default function Exam() {
             {exam.games.map((game, index) => (
               <li key={game.id} className="flex items-center justify-between gap-3">
                 <Link to={`/games/${game.slug}`} className="font-bold text-brand-700 hover:underline">
-                  {index + 1}. {game.name_tr}
+                  {index + 1}. {i18n.language?.startsWith("en") ? (game.name_en || game.name_tr) : (game.name_tr || game.name_en)}
                 </Link>
                 <span className="text-sm text-stone-500">
-                  {game.done ? `${game.points} puan` : "Bekliyor"}
+                  {game.done ? t("exam.points", { count: game.points }) : t("exam.waiting")}
                 </span>
               </li>
             ))}
@@ -90,17 +93,17 @@ export default function Exam() {
           {exam.finished_at && (
             <div className="mt-6">
               <p className="play-correct font-bold text-ink">
-                Toplam {exam.total_points} puan. {exam.on_time ? "Süre içinde bitti." : "Süre dolduktan sonra bitti."}
+                {t("exam.total", { count: exam.total_points, ending: exam.on_time ? t("exam.onTime") : t("exam.late") })}
               </p>
               <button type="button" onClick={handleStart} className="press-btn mt-4">
-                Yeni Deneme
+                {t("exam.again")}
               </button>
             </div>
           )}
         </div>
       )}
 
-      {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+      {error && <p role="alert" className="text-red-500 text-sm mt-4">{apiErrorText(error, t, i18n)}</p>}
     </div>
   );
 }

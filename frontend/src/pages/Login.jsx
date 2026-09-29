@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 export default function Login() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ export default function Login() {
       await login(form);
       navigate("/hesabim", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.error || "Giriş yapılamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
+      setError(apiFailure(err, "errors.unknown"));
     }
   }
 
@@ -61,7 +62,7 @@ export default function Login() {
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p role="alert" className="text-red-500 text-sm">{apiErrorText(error, t, i18n)}</p>}
 
         <p className="text-sm">
           <Link to="/forgot" className="text-brand-600 font-medium">

@@ -41,9 +41,9 @@ export default function BadgeToastHost() {
         >
           <span className="text-3xl">{badge.icon}</span>
           <div>
-            <p className="text-xs text-amber-600 font-semibold">Yeni Rozet!</p>
+            <p className="text-xs text-amber-600 font-semibold">{i18n.t("badges.new")}</p>
             <p className="text-sm font-bold text-slate-800">
-              {i18n.language === "tr" ? badge.name_tr : badge.name_en}
+              {i18n.language?.startsWith("en") ? badge.name_en : badge.name_tr}
             </p>
           </div>
         </div>
