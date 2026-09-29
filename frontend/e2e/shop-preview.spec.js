@@ -105,12 +105,22 @@ test("unowned owl cards are gray, and buying one brings the color back", async (
   await expect(locked).toHaveAttribute("data-owned", "0");
   await expect(locked).toHaveClass(/grayscale/);
   await expect(page.getByTestId("card-owl-little")).toContainText("Kukumav");
-  await expect(page.getByTestId("card-owl-little")).toContainText("Little Owl");
+  await expect(page.getByTestId("card-owl-little")).not.toContainText("Little Owl");
   await expect(page.getByTestId("card-owl-little")).toContainText("Yaygın");
   await expect(page.getByTestId("card-owl-little")).toContainText("15");
   await expect(page.getByTestId("card-owl-snowy")).toHaveClass(/owl-legendary/);
   const radius = await page.locator("[data-shop-owl] img").evaluate((node) => getComputedStyle(node).borderRadius);
   expect(radius).not.toBe("0px");
+
+  const menu = page.getByRole("button", { name: "Menüyü açın veya kapatın" });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.getByTestId("card-owl-little")).toContainText("Little Owl");
+  await expect(page.getByTestId("card-owl-little")).not.toContainText("Kukumav");
+  await page.getByRole("button", { name: "TR", exact: true }).click();
+  const openMenu = page.locator('nav button[aria-expanded="true"]');
+  if (await openMenu.isVisible()) await openMenu.click();
+  await expect(page.getByTestId("card-owl-little")).toContainText("Kukumav");
 
   await page.getByTestId("buy-owl-little").click();
   await expect(locked).toHaveAttribute("data-owned", "1");

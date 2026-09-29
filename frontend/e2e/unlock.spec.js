@@ -36,7 +36,7 @@ test("five easy solves unlock medium without a save button", async ({ page }) =>
 
   for (let round = 0; round < 5; round += 1) {
     await page.getByRole("button", { name: "Kontrol Et" }).click();
-    await expect(page.getByText("Kaydediliyor...")).toBeVisible();
+    await expect(page.getByText("Skorunuz kaydediliyor…")).toBeVisible();
     await expect(page.getByText("Skor kaydedildi.")).toBeVisible();
     if (round === 4) {
       await expect(page.getByTestId("star-card")).toBeVisible();

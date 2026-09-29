@@ -23,6 +23,11 @@ async function boot(page, issued = puzzle) {
   await page.route("**/api/health**", (route) => route.fulfill({ json: { status: "ok" } }));
   await page.goto("/games/abc-baglama");
   await expect(page.getByTestId("link-progress")).toContainText("Bağlanan: 0/2");
+  // Coordinate-based drags must start after fonts and the page entrance settle.
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all(document.querySelector("main").getAnimations().map((animation) => animation.finished.catch(() => {})));
+  });
 }
 
 async function center(page, key) {
@@ -32,6 +37,7 @@ async function center(page, key) {
 
 test("drag links A and clicks link B", async ({ page }) => {
   await boot(page);
+  await page.locator('[data-cell="0-0"]').scrollIntoViewIfNeeded();
   const start = await center(page, "0-0");
   const mid = await center(page, "0-1");
   const end = await center(page, "0-2");
