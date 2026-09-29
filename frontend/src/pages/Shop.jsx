@@ -83,8 +83,8 @@ export default function Shop() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-1">{t("shop.title")}</h1>
-      <p className="mb-4" data-testid="shop-balance">⭐ {state.star_balance}</p>
+      <h1 className="scene-label text-2xl font-bold mb-1">{t("shop.title")}</h1>
+      <p className="scene-label mb-4" data-testid="shop-balance">⭐ {state.star_balance}</p>
       <div className="mb-4 flex justify-center">
         <Owl stage={stage} className="w-28" data-shop-owl="1" />
       </div>
@@ -96,7 +96,7 @@ export default function Shop() {
             type="button"
             data-testid={`tab-${key}`}
             onClick={() => setTab(key)}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${tab === key ? "bg-white text-slate-900" : "text-slate-600"}`}
+            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${tab === key ? "scene-tab-on" : "scene-chip"}`}
           >
             {t(`shop.tab.${key}`)}
           </button>

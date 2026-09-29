@@ -23,7 +23,7 @@ export default function Profile() {
   if (user?.role === "teacher") {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold">{user.full_name}</h1>
+        <h1 className="scene-label text-2xl font-bold">{user.full_name}</h1>
         <NameCard />
         <Link to="/teacher" className="mt-4 inline-block font-semibold text-inherit underline">{t("nav.teacher")}</Link>
       </div>

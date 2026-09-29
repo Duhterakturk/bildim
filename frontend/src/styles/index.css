@@ -25,9 +25,9 @@ body.theme-light {
 }
 
 .site-nav {
-  background: color-mix(in srgb, var(--cell) 96%, transparent);
+  background: color-mix(in srgb, var(--cell) 94%, var(--room));
   color: var(--ink);
-  backdrop-filter: blur(12px);
+  border-color: color-mix(in srgb, var(--line) 55%, transparent);
 }
 
 /* Legacy game labels used a fixed light text color on the old dark canvas. */
@@ -112,15 +112,22 @@ html[data-board-theme] .play-room {
   background: transparent;
 }
 
+html[data-board-theme] .bg-white,
+html[data-board-theme] .board-card {
+  background-color: color-mix(in srgb, var(--cell) 84%, var(--room));
+  color: var(--ink);
+}
+
 html[data-board-theme] .play-room .bg-white {
   background-color: var(--cell) !important;
   color: var(--ink);
   border-color: var(--line);
 }
 
-html[data-board-theme] .play-room .bg-brand-500,
-html[data-board-theme] .play-room .press-btn {
+html[data-board-theme] .bg-brand-500,
+html[data-board-theme] .press-btn {
   background-color: var(--accent) !important;
+  color: #fff;
 }
 
 body:has([data-testid="star-toast"]) .play-room {
@@ -132,8 +139,8 @@ body:has([data-testid="star-toast"]) .play-room {
   height: 100%;
   object-fit: cover;
   transform: scale(1);
-  opacity: 0.24;
-  filter: saturate(0.55);
+  opacity: 0.92;
+  filter: saturate(1.08) contrast(1.04);
 }
 
 .theme-scene { background: var(--room); }
@@ -141,17 +148,54 @@ body:has([data-testid="star-toast"]) .play-room {
 .theme-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--room) 25%, transparent), color-mix(in srgb, var(--room) 75%, transparent));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--room) 30%, transparent) 0%,
+    transparent 16%,
+    transparent 84%,
+    color-mix(in srgb, var(--room) 36%, transparent) 100%
+  );
+}
+
+/* Tahta sakin bir kagit panelinde durur. Diger sayfalar fotografi acik birakir. */
+body:has(.play-room) .theme-photo {
+  opacity: 0.5;
+  filter: saturate(0.92) contrast(1.02);
+}
+
+body:has(.play-room) .theme-shade {
+  background: color-mix(in srgb, var(--room) 46%, transparent);
 }
 
 html[data-board-theme] .play-scale {
-  background: color-mix(in srgb, var(--cell) 96%, transparent);
-  backdrop-filter: blur(6px);
+  background: var(--cell);
   color: var(--ink);
-  border: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, var(--cell));
   border-radius: 16px;
-  box-shadow: 0 10px 28px rgba(45, 65, 55, 0.08);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--ink) 14%, transparent);
   padding: 12px;
+}
+
+.scene-label,
+.scene-chip {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--cell) 92%, transparent);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
+.scene-label {
+  width: fit-content;
+  border-radius: 0.75rem;
+  padding: 0.08em 0.45em;
+}
+
+.scene-chip {
+  border-radius: 999px;
+}
+
+.scene-tab-on {
+  background: var(--accent);
+  color: #fff;
 }
 
 /* Marks must never blend into a theme's empty cells. */
@@ -208,6 +252,12 @@ html[data-board-theme] .play-room [data-testid="cage-label"] {
 html[data-board-theme] .play-scale .text-slate-500,
 html[data-board-theme] .play-scale .text-slate-600 {
   color: color-mix(in srgb, var(--ink) 82%, transparent);
+}
+
+.play-scale .text-red-400,
+.play-scale .text-red-500,
+.play-scale .text-red-600 {
+  color: #9f1239;
 }
 
 @keyframes kenburns {
@@ -376,10 +426,8 @@ html[data-board-theme] .play-scale .text-slate-600 {
 }
 
 .game-card {
-  background: color-mix(in srgb, var(--cell) 96%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
+  background: color-mix(in srgb, var(--cell) 88%, var(--room));
+  border: 1px solid color-mix(in srgb, var(--line) 72%, var(--cell));
   border-radius: 16px;
   color: var(--ink);
   transition: transform 160ms ease, box-shadow 160ms ease;
@@ -492,7 +540,11 @@ html[data-board-theme] .play-scale .text-slate-600 {
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
   color: var(--ink);
-  text-shadow: 0 2px 0 var(--room);
+  width: fit-content;
+  background: color-mix(in srgb, var(--cell) 92%, transparent);
+  border-radius: 0.7em;
+  padding: 0.12em 0.42em;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--ink) 16%, transparent);
 }
 
 .home-mark {

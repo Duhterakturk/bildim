@@ -9,7 +9,7 @@ export default function ThemePreview({ item, className = "w-full h-28" }) {
   const src = photoSrc(item.id, true);
   return (
     <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ backgroundColor: room }} data-testid="preview">
-      {src && <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 saturate-50" loading="lazy" decoding="async" />}
+      {src && <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover opacity-80" loading="lazy" decoding="async" />}
       <svg viewBox="0 0 120 110" className="relative h-full w-full" aria-hidden="true">
         {DIGITS.map((digit, index) => {
           const col = index % 4;

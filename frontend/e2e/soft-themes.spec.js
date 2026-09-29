@@ -50,7 +50,12 @@ for (const theme of themes) {
     expect(contrast(colors[2].border, colors[2].bg)).toBeGreaterThanOrEqual(3);
     expect(contrast(colors[2].bg, "rgb(0, 0, 0)")).toBeGreaterThanOrEqual(14);
     const pageBackground = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(contrast(pageBackground, "rgb(0, 0, 0)")).toBeGreaterThanOrEqual(14);
+    const pageInk = await page.evaluate(() => getComputedStyle(document.body).color);
+    expect(contrast(pageBackground, "rgb(0, 0, 0)")).toBeGreaterThanOrEqual(7);
+    expect(contrast(pageInk, pageBackground)).toBeGreaterThanOrEqual(4.5);
+    const photoOpacity = await page.getByTestId("theme-scene").locator("img").evaluate((img) => Number(getComputedStyle(img).opacity));
+    expect(photoOpacity).toBeGreaterThan(0.35);
+    expect(photoOpacity).toBeLessThan(0.7);
     await cells.nth(3).click();
     await expect(cells.nth(3)).toHaveAttribute("data-state", "empty");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();

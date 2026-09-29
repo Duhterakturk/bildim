@@ -26,14 +26,16 @@ def test_theme_ink_stays_readable_on_the_cell():
         assert ratio >= 4.5, f"{item['id']} contrast {ratio:.2f} is below 4.5"
 
 
-def test_theme_surfaces_are_light_with_visible_grid_lines():
+def test_theme_surfaces_keep_a_light_board_and_a_readable_room():
     for item in CATALOG:
         if item["type"] not in ("theme", "background"):
             continue
         palette = item["preview"]
-        for surface in ("cell", "room"):
-            # Avoid white text on a dark playing surface, even for Night/Space.
-            assert _ratio(palette[surface], "#000000") >= 14
+        # The board stays paper-light. The room keeps the theme color without the old near-black canvas.
+        assert _ratio(palette["cell"], "#000000") >= 14
+        assert _ratio(palette["room"], "#000000") >= 7
+        assert _ratio(palette["ink"], palette["room"]) >= 4.5
+        assert _ratio(palette["ink"], palette["cell"]) >= 4.5
         assert _ratio(palette["cell"], palette["line"]) >= 3
 
 

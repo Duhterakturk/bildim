@@ -19,7 +19,7 @@ export default function Owl({ stage = "egg", caption = true, className = "w-40",
         alt={caption ? "" : name}
         className="w-full aspect-square rounded-full object-cover border-4 border-amber-200 bg-amber-50"
       />
-      {caption && <figcaption className="mt-1 text-center text-sm font-semibold">{name}</figcaption>}
+      {caption && <figcaption className="scene-chip mx-auto mt-1 w-fit px-2 py-0.5 text-center text-sm font-semibold">{name}</figcaption>}
     </figure>
   );
 }
