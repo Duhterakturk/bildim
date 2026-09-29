@@ -30,6 +30,7 @@ body.theme-light {
 }
 
 .site-nav {
+  background: var(--cell, #fffdf8);
   background: color-mix(in srgb, var(--cell) 94%, var(--room));
   color: var(--ink);
   border-color: color-mix(in srgb, var(--line) 55%, transparent);
@@ -53,6 +54,21 @@ body.theme-light {
   height: auto;
   left: -17px;
   top: -6px;
+}
+
+/* Mobile auto-darkening may alter the painted surface without changing its
+   computed color. A fine contrasting edge keeps either wordmark readable. */
+[data-brand-tone] {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0.6px 0 0 #fff) drop-shadow(-0.6px 0 0 #fff)
+    drop-shadow(0 0.6px 0 #fff) drop-shadow(0 -0.6px 0 #fff);
+}
+
+[data-brand-tone="light"] {
+  filter: drop-shadow(0.6px 0 0 #20232a) drop-shadow(-0.6px 0 0 #20232a)
+    drop-shadow(0 0.6px 0 #20232a) drop-shadow(0 -0.6px 0 #20232a);
 }
 
 /* Recolor only the wordmark; the approved brain and exclamation stay orange. */

@@ -46,9 +46,18 @@ export default function BrandLogo() {
       observer.observe(node, { attributes: true, attributeFilter: ["style", "class"] });
     }
     window.addEventListener("resize", update);
+    window.addEventListener("pageshow", update);
+    document.addEventListener("visibilitychange", update);
+    surface.addEventListener("transitionend", update);
+    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    colorScheme.addEventListener?.("change", update);
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", update);
+      window.removeEventListener("pageshow", update);
+      document.removeEventListener("visibilitychange", update);
+      surface.removeEventListener("transitionend", update);
+      colorScheme.removeEventListener?.("change", update);
     };
   }, []);
 
