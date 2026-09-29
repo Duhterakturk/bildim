@@ -56,30 +56,16 @@ body.theme-light {
   top: -6px;
 }
 
-/* Mobile auto-darkening may alter the painted surface without changing its
-   computed color. A fine contrasting edge keeps either wordmark readable. */
-[data-brand-tone] {
-  display: block;
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0.6px 0 0 #fff) drop-shadow(-0.6px 0 0 #fff)
-    drop-shadow(0 0.6px 0 #fff) drop-shadow(0 -0.6px 0 #fff);
-}
-
-[data-brand-tone="light"] {
-  filter: drop-shadow(0.6px 0 0 #20232a) drop-shadow(-0.6px 0 0 #20232a)
-    drop-shadow(0 0.6px 0 #20232a) drop-shadow(0 -0.6px 0 #20232a);
-}
-
-/* Recolor only the wordmark; the approved brain and exclamation stay orange. */
-.brand-logo-white {
-  visibility: hidden;
-  filter: brightness(0) invert(1);
+/* Blend against the painted navbar, not a JavaScript estimate of its color.
+   Keep the orange emblem outside the blending layer. No parent filter or
+   isolation here: either would hide the navbar backdrop from the wordmark. */
+.brand-art { display: block; width: 100%; height: 100%; }
+.brand-logo-brain { clip-path: inset(0 65% 0 0); }
+.brand-logo-punctuation { clip-path: inset(0 0 0 85.8%); }
+.brand-logo-word {
   clip-path: inset(0 14.2% 0 35%);
-}
-
-[data-brand-tone="light"] .brand-logo-white {
-  visibility: visible;
+  filter: brightness(0) invert(1);
+  mix-blend-mode: difference;
 }
 
 /* Legacy game labels used a fixed light text color on the old dark canvas. */

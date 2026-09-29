@@ -1,35 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-test("wordmark follows its actual surface without recoloring the emblem", async ({ page }, info) => {
+test("wordmark blends with light and dark painted surfaces without resizing", async ({ page }, info) => {
   await page.route(/\/api\/(?!.*\.js)/, (route) => route.fulfill({ json: {} }));
   await page.goto("/");
-  const brand = page.locator("[data-brand-tone]");
   const link = page.getByRole("link", { name: "Bildim", exact: true });
-  await expect(brand).toHaveAttribute("data-brand-tone", "dark");
   const originalBox = await link.boundingBox();
-  await page.evaluate(() => {
-    document.documentElement.style.setProperty("--cell", "#121212");
-    document.documentElement.style.setProperty("--room", "#121212");
-    document.documentElement.style.setProperty("--ink", "#ffffff");
-  });
-  await expect(brand).toHaveAttribute("data-brand-tone", "light");
-  await expect(page.locator(".brand-logo-white")).toHaveCSS("visibility", "visible");
-  await expect(page.locator(".brand-logo").first()).toHaveCSS("filter", "none");
+  await expect(page.locator(".brand-logo-word")).toHaveCSS("mix-blend-mode", "difference");
+  await expect(page.locator(".brand-logo-brain")).toHaveCSS("filter", "none");
+  await page.screenshot({ path: info.outputPath("light-surface.png"), animations: "disabled" });
+  // A stylesheet-only change must work without a DOM mutation observer.
+  const style = await page.addStyleTag({content: "nav.site-nav { background: #121212 !important; color: white; }"});
+  await expect(page.locator("nav")).toHaveCSS("background-color", "rgb(18, 18, 18)");
   expect(await link.boundingBox()).toEqual(originalBox);
   await page.screenshot({ path: info.outputPath("dark-surface.png"), animations: "disabled" });
-
-  // A local surface override must win over the surrounding dark theme.
-  await page.locator("nav").evaluate((nav) => { nav.style.backgroundColor = "#fffdf8"; });
-  await expect(brand).toHaveAttribute("data-brand-tone", "dark");
-  await page.locator("nav").evaluate((nav) => { nav.style.removeProperty("background-color"); });
-  await expect(brand).toHaveAttribute("data-brand-tone", "light");
-
-  await page.evaluate(() => {
-    for (const name of ["cell", "room", "ink"]) document.documentElement.style.removeProperty(`--${name}`);
-  });
-  await expect(brand).toHaveAttribute("data-brand-tone", "dark");
-  await expect(page.locator(".brand-logo-white")).toHaveCSS("visibility", "hidden");
+  await style.evaluate(node => node.remove());
   expect(await link.boundingBox()).toEqual(originalBox);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: info.outputPath("light-surface.png"), animations: "disabled" });
 });
