@@ -22,3 +22,8 @@ frontend/playwright-report/
 
 # Android imzalama anahtarı ve paketi — ASLA commit edilmemeli (özel anahtar + şifre içerir)
 android-package/
+
+# Local delivery artifacts and browser output
+/teslim/
+/test-results/
+/MindArena - Google Play package.zip
