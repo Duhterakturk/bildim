@@ -1,8 +1,10 @@
 # Bildim marka uygulaması
 
 Kullanıcıya görünen ad **Bildim**, logodaki yazım **bildim!** şeklindedir.
-Ünlem web adresinin parçası değildir. Mevcut Render adresleri, API adresleri,
-veritabanı, oturum saklama anahtarları ve Android paket kimliği korunmuştur.
+Ünlem web adresinin parçası değildir. GitHub deposu `Duhterakturk/bildim`,
+yerel proje klasörü `Bildim` olarak yeniden adlandırılmıştır. Render adresleri
+ve API adresleri henüz eskisiyle çalışmaktadır. Veritabanı, oturum saklama
+anahtarları ve Android paket kimliği korunmuştur.
 
 ## Görseller
 
@@ -41,9 +43,12 @@ no black box, no added text. One faithful horizontal logo, no presentation sheet
 ## Yayın sınırları
 
 Bu değişiklik web uygulamasının adını ve PWA simgelerini günceller. Daha önce
-üretilen APK/AAB dosyaları yeniden derlenmemiştir; özel Android paketindeki ad
-ve simgenin değişmesi ayrıca bir Android derlemesi gerektirir. Özel ZIP,
-imzalama anahtarları ve mevcut kullanıcı kayıtları değiştirilmez.
+üretilen APK/AAB dosyaları yeniden derlenmemiştir; özel Android uygulamasının
+içindeki ad ve simgenin değişmesi ayrıca bir Android derlemesi gerektirir.
+Yerel ZIP ve APK/AAB dosya adları Bildim olarak düzenlenmiştir. ZIP içindeki
+uygulama dosyalarının adları da güncellenmiş, ikili içerikler SHA-256 ile
+aynı oldukları doğrulanarak korunmuştur. İmzalama anahtarları ve mevcut
+kullanıcı kayıtları değiştirilmez.
 
 Eski tarihli denetim raporları tarihsel kayıt olarak eski adı taşıyabilir.
 

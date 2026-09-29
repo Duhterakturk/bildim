@@ -4,6 +4,10 @@ Türkçe ve İngilizce arayüzü bulunan, 19 mantık bulmacası oyunundan oluşa
 
 **Uygulama:** https://mindarena-app.onrender.com
 
+**GitHub:** https://github.com/Duhterakturk/bildim
+
+Yerel proje klasörü: `Bildim/`.
+
 - [Öğretmen için hızlı başlangıç](docs/OGRETMEN_REHBERI.md)
 - [Teslim ve doğrulama notları](docs/TESLIM_NOTLARI.md)
 - [Veritabanı yedekleme yönergesi](docs/YEDEK.md)

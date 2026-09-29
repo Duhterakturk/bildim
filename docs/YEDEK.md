@@ -6,7 +6,7 @@ Yedek, o anki skorların fotoğrafıdır. Geri yüklemek, yedekten sonraki yeni 
 
 ## Yedeği GitHub'dan indir
 
-1. Tarayıcıda [github.com/Duhterakturk/mindarena](https://github.com/Duhterakturk/mindarena) adresini aç.
+1. Tarayıcıda [github.com/Duhterakturk/bildim](https://github.com/Duhterakturk/bildim) adresini aç.
 2. Üst menüden **Actions** sekmesine gir.
 3. Soldaki listeden **Haftalık yedek** işini seç.
 4. Ortadaki listeden yeşil tikli bir çalıştırmayı aç. Tarih, yedeğin alındığı gündür.
