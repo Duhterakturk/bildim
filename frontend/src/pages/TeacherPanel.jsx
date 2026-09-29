@@ -8,19 +8,7 @@ import Owl from "../components/owl/Owl";
 import { stageFor } from "../components/owl/stages";
 import { downloadCertificate, fetchStudentCertificates } from "../api/certificates";
 import { btnPrimary, btnSecondary } from "../components/common/buttons";
-
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    const area = document.createElement("textarea");
-    area.value = text;
-    document.body.appendChild(area);
-    area.select();
-    document.execCommand("copy");
-    area.remove();
-  }
-}
+import { copyText } from "../components/common/copyText";
 
 function StudentPassword({ classroomId, student }) {
   const { t } = useTranslation();
@@ -28,7 +16,7 @@ function StudentPassword({ classroomId, student }) {
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState(null);
   const [error, setError] = useState(null);
-  const [copiedPassword, setCopiedPassword] = useState(false);
+  const [passwordCopy, setPasswordCopy] = useState(null);
   const [busy, setBusy] = useState(false);
 
   async function handleSave(e) {
@@ -42,7 +30,7 @@ function StudentPassword({ classroomId, student }) {
       setPassword("");
       setOpen(false);
       setShown(chosen);
-      setCopiedPassword(false);
+      setPasswordCopy(null);
     } catch (err) {
       setError(err.response?.data?.error || t("account.teacher.passwordError"));
     } finally {
@@ -57,9 +45,15 @@ function StudentPassword({ classroomId, student }) {
           Yeni şifre: <span className="font-mono font-bold">{shown}</span>
         </p>
         <div className="flex flex-wrap gap-2 mt-1">
-          <button type="button" onClick={async () => { await copyText(shown); setCopiedPassword(true); }} className="text-brand-700 font-semibold min-h-[44px]">
-            {copiedPassword ? t("account.teacher.copied") : "Şifreyi Kopyalayın"}
+          <button
+            type="button"
+            onClick={async () => setPasswordCopy((await copyText(shown)) ? "ok" : "fail")}
+            className="min-h-[44px] font-semibold text-brand-700"
+          >
+            Şifreyi Kopyalayın
           </button>
+          {passwordCopy === "ok" && <p role="status" className="text-sm text-emerald-700">{t("account.teacher.copied")}</p>}
+          {passwordCopy === "fail" && <p role="alert" className="text-sm text-red-700">{t("account.teacher.copyError")}</p>}
           <button type="button" onClick={() => setShown(null)} className="text-slate-600 min-h-[44px]">
             Kapatın
           </button>
@@ -122,8 +116,8 @@ export default function TeacherPanel({ embedded = false }) {
   const [name, setName] = useState("");
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [codeCopy, setCodeCopy] = useState(null);
+  const [inviteCopy, setInviteCopy] = useState(null);
   const [certs, setCerts] = useState({});
 
   const registerUrl = `${window.location.origin}/register`;
@@ -162,8 +156,10 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
       return undefined;
     }
     let cancelled = false;
+    setStudents([]);
     setStudentsLoading(true);
     setStudentsError(false);
+    setCodeCopy(null);
     fetchStudentsOverview(selectedId)
       .then((data) => {
         if (!cancelled) setStudents([...(Array.isArray(data) ? data : [])].sort((a, b) => b.total_points - a.total_points));
@@ -212,17 +208,23 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
 
   return (
     <div className={embedded ? "" : "max-w-4xl mx-auto px-4 py-10"}>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div className="rounded-xl bg-white/95 px-4 py-3">
+      <header className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3">
           <h2 className="text-lg font-semibold">{t("account.section.siniflar")}</h2>
-          <p className="text-sm text-slate-700 mt-1">{t("account.teacher.lead")}</p>
+          <Link to="/games" className="inline-flex min-h-[44px] items-center text-sm font-semibold text-slate-600 underline">
+            {t("account.play")}
+          </Link>
         </div>
-        <Link to="/games" className={btnSecondary}>{t("account.play")}</Link>
-      </div>
+        {classrooms.length > 0 && !creating && (
+          <button type="button" className={btnPrimary} onClick={() => setCreating(true)}>
+            {t("account.teacher.create")}
+          </button>
+        )}
+      </header>
 
       {classrooms.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
-          <p className="text-slate-700 mb-4">{t("account.teacher.empty")}</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <p className="mb-3 text-slate-700">{t("account.teacher.empty")}</p>
           {!creating ? (
             <button type="button" className={btnPrimary} onClick={() => setCreating(true)}>{t("account.teacher.first")}</button>
           ) : (
@@ -238,77 +240,78 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
         </div>
       ) : (
         <>
-          <div className="mb-4">
-            {!creating ? (
-              <button type="button" className={btnPrimary} onClick={() => setCreating(true)}>{t("account.teacher.create")}</button>
-            ) : (
-              <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
-                <CreateForm
-                  name={name}
-                  setName={setName}
-                  busy={busy}
-                  error={error}
-                  onSubmit={handleCreateClassroom}
-                  onCancel={() => { setCreating(false); setError(null); }}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="flex gap-2 mb-4 flex-wrap" role="group" aria-label={t("account.section.siniflar")}>
-            {classrooms.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                aria-pressed={selectedId === c.id}
-                onClick={() => { setSelectedId(c.id); setCopiedCode(false); }}
-                className={[
-                  "max-w-full break-words px-4 py-2 rounded-lg text-sm font-semibold border min-h-[44px] text-left",
-                  selectedId === c.id
-                    ? "bg-brand-500 text-white border-brand-500"
-                    : "bg-white text-slate-700 border-slate-300 hover:bg-brand-50",
-                ].join(" ")}
-              >
-                {c.name} ({c.student_count})
-              </button>
-            ))}
-          </div>
-
-          {selectedClassroom && (
-            <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
-              <h3 className="text-lg font-semibold break-words">{selectedClassroom.name}</h3>
-              <p className="text-sm text-slate-600 mt-2">{t("account.teacher.code")}</p>
-              <p className="font-mono font-bold text-brand-700 bg-brand-50 inline-block px-2 py-1 rounded mt-1 break-all">
-                {selectedClassroom.join_code}
-              </p>
-              <p className="text-sm text-slate-600 mt-2">{t("account.teacher.codeHelp")}</p>
-              <button
-                type="button"
-                className={`${btnSecondary} mt-3`}
-                onClick={async () => { await copyText(selectedClassroom.join_code); setCopiedCode(true); }}
-              >
-                {copiedCode ? t("account.teacher.copied") : t("account.teacher.copyCode")}
-              </button>
+          {creating && (
+            <div className="mb-4 rounded-xl border border-slate-200 bg-white p-4">
+              <CreateForm
+                name={name}
+                setName={setName}
+                busy={busy}
+                error={error}
+                onSubmit={handleCreateClassroom}
+                onCancel={() => { setCreating(false); setError(null); }}
+              />
             </div>
           )}
+
+          <section className="mb-4 rounded-xl border border-slate-200 bg-white p-3" aria-label={t("account.section.siniflar")}>
+            <div className="flex flex-wrap gap-2" role="group" aria-label={t("account.section.siniflar")}>
+              {classrooms.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={selectedId === c.id}
+                  onClick={() => setSelectedId(c.id)}
+                  className={[
+                    "max-w-full whitespace-normal break-words rounded-lg border px-4 py-2 text-left text-sm font-semibold min-h-[44px]",
+                    selectedId === c.id
+                      ? "border-brand-500 bg-brand-500 text-white"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-brand-50",
+                  ].join(" ")}
+                >
+                  {c.name} ({c.student_count})
+                </button>
+              ))}
+            </div>
+
+            {selectedClassroom && (
+              <div className="mt-3 min-w-0 border-t border-slate-100 pt-3">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                  <p className="min-w-0 max-w-full break-words font-semibold">{selectedClassroom.name}</p>
+                  <p className="break-all font-mono text-base font-bold text-brand-700">{selectedClassroom.join_code}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className={`${btnSecondary} shrink-0`}
+                      onClick={async () => setCodeCopy((await copyText(selectedClassroom.join_code)) ? "ok" : "fail")}
+                    >
+                      {t("account.teacher.copyCode")}
+                    </button>
+                    {codeCopy === "ok" && <p role="status" className="text-sm text-emerald-700">{t("account.teacher.copied")}</p>}
+                    {codeCopy === "fail" && <p role="alert" className="text-sm text-red-700">{t("account.teacher.copyError")}</p>}
+                  </div>
+                </div>
+                <p className="mt-1 text-xs text-slate-600">{t("account.teacher.codeHelp")}</p>
+              </div>
+            )}
+          </section>
 
           {selectedClassroom && (
             <ClassHomework classroomId={selectedClassroom.id} classroomName={selectedClassroom.name} />
           )}
 
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-            <h3 className="px-6 pt-6 text-lg font-semibold">Öğrenciler</h3>
+          <section className="mb-4">
+            <h3 className="mb-2 text-base font-semibold">Öğrenciler</h3>
             {studentsLoading ? (
-              <p className="text-slate-600 text-sm p-6" role="status">Yükleniyor...</p>
+              <p className="text-sm text-slate-600" role="status">Yükleniyor...</p>
             ) : studentsError ? (
-              <div className="p-6">
+              <div>
                 <p role="alert" className="text-sm text-slate-700">{t("account.teacher.studentsError")}</p>
                 <button type="button" className={`${btnSecondary} mt-3`} onClick={() => setStudentsReload((n) => n + 1)}>{t("account.retry")}</button>
               </div>
             ) : students.length === 0 ? (
-              <p className="text-slate-600 text-sm p-6">{t("account.teacher.studentsEmpty")}</p>
+              <p className="text-sm text-slate-600">{t("account.teacher.studentsEmpty")}</p>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 text-slate-500 text-left">
                     <tr>
@@ -362,11 +365,11 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
                 </table>
               </div>
             )}
-          </div>
+          </section>
         </>
       )}
 
-      <details className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <details className="rounded-xl border border-slate-200 bg-white px-4 py-2">
         <summary className="cursor-pointer font-semibold min-h-[44px] flex items-center">{t("account.teacher.invite")}</summary>
         <p className="text-sm text-slate-600 mt-3 mb-3">Bu not ailelere bir kez bırakılabilir. Kayıt ve şifre ailede kalır.</p>
         <div className="text-sm whitespace-pre-wrap mb-3 space-y-3">
@@ -383,9 +386,13 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
           </ol>
           <p>Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil olabilirler.</p>
         </div>
-        <button type="button" onClick={async () => { await copyText(inviteText); setCopied(true); }} className={btnSecondary}>
-          {copied ? t("account.teacher.copied") : t("account.teacher.copyInvite")}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={async () => setInviteCopy((await copyText(inviteText)) ? "ok" : "fail")} className={btnSecondary}>
+            {t("account.teacher.copyInvite")}
+          </button>
+          {inviteCopy === "ok" && <p role="status" className="text-sm text-emerald-700">{t("account.teacher.copied")}</p>}
+          {inviteCopy === "fail" && <p role="alert" className="text-sm text-red-700">{t("account.teacher.copyError")}</p>}
+        </div>
       </details>
     </div>
   );
