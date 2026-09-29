@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Modal from "../components/common/Modal";
 import Owl from "../components/owl/Owl";
 import ThemePreview from "../components/shop/ThemePreview";
 import { buyItem, equipItem, fetchProfile, fetchShop } from "../api/shop";
@@ -34,6 +35,9 @@ export default function Shop() {
   const [error, setError] = useState(null);
   const [tab, setTab] = useState("theme");
   const [open, setOpen] = useState(null);
+  const opener = useRef(null);
+  const titleId = useId();
+  const bodyId = useId();
   const lang = i18n.language?.startsWith("en") ? "en" : "tr";
 
   useEffect(() => {
@@ -46,14 +50,10 @@ export default function Shop() {
     fetchProfile().then(setProfile).catch(() => {});
   }, [t]);
 
-  useEffect(() => {
-    if (!open) return undefined;
-    function onKey(event) {
-      if (event.key === "Escape") setOpen(null);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  function show(item, node) {
+    opener.current = node;
+    setOpen(item);
+  }
 
   async function buy(id) {
     setError(null);
@@ -121,7 +121,18 @@ export default function Shop() {
                 className={`bg-white text-slate-900 rounded-2xl p-4 cursor-pointer ${legendary ? "owl-legendary" : ""}`}
                 data-testid={`card-${item.id}`}
                 data-rarity={item.rarity || ""}
-                onClick={() => setOpen(item)}
+                tabIndex={0}
+                aria-haspopup="dialog"
+                onClick={(event) => {
+                  if (event.target.closest("button")) return;
+                  show(item, event.currentTarget);
+                }}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) return;
+                  if (event.key !== "Enter" && event.key !== " ") return;
+                  event.preventDefault();
+                  show(item, event.currentTarget);
+                }}
               >
                 {item.type === "owl" ? <OwlPhoto item={item} owned={item.owned} /> : <Preview item={item} />}
                 {item.type === "owl" ? (
@@ -175,49 +186,62 @@ export default function Shop() {
       </ul>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4" data-testid="preview-dialog">
-          <div className="bg-white text-slate-900 rounded-2xl p-5 w-full max-w-md max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label={lang === "en" ? open.name_en : open.name_tr}>
-            {open.type === "owl" ? <OwlPhoto item={open} owned={open.owned} large /> : <Preview item={open} large />}
-            {open.type === "owl" ? (
-              <>
-                <p className="font-bold text-lg mt-3 text-center">{open.name_tr}</p>
-                <p className="text-center text-slate-500">{open.name_en}</p>
-                <p className="text-sm mt-2 text-center">{lang === "en" ? open.fact_en : open.fact_tr}</p>
-                <p className="text-center text-sm font-semibold mt-1">{t(`shop.rarity.${open.rarity}`)}</p>
-              </>
-            ) : (
-              <p className="font-bold text-lg mt-3 text-center">{lang === "en" ? open.name_en : open.name_tr}</p>
-            )}
-            <p className="text-center text-sm text-slate-500 mt-1">⭐ {open.price}</p>
-            <div className="mt-4 flex justify-center gap-3">
-              {open.type !== "owl" && (
-                <button type="button" className="rounded-lg border border-slate-300 px-4 py-2 font-semibold" onClick={() => tryOn(open)}>
-                  {t("shop.try")}
-                </button>
-              )}
-              {open.owned ? (
-                open.type !== "owl" && (
-                  <button type="button" className="rounded-lg bg-brand-500 text-white px-4 py-2 font-semibold" onClick={() => wear(open.id)}>
-                    {open.equipped ? t("shop.inUse") : t("shop.use")}
-                  </button>
-                )
-              ) : (
-                <button
-                  type="button"
-                  disabled={short > 0}
-                  className={`rounded-lg px-4 py-2 font-semibold ${short > 0 ? "bg-slate-200 text-slate-600" : "bg-brand-500 text-white"}`}
-                  onClick={() => short === 0 && buy(open.id)}
-                >
-                  {t("shop.buy")}
-                </button>
-              )}
-            </div>
-            {short > 0 && <p className="text-center text-sm text-slate-500 mt-2">{t("shop.short", { count: short })}</p>}
-            <button type="button" className="block mx-auto mt-3 text-sm text-slate-500" onClick={() => setOpen(null)}>
+        <Modal
+          onClose={() => setOpen(null)}
+          labelledBy={titleId}
+          describedBy={bodyId}
+          returnTo={opener}
+          testId="preview-dialog"
+          overlayClassName="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+          panelClassName="w-full max-w-md rounded-2xl bg-white p-5 text-slate-900"
+          footer={(
+            <button
+              type="button"
+              data-dialog-close
+              className="mx-auto mt-3 block min-h-[44px] shrink-0 bg-white px-3 text-sm text-slate-500"
+              onClick={() => setOpen(null)}
+            >
               {t("shop.close")}
             </button>
+          )}
+        >
+          {open.type === "owl" ? <OwlPhoto item={open} owned={open.owned} large /> : <Preview item={open} large />}
+          {open.type === "owl" ? (
+            <>
+              <h2 id={titleId} className="mt-3 text-center text-lg font-bold">{open.name_tr}</h2>
+              <p className="text-center text-slate-500">{open.name_en}</p>
+              <p id={bodyId} className="mt-2 text-center text-sm">{lang === "en" ? open.fact_en : open.fact_tr}</p>
+              <p className="mt-1 text-center text-sm font-semibold">{t(`shop.rarity.${open.rarity}`)}</p>
+            </>
+          ) : (
+            <h2 id={titleId} className="mt-3 text-center text-lg font-bold">{lang === "en" ? open.name_en : open.name_tr}</h2>
+          )}
+          <p id={open.type === "owl" ? undefined : bodyId} className="mt-1 text-center text-sm text-slate-500">⭐ {open.price}</p>
+          <div className="mt-4 flex justify-center gap-3">
+            {open.type !== "owl" && (
+              <button type="button" className="rounded-lg border border-slate-300 px-4 py-2 font-semibold" onClick={() => tryOn(open)}>
+                {t("shop.try")}
+              </button>
+            )}
+            {open.owned ? (
+              open.type !== "owl" && (
+                <button type="button" className="rounded-lg bg-brand-500 px-4 py-2 font-semibold text-white" onClick={() => wear(open.id)}>
+                  {open.equipped ? t("shop.inUse") : t("shop.use")}
+                </button>
+              )
+            ) : (
+              <button
+                type="button"
+                disabled={short > 0}
+                className={`rounded-lg px-4 py-2 font-semibold ${short > 0 ? "bg-slate-200 text-slate-600" : "bg-brand-500 text-white"}`}
+                onClick={() => short === 0 && buy(open.id)}
+              >
+                {t("shop.buy")}
+              </button>
+            )}
           </div>
-        </div>
+          {short > 0 && <p className="mt-2 text-center text-sm text-slate-500">{t("shop.short", { count: short })}</p>}
+        </Modal>
       )}
     </div>
   );

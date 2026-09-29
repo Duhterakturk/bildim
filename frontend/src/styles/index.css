@@ -578,6 +578,27 @@ html[data-board-theme] .play-scale .text-slate-600 {
   50% { transform: translate3d(0, -14px, 0) rotate(calc(var(--rot, 0deg) + 7deg)); }
 }
 
+.modal-layer {
+  box-sizing: border-box;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.modal-panel {
+  box-sizing: border-box;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+}
+
+.modal-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-enter,
   .card-rise,
