@@ -5,7 +5,7 @@ import { useStartingDifficulty } from "../common/useStartingDifficulty";
 export default function KareKaralamaca() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("kare-karalamaca", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const { rowClues, colClues, size } = issue.puzzle;
 
   return (

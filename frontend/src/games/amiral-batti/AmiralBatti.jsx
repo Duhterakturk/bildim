@@ -64,7 +64,7 @@ function Fleet({ ships, marked }) {
 export default function AmiralBatti() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("amiral-batti", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const { rowClues, colClues, rows, cols, ships } = issue.puzzle;
 
   return (

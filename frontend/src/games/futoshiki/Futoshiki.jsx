@@ -5,7 +5,7 @@ import { useStartingDifficulty } from "../common/useStartingDifficulty";
 export default function Futoshiki() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("futoshiki", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const { givens: puzzle, horizontal, vertical } = issue.puzzle;
 
   function renderOverlay(r, c) {

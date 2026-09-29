@@ -13,7 +13,7 @@ const REGION_BG = {
 export default function BolgeselSudoku() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("bolgesel-sudoku", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const puzzle = issue.puzzle.givens;
 
   function cellClassName(r, c) {

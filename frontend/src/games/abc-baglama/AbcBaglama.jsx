@@ -4,7 +4,8 @@ import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
-import ClearBoardButton from "../common/ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
+import { pathsDrawn } from "../common/workState";
 import { useApplyCellHint } from "../common/cellHint";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -561,14 +562,17 @@ export default function AbcBaglama() {
     return undefined;
   }, [filled, linked, letters.length, paths, attemptId, size, status, play]);
 
-  if (phase !== "ready" || !size) return <PuzzlePending phase={phase} />;
+  const hasWork = pathsDrawn(paths);
+  const gate = useDiscardGate({ boardKey: attemptId, hasWork, solved: status === "correct", savePhase });
+
+  if (phase !== "ready" || !size) return <PuzzlePending phase={phase} onRetry={reload} />;
 
   const width = Math.max(0, size * cell);
 
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-1">{copy.title}</h1>
-      <DifficultyPicker gameSlug="abc-baglama" value={difficulty} onChange={setDifficulty} />
+      <DifficultyPicker gameSlug="abc-baglama" value={difficulty} disabled={gate.blocked} onChange={(level) => { if (level === difficulty) return; gate.ask("difficulty", () => setDifficulty(level)); }} />
       <p className="play-rules text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-sm mb-2 max-w-md text-center">{t("play.flowHint")}</p>
       <p className="text-slate-500 text-sm mb-2">{play.clock(seconds)}</p>
@@ -629,9 +633,15 @@ export default function AbcBaglama() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
-        <ClearBoardButton onClick={() => { pathsRef.current = {}; setPaths({}); checkedSig.current = ""; setSelected(null); setStatus("playing"); setNote(""); }} />
-        <button type="button" onClick={reload} className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold">{play.newPuzzle}</button>
+        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", () => { pathsRef.current = {}; setPaths({}); checkedSig.current = ""; setSelected(null); setStatus("playing"); setNote(""); })} />
+            <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", reload)} />
+          </>
+        )}
       </div>
       {note && <p className={`mt-3 ${status === "correct" ? "text-emerald-600" : "text-red-500"}`}>{note}</p>}
       {status === "offline" && <p className="text-[#f4efe6] mt-3">{play.offline}</p>}

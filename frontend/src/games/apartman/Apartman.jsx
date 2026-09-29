@@ -2,7 +2,8 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
-import ClearBoardButton from "../common/ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
+import { cellsDiffer, notesPresent } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -105,12 +106,15 @@ export default function Apartman() {
 
   const clueCell = "board-clue w-12 h-12 flex items-center justify-center text-sm font-bold text-[#f4efe6]";
 
-  if (phase !== "ready" || !board || !notes || !clues) return <PuzzlePending phase={phase} />;
+  const hasWork = cellsDiffer(board, puzzle) || notesPresent(notes);
+  const gate = useDiscardGate({ boardKey: attemptId, hasWork, solved: status === "correct", savePhase });
+
+  if (phase !== "ready" || !board || !notes || !clues) return <PuzzlePending phase={phase} onRetry={reload} />;
 
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-1">{copy.title}</h1>
-      <DifficultyPicker gameSlug="apartman" value={difficulty} onChange={handleDifficultyChange} />
+      <DifficultyPicker gameSlug="apartman" value={difficulty} disabled={gate.blocked} onChange={(level) => gate.ask("difficulty", () => handleDifficultyChange(level))} />
       <p className="text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-xs mb-2 max-w-md text-center">{play.notesHint}</p>
       <p className="text-slate-500 text-sm mb-4">{play.clock(seconds)}</p>
@@ -159,7 +163,7 @@ export default function Apartman() {
           type="button"
           onClick={checkSolution}
           disabled={status === "correct" || status === "submitted"}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
+          className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
@@ -169,13 +173,14 @@ export default function Apartman() {
           label={notesMode ? play.notesOn : play.notes}
           hint={play.notesHint}
         />
-        <ClearBoardButton onClick={clearBoard} />
-        <button
-          onClick={reload}
-          className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300"
-        >
-          {play.newPuzzle}
-        </button>
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", clearBoard)} />
+            <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", reload)} />
+          </>
+        )}
       </div>
 
       {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}

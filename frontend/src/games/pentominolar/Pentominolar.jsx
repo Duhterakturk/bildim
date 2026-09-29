@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
-import ClearBoardButton from "../common/ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -153,7 +153,10 @@ export default function Pentominolar() {
     };
   }
 
-  if (phase !== "ready" || !puzzle) return <PuzzlePending phase={phase} />;
+  const hasWork = placements.length > 0;
+  const gate = useDiscardGate({ boardKey: attemptId, hasWork, solved: status === "correct", savePhase });
+
+  if (phase !== "ready" || !puzzle) return <PuzzlePending phase={phase} onRetry={reload} />;
 
   return (
     <div className="flex flex-col items-center">
@@ -161,7 +164,11 @@ export default function Pentominolar() {
       <DifficultyPicker
         gameSlug="pentominolar"
         value={difficulty}
-        onChange={setDifficulty}
+        disabled={gate.blocked}
+        onChange={(level) => {
+          if (level === difficulty) return;
+          gate.ask("difficulty", () => setDifficulty(level));
+        }}
       />
       <p className="text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-sm mb-1 text-center max-w-md">{play.anchor}</p>
@@ -236,22 +243,23 @@ export default function Pentominolar() {
 
       {notice && status === "playing" && <p className="text-amber-600 text-sm mt-3 text-center max-w-md">{notice}</p>}
 
-      <div className="flex gap-3 mt-6">
+      <div className="flex flex-wrap justify-center gap-3 mt-6">
         <button
           type="button"
           onClick={checkSolution}
           disabled={status === "correct" || status === "submitted"}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
+          className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
-        <ClearBoardButton onClick={clearBoard} />
-        <button
-          onClick={reload}
-          className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300"
-        >
-          {play.newPuzzle}
-        </button>
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", clearBoard)} />
+            <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", reload)} />
+          </>
+        )}
       </div>
 
       {status === "correct" && <p className="play-correct text-emerald-600 mt-3">{play.correct}</p>}

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
-import ClearBoardButton from "../common/ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
+import { anyFilled } from "../common/workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useGameText } from "../common/gameText";
 import { usePlayCopy } from "../common/playCopy";
@@ -235,8 +236,11 @@ export default function Metaforms() {
 
   const solutions = useMemo(() => (clues.length ? solve(clues) : []), [clues]);
 
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
-  if (clues.length === 0) return <PuzzlePending phase="error" />;
+  const hasWork = anyFilled(board);
+  const gate = useDiscardGate({ boardKey: attemptId, hasWork, solved: status === "correct", savePhase });
+
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
+  if (clues.length === 0) return <PuzzlePending phase="error" onRetry={reload} />;
 
   const placed = new Set(board.flat().filter(Boolean).map((piece) => `${piece.shape}:${piece.color}`));
   const tray = SHAPES.flatMap((shape) => COLORS.map((color) => ({ shape, color })));
@@ -247,7 +251,7 @@ export default function Metaforms() {
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-1">{copy.title}</h1>
-      <DifficultyPicker gameSlug="metaforms" value={difficulty} onChange={newGame} />
+      <DifficultyPicker gameSlug="metaforms" value={difficulty} disabled={gate.blocked} onChange={(level) => gate.ask("difficulty", () => newGame(level))} />
       <p className="play-rules text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-sm mb-4">{play.clock(seconds)}</p>
 
@@ -293,18 +297,18 @@ export default function Metaforms() {
           type="button"
           onClick={checkSolution}
           disabled={status === "correct" || status === "submitted"}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
+          className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
-        <ClearBoardButton onClick={clearBoard} />
-        <button
-          type="button"
-          onClick={() => newGame()}
-          className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300"
-        >
-          {play.newPuzzle}
-        </button>
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", clearBoard)} />
+            <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", () => newGame())} />
+          </>
+        )}
       </div>
 
       {solutions.length !== 1 && <p className="text-rose-600 mt-3">Geliştirici uyarısı: bu bulmacanın {solutions.length} çözümü var.</p>}

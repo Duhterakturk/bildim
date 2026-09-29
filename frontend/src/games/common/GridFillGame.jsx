@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "./useAutoScore";
-import ClearBoardButton, { NewPuzzleButton } from "./ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "./ClearBoardButton";
+import { cellsDiffer, notesPresent } from "./workState";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint, writeFill } from "./cellHint";
 import { useGameText } from "./gameText";
@@ -121,11 +122,27 @@ export default function GridFillGame({
     }
   }
 
+  const hasWork = cellsDiffer(displayBoard, puzzle) || notesPresent(displayNotes);
+  const gate = useDiscardGate({
+    boardKey: attemptId,
+    hasWork,
+    solved: status === "correct",
+    savePhase,
+  });
+
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-1">{copy.title}</h1>
       {onDifficultyChange && (
-        <DifficultyPicker gameSlug={slug} value={difficulty} onChange={onDifficultyChange} />
+        <DifficultyPicker
+          gameSlug={slug}
+          value={difficulty}
+          disabled={gate.blocked}
+          onChange={(level) => {
+            if (level === difficulty) return;
+            gate.ask("difficulty", () => onDifficultyChange(level));
+          }}
+        />
       )}
       {blurb && <p className="text-slate-500 text-sm mb-2 max-w-md text-center">{blurb}</p>}
       <p className="text-slate-500 text-xs mb-2 max-w-md text-center">{play.notesHint}</p>
@@ -169,7 +186,7 @@ export default function GridFillGame({
           type="button"
           onClick={checkSolution}
           disabled={status === "correct" || status === "submitted"}
-          className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
+          className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >
           {play.check}
         </button>
@@ -179,15 +196,15 @@ export default function GridFillGame({
           label={notesMode ? play.notesOn : play.notes}
           hint={play.notesHint}
         />
-        <ClearBoardButton
-          onClick={clearBoard}
-          hasWork={board.some((row, r) => row.some((value, c) => !givenMask[r][c] && value)) || notes.some((row) => row.some((cell) => cell.length))}
-        />
-        {onRegenerate && (
-          <NewPuzzleButton
-            onClick={onRegenerate}
-            hasWork={board.some((row, r) => row.some((value, c) => !givenMask[r][c] && value)) || notes.some((row) => row.some((cell) => cell.length))}
-          />
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", clearBoard)} />
+            {onRegenerate && (
+              <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", onRegenerate)} />
+            )}
+          </>
         )}
       </div>
 

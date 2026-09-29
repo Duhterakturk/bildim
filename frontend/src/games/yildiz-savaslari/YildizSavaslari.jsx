@@ -5,7 +5,7 @@ import { useStartingDifficulty } from "../common/useStartingDifficulty";
 export default function YildizSavaslari() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("yildiz-savaslari", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const { rowClues, colClues, regionGrid, size } = issue.puzzle;
 
   return (

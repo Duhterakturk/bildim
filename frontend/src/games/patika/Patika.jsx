@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
 import { ScoreNotice, useAutoScore } from "../common/useAutoScore";
-import ClearBoardButton from "../common/ClearBoardButton";
+import ClearBoardButton, { DiscardNotice, NewPuzzleButton, useDiscardGate } from "../common/ClearBoardButton";
 import DifficultyPicker from "../../components/games/DifficultyPicker";
 import { useApplyCellHint } from "../common/cellHint";
 import { useGameText } from "../common/gameText";
@@ -94,14 +94,17 @@ export default function Patika() {
     }
   }
 
-  if (phase !== "ready" || !size) return <PuzzlePending phase={phase} />;
+  const hasWork = edges.size > 0;
+  const gate = useDiscardGate({ boardKey: attemptId, hasWork, solved: status === "correct", savePhase });
+
+  if (phase !== "ready" || !size) return <PuzzlePending phase={phase} onRetry={reload} />;
 
   const tracks = size * 2 - 1;
 
   return (
     <div className="flex w-full flex-col items-center">
       <h1 className="text-2xl font-bold mb-1">{copy.title}</h1>
-      <DifficultyPicker gameSlug="patika" value={difficulty} onChange={newGame} />
+      <DifficultyPicker gameSlug="patika" value={difficulty} disabled={gate.blocked} onChange={(level) => gate.ask("difficulty", () => newGame(level))} />
       <p className="play-rules text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-sm mb-4">{play.clock(seconds)}</p>
 
@@ -164,9 +167,15 @@ export default function Patika() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
-        <ClearBoardButton onClick={() => { setEdges(new Set()); setStatus("playing"); }} />
-        <button type="button" onClick={() => newGame()} className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold">{play.newPuzzle}</button>
+        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
+        {gate.pending ? (
+          <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
+        ) : (
+          <>
+            <ClearBoardButton disabled={gate.blocked} onClick={() => gate.ask("clear", () => { setEdges(new Set()); setStatus("playing"); })} />
+            <NewPuzzleButton disabled={gate.blocked} onClick={() => gate.ask("new", () => newGame())} />
+          </>
+        )}
       </div>
       {status === "correct" && <p className="text-emerald-600 mt-3">{play.correct}</p>}
       {status === "incorrect" && <p className="text-red-500 mt-3">{play.incorrect}</p>}

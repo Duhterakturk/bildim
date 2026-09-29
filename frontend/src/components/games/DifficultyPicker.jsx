@@ -14,7 +14,7 @@ const DEFAULT_STATE = {
  * yapılınca açılır (bkz. backend/app/services/difficulty.py). Giriş
  * yapılmamışsa yalnızca "Kolay" kullanılabilir (ilerleme takip edilemez).
  */
-export default function DifficultyPicker({ gameSlug, value, onChange }) {
+export default function DifficultyPicker({ gameSlug, value, onChange, disabled = false }) {
   const { t } = useTranslation();
   const [state, setState] = useState(DEFAULT_STATE);
   const [opened, setOpened] = useState("");
@@ -81,11 +81,11 @@ export default function DifficultyPicker({ gameSlug, value, onChange }) {
           <button
             key={level}
             type="button"
-            disabled={!isUnlocked}
+            disabled={disabled || !isUnlocked}
             title={lockHint}
-            onClick={() => isUnlocked && onChange(level)}
+            onClick={() => !disabled && isUnlocked && onChange(level)}
             className={[
-              "px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1",
+              "min-h-[44px] px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1",
               !isUnlocked
                 ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
                 : isActive

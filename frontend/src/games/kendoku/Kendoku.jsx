@@ -5,7 +5,7 @@ import { useStartingDifficulty } from "../common/useStartingDifficulty";
 export default function Kendoku() {
   const [difficulty, setDifficulty] = useStartingDifficulty();
   const { issue, phase, reload } = useIssuedPuzzle("kendoku", difficulty);
-  if (phase !== "ready") return <PuzzlePending phase={phase} />;
+  if (phase !== "ready") return <PuzzlePending phase={phase} onRetry={reload} />;
   const { givens: puzzle, cageId, cageAnchor, cageClues } = issue.puzzle;
 
   function cellClassName(r, c) {
