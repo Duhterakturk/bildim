@@ -55,6 +55,17 @@ body.theme-light {
   top: -6px;
 }
 
+/* Recolor only the wordmark; the approved brain and exclamation stay orange. */
+.brand-logo-white {
+  visibility: hidden;
+  filter: brightness(0) invert(1);
+  clip-path: inset(0 14.2% 0 35%);
+}
+
+[data-brand-tone="light"] .brand-logo-white {
+  visibility: visible;
+}
+
 /* Legacy game labels used a fixed light text color on the old dark canvas. */
 .play-room .text-\[\#f4efe6\] {
   color: var(--ink);

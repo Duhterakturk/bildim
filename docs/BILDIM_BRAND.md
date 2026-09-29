@@ -18,8 +18,12 @@ Menüdeki logo alanı 150 × 44 CSS pikseldir. Görselin şeffaf dış boşluğu
 ile kırpılır; yazı veya beyin ayrı ayrı büyütülmez. Mevcut bütün temaların
 menüsü açık zeminlidir; koyu yazılı logo bu yüzey için hazırlanmıştır.
 
-İleride gerçekten koyu bir menü eklenirse beyaz yazılı ayrı bir sürüm gerekir.
-Koyu yazılı bu görsel koyu zeminde kullanılmamalıdır.
+`BrandLogo` menünün hesaplanan gerçek zemin rengini okuyup beyaz veya koyu
+yazıdan daha yüksek kontrast sağlayanı seçer. Tema değişimi, deneme ve geri
+dönüş sırasında renk yeniden hesaplanır. Beyaz sürüm aynı görselin yalnız
+yazı bölgesine uygulanan CSS filtresidir; beyin ve ünlem renkleri değişmez.
+Yeni bir logo dosyası kullanılırsa yazıyı ayıran `clip-path` sınırları da
+güncellenmelidir.
 
 ## Görsel üretim metni
 
@@ -44,6 +48,11 @@ imzalama anahtarları ve mevcut kullanıcı kayıtları değiştirilmez.
 Eski tarihli denetim raporları tarihsel kayıt olarak eski adı taşıyabilir.
 
 ## Doğrulama
+
+Zemine uyarlanan logo güncellemesinde sekiz tema, geçici tema denemeleri,
+açık/koyu zemin geçişi ve yerel menü zemini için 24 masaüstü/mobil tarayıcı
+testi ve üretim derlemesi geçti. Mevcut temaların hepsi açık menü kullanır;
+beyaz yazılı davranış ayrıca yapay koyu menü zeminiyle doğrulandı.
 
 - Üretim derlemesi başarılı.
 - Hesap, giriş, metin taşması ve sekiz tema için 46 masaüstü/mobil tarayıcı

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
+import BrandLogo from "./BrandLogo";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
@@ -82,7 +83,7 @@ export default function Navbar() {
     <nav className="site-nav sticky top-0 z-10 border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="brand-link" aria-label={t("app.name")} onClick={() => setMenuOpen(false)}>
-          <img className="brand-logo" src="/brand/bildim-logo-light.png" alt="" width="2169" height="725" fetchPriority="high" />
+          <BrandLogo />
         </Link>
 
         <div className="flex items-center gap-3">
