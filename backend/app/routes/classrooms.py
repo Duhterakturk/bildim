@@ -12,12 +12,12 @@ classrooms_bp = Blueprint("classrooms", __name__, url_prefix="/api/classrooms")
 def create_classroom():
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403
 
     data = request.get_json(force=True) or {}
     name = (data.get("name") or "").strip()
     if not name:
-        return jsonify({"error": "name zorunludur"}), 400
+        return jsonify({"error": "Sınıf adı gerekli."}), 400
 
     classroom = Classroom(name=name, teacher_id=teacher.id)
     db.session.add(classroom)
@@ -30,7 +30,7 @@ def create_classroom():
 def my_classrooms():
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403
 
     classrooms = Classroom.query.filter_by(teacher_id=teacher.id).order_by(Classroom.created_at).all()
     return jsonify([c.to_dict(include_join_code=True) for c in classrooms])
@@ -41,7 +41,7 @@ def my_classrooms():
 def classroom_students(classroom_id):
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403
 
     classroom = db.session.get(Classroom, classroom_id)
     if not classroom or classroom.teacher_id != teacher.id:
@@ -57,7 +57,7 @@ def classroom_students(classroom_id):
 def set_student_password(classroom_id, student_id):
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403
 
     classroom = db.session.get(Classroom, classroom_id)
     if not classroom or classroom.teacher_id != teacher.id:
@@ -83,16 +83,16 @@ def set_student_password(classroom_id, student_id):
 def join_classroom():
     student = db.session.get(User, get_jwt_identity())
     if not student or student.role != UserRole.STUDENT:
-        return jsonify({"error": "Bu uç nokta yalnızca öğrenci rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğrenci hesabı içindir."}), 403
 
     data = request.get_json(force=True) or {}
     join_code = (data.get("join_code") or "").strip().upper()
     if not join_code:
-        return jsonify({"error": "join_code zorunludur"}), 400
+        return jsonify({"error": "Sınıf kodu gerekli."}), 400
 
     classroom = Classroom.query.filter_by(join_code=join_code).first()
     if not classroom:
-        return jsonify({"error": "Geçersiz sınıf kodu"}), 404
+        return jsonify({"error": "Sınıf kodu eşleşmedi. Kodu kontrol edip yeniden deneyebilirsiniz."}), 404
 
     student.classroom_id = classroom.id
     db.session.commit()
@@ -104,7 +104,7 @@ def join_classroom():
 def leave_classroom():
     student = db.session.get(User, get_jwt_identity())
     if not student or student.role != UserRole.STUDENT:
-        return jsonify({"error": "Bu uç nokta yalnızca öğrenci rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğrenci hesabı içindir."}), 403
 
     student.classroom_id = None
     db.session.commit()

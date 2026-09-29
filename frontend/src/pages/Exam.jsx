@@ -26,7 +26,7 @@ export default function Exam() {
   function load() {
     return fetchCurrentExam()
       .then(apply)
-      .catch(() => setError("Deneme yüklenemedi"));
+      .catch(() => setError("Deneme yüklenemedi. Yeniden deneyebilirsiniz."));
   }
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function Exam() {
     try {
       apply(await startExam());
     } catch (err) {
-      setError(err.response?.data?.error || "Deneme açılamadı");
+      setError(err.response?.data?.error || "Deneme açılamadı. Yeniden deneyebilirsiniz.");
     }
   }
 
@@ -58,14 +58,14 @@ export default function Exam() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="font-display text-4xl font-semibold mb-2">Karışık deneme</h1>
+      <h1 className="font-display text-4xl font-semibold mb-2">Karışık Deneme</h1>
       <p className="text-stone-600 mb-6">
-        Üç ayrı oyun, on beş dakika. Kolay kademede ilerlenir; bitince bu sayfaya dönülür.
+        Üç ayrı oyun, on beş dakika. Kolay kademede ilerlenir; bitince bu sayfaya dönebilirsiniz.
       </p>
 
       {!exam && (
         <button type="button" onClick={handleStart} className="press-btn">
-          Denemeyi aç
+          Denemeyi Açın
         </button>
       )}
 
@@ -93,7 +93,7 @@ export default function Exam() {
                 Toplam {exam.total_points} puan. {exam.on_time ? "Süre içinde bitti." : "Süre dolduktan sonra bitti."}
               </p>
               <button type="button" onClick={handleStart} className="press-btn mt-4">
-                Yeni deneme
+                Yeni Deneme
               </button>
             </div>
           )}

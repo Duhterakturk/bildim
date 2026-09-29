@@ -201,7 +201,7 @@ def export_progress_pdf():
     scores, games = _load_scores_and_games(user.id, start_date, end_date)
     payload = _build_pdf(user, scores, games)
     if payload is None:
-        return jsonify({"error": "PDF yazı tipi bulunamadı"}), 503
+        return jsonify({"error": "PDF yazı tipi bulunamadı. Bir süre sonra yeniden deneyebilirsiniz."}), 503
     return send_file(
         io.BytesIO(payload),
         as_attachment=True,
@@ -213,7 +213,7 @@ def export_progress_pdf():
 @progress_bp.get("/child/<string:child_id>")
 @jwt_required()
 def child_progress(child_id):
-    return jsonify({"error": "Veli hesabı kapatıldı"}), 403
+    return jsonify({"error": "Veli hesabı kapalı."}), 403
 
 
 @progress_bp.get("/students")
@@ -221,7 +221,7 @@ def child_progress(child_id):
 def students_overview():
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403
 
     classroom_ids = [
         c.id for c in Classroom.query.filter_by(teacher_id=teacher.id).all()

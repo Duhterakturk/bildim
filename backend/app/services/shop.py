@@ -100,7 +100,7 @@ def purchase(user, item_id):
     if UserItem.query.filter_by(user_id=user.id, item_id=item_id).first():
         raise ShopError("Bu ürün zaten alınmış", 409)
     if int(user.star_balance or 0) < item["price"]:
-        raise ShopError("Yıldız bakiyesi yetmiyor", 402)
+        raise ShopError("Yıldız bakiyeniz bu ürün için yetmiyor.", 402)
     user.star_balance = int(user.star_balance or 0) - item["price"]
     db.session.add(StarLedger(
         user_id=user.id,
@@ -153,7 +153,7 @@ def refund_accessories(connection):
 def equip(user, item_id):
     row = UserItem.query.filter_by(user_id=user.id, item_id=item_id).first()
     if row is None:
-        raise ShopError("Bu ürün sende yok", 404)
+        raise ShopError("Bu ürün hesabınızda yok.", 404)
     item = item_by_id(item_id)
     if row.equipped:
         row.equipped = False

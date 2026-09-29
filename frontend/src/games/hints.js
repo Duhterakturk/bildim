@@ -33,7 +33,7 @@ export const HINTS = {
     en: { hint: "Each white cell has two neighbors on the loop. A dead end stays off the loop.", example: "When two white cells sit side by side, the line between them may belong to the loop." },
   },
   "abc-baglama": {
-    tr: { hint: "Aynı harfi birbirine bağla. Çizgi yalnız yatay ve dikey gider, kesişmez. Bütün kareler dolu olmalı. Bir harfe dokunursan o harfin yolu silinir; yolun ortasına dokunursan yol oradan kısalır.", example: "A’dan komşu karelere uzan, diğer A’da bitir." },
+    tr: { hint: "Aynı harfi birbirine bağlayın. Çizgi yalnız yatay ve dikey gider, kesişmez. Bütün kareler dolu olmalı. Bir harfe dokunursanız o harfin yolu silinir; yolun ortasına dokunursanız yol oradan kısalır.", example: "A’dan komşu karelere ilerleyip diğer A’da bitirebilirsiniz." },
     en: { hint: "Join the matching letters. The line moves only sideways or up and down, and it does not cross. Every cell must be filled. Tap a letter and that letter's path is cleared; tap the middle of a path and the path shortens there.", example: "Start at A, step to a neighbor, and finish on the other A." },
   },
   "islem-karesi": {

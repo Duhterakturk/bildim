@@ -19,7 +19,7 @@ export default function Dashboard() {
       </p>
 
       <Link to="/exam" className="board-card mb-6 block p-5">
-        <span className="font-display text-2xl">Karışık deneme</span>
+        <span className="font-display text-2xl">Karışık Deneme</span>
         <span className="block text-sm text-stone-600 mt-1">Üç oyun, on beş dakika.</span>
       </Link>
 

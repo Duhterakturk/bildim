@@ -25,7 +25,7 @@ def open_puzzle():
     data = request.get_json(silent=True) or {}
     difficulty = data.get("difficulty") or "easy"
     if difficulty not in ("easy", "medium", "hard"):
-        return jsonify({"error": "Zorluk geçersiz"}), 400
+        return jsonify({"error": "Seçilen zorluk geçerli değil."}), 400
 
     game = _find_game(data)
     if game is None:
@@ -95,7 +95,7 @@ def reveal_cell(attempt_id):
     if not _can_see(attempt):
         return jsonify({"error": "Bulmaca bulunamadı"}), 404
     if not attempt.user_id:
-        return jsonify({"error": "İpucu hakkı giriş yapılmış hesapta durur."}), 403
+        return jsonify({"error": "İpuçları giriş yaptıktan sonra kullanılabilir."}), 403
     user = db.session.get(User, attempt.user_id)
     if user is None or not spend(user):
         return jsonify({

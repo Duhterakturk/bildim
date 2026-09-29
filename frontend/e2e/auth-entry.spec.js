@@ -69,9 +69,9 @@ test("profile name edit persists through reload", async ({ page }, testInfo) => 
   await setup(page);
   await page.goto("/profil");
   await page.getByLabel("Ad Soyad", { exact: true }).fill("Deniz Kaya");
-  await page.getByRole("button", { name: "Adı kaydet", exact: true }).click();
+  await page.getByRole("button", { name: "Değişiklikleri Kaydet", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Deniz Kaya", exact: true })).toBeVisible();
-  await expect(page.getByRole("status")).toHaveText("Adın güncellendi.");
+  await expect(page.getByRole("status")).toHaveText("Profil adınız güncellendi.");
   await page.reload();
   await expect(page.getByRole("heading", { name: "Deniz Kaya", exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("profile.png"), fullPage: true, animations: "disabled" });

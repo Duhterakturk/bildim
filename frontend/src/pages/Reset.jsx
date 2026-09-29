@@ -18,7 +18,7 @@ export default function Reset() {
       await resetPassword(token, password);
       setDone(true);
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre yenilenemedi");
+      setError(err.response?.data?.error || "Şifre yenilenemedi. Yeniden deneyebilirsiniz.");
     }
   }
 

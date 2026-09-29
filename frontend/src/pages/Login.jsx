@@ -18,7 +18,7 @@ export default function Login() {
       await login(form);
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.error || "Giriş başarısız");
+      setError(err.response?.data?.error || "Giriş yapılamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }
   }
 

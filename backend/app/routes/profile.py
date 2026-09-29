@@ -84,11 +84,11 @@ def choose_title():
     counts, _total = _counts(user.id)
     slug, _, rank = str(chosen).partition(":")
     if rank_for(counts.get(slug, 0)) is None or rank not in {key for key, _need in RANKS}:
-        return jsonify({"error": "Bu unvan kazanılmamış"}), 400
+        return jsonify({"error": "Bu unvan henüz kazanılmadı."}), 400
     earned = rank_for(counts.get(slug, 0))
     order = [key for key, _need in RANKS]
     if order.index(rank) > order.index(earned):
-        return jsonify({"error": "Bu unvan kazanılmamış"}), 400
+        return jsonify({"error": "Bu unvan henüz kazanılmadı."}), 400
     user.active_title = f"{slug}:{rank}"
     db.session.commit()
     return jsonify(snapshot(user))

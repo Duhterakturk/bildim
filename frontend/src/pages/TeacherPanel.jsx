@@ -25,7 +25,7 @@ function StudentPassword({ classroomId, student }) {
       setShown(chosen);
       setCopiedPassword(false);
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre kaydedilemedi");
+      setError(err.response?.data?.error || "Şifre kaydedilemedi. Yeniden deneyebilirsiniz.");
     }
   }
 
@@ -51,10 +51,10 @@ function StudentPassword({ classroomId, student }) {
         </p>
         <div className="flex gap-2 mt-1">
           <button type="button" onClick={copyPassword} className="text-brand-600 font-semibold">
-            {copiedPassword ? "Alındı" : "Şifreyi al"}
+            {copiedPassword ? "Kopyalandı" : "Şifreyi Kopyalayın"}
           </button>
           <button type="button" onClick={() => setShown(null)} className="text-slate-500">
-            Kapattım
+            Kapatın
           </button>
         </div>
       </div>
@@ -64,7 +64,7 @@ function StudentPassword({ classroomId, student }) {
   if (!open) {
     return (
       <button type="button" onClick={() => setOpen(true)} className="text-brand-600 font-semibold">
-        Şifre bırak
+        Şifre Belirleyin
       </button>
     );
   }
@@ -83,7 +83,7 @@ function StudentPassword({ classroomId, student }) {
       />
       <div className="flex gap-2">
         <button type="submit" className="text-brand-600 font-semibold">
-          Kaydet
+          Kaydedin
         </button>
         <button
           type="button"
@@ -172,7 +172,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
       setClassrooms((prev) => [...prev, classroom]);
       setSelectedId(classroom.id);
     } catch (err) {
-      setError(err.response?.data?.error || "Sınıf oluşturulamadı");
+      setError(err.response?.data?.error || "Sınıf oluşturulamadı. Yeniden deneyebilirsiniz.");
     }
   }
 
@@ -184,7 +184,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-2">Öğretmen Paneli</h1>
       <p className="text-slate-600 mb-8">
-        Sınıflar burada durur. Katılım kodu paylaşıldığında öğrenciler kendiliğinden görünür.
+        Sınıflarınız burada listelenir. Katılım kodunu paylaştığınızda öğrenciler kendiliğinden görünür.
       </p>
 
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 mb-6">
@@ -219,7 +219,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
           onClick={copyInvite}
           className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600"
         >
-          {copied ? "Alındı" : "Notu al"}
+          {copied ? "Kopyalandı" : "Notu Kopyalayın"}
         </button>
       </div>
 
@@ -238,7 +238,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
             type="submit"
             className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 text-sm"
           >
-            Sınıfı aç
+            Sınıfı Oluşturun
           </button>
         </form>
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
@@ -246,7 +246,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
 
       {classrooms.length === 0 ? (
         <p className="text-slate-500 text-sm">
-          Henüz bir sınıf yok. Bir ad yeterli. Kod, sınıf açılınca belirir.
+          Henüz bir sınıf yok. Bir ad yazmanız yeterli. Kod, sınıf oluşunca görünür.
         </p>
       ) : (
         <>
@@ -277,7 +277,7 @@ Uygulamayı kullanmak isteyen öğrencilerimiz bu şekilde sınıfımıza dahil 
               <span className="font-mono font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
                 {selectedClassroom.join_code}
               </span>{" "}
-              — kod, Panelim sayfasından sınıfa bağlanır.
+              — öğrenciler bu kodu Panelim sayfasından girebilir.
             </p>
           )}
 

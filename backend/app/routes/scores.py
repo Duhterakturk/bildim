@@ -96,7 +96,7 @@ def my_scores():
 def leaderboard(game_slug):
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return jsonify({"error": "Bu liste yalnızca öğretmen içindir"}), 403
+        return jsonify({"error": "Bu liste yalnızca öğretmen hesabı içindir."}), 403
 
     game = Game.query.filter_by(slug=game_slug).first()
     if not game:

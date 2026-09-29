@@ -14,7 +14,7 @@ assignments_bp = Blueprint("assignments", __name__, url_prefix="/api")
 def _teacher_classroom(classroom_id):
     teacher = db.session.get(User, get_jwt_identity())
     if not teacher or teacher.role != UserRole.TEACHER:
-        return None, (jsonify({"error": "Bu uç nokta yalnızca öğretmen rolü içindir"}), 403)
+        return None, (jsonify({"error": "Bu işlem yalnızca öğretmen hesabı içindir."}), 403)
     classroom = db.session.get(Classroom, classroom_id)
     if not classroom or classroom.teacher_id != teacher.id:
         return None, (jsonify({"error": "Bu sınıf size ait değil"}), 403)
@@ -62,9 +62,9 @@ def create_assignment(classroom_id):
         target_count = 0
 
     if not slugs:
-        return jsonify({"error": "En az bir oyun seçilir"}), 400
+        return jsonify({"error": "En az bir oyun seçiniz."}), 400
     if difficulty not in DIFFICULTY_LABELS:
-        return jsonify({"error": "Geçersiz zorluk"}), 400
+        return jsonify({"error": "Seçilen zorluk geçerli değil."}), 400
     if target_count < 1 or target_count > 10:
         return jsonify({"error": "Hedef 1 ile 10 arasında olmalıdır"}), 400
 
@@ -117,7 +117,7 @@ def current_assignment(classroom_id):
 def my_assignment():
     student = db.session.get(User, get_jwt_identity())
     if not student or student.role != UserRole.STUDENT:
-        return jsonify({"error": "Bu uç nokta yalnızca öğrenci rolü içindir"}), 403
+        return jsonify({"error": "Bu işlem yalnızca öğrenci hesabı içindir."}), 403
     if not student.classroom_id:
         return jsonify({"assignment": None, "assignments": []})
     rows = _current(student.classroom_id)

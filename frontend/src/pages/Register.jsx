@@ -28,7 +28,7 @@ export default function Register() {
       });
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.error || "Kayıt başarısız");
+      setError(err.response?.data?.error || "Kayıt tamamlanamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }
   }
 

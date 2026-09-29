@@ -117,7 +117,7 @@ test("an equipped background supplies the photo and the theme supplies the color
   await page.screenshot({ path: "test-results/ink-space-meadow.png" });
   await page.goto("/dukkan");
   await page.getByTestId("card-theme-forest").click();
-  await page.getByTestId("preview-dialog").getByRole("button", { name: "Dene" }).click();
+  await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
   await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/meadow.webp");
   const tried = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ink").trim());
   expect(tried.toLowerCase()).toBe("#143226");

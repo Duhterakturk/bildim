@@ -18,7 +18,7 @@ export default function Forgot() {
       await recoverPassword(email, reminder, password);
       setDone(true);
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre yenilenmedi");
+      setError(err.response?.data?.error || "Şifre yenilenemedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }
   }
 

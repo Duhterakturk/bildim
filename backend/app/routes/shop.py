@@ -44,7 +44,7 @@ def buy():
         return jsonify({"error": str(exc)}), exc.status
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"error": "Bu ürün zaten sende"}), 409
+        return jsonify({"error": "Bu ürün zaten hesabınızda."}), 409
     return jsonify(_state(user))
 
 

@@ -56,7 +56,7 @@ export default function Games() {
       <div className="flex items-end justify-between gap-4 mb-6">
         <h1 className="scene-label font-display text-4xl font-semibold">{t("games.title")}</h1>
         <Link to="/exam" className="press-btn text-sm" style={{ padding: "0.55rem 1rem" }}>
-          Karışık deneme
+          Karışık Deneme
         </Link>
       </div>
 

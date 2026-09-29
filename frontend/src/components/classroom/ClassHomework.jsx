@@ -43,7 +43,7 @@ export function ClassHomework({ classroomId, classroomName }) {
       });
       setBoard(next);
     } catch (err) {
-      setError(err.response?.data?.error || "Ödev kaydedilemedi");
+      setError(err.response?.data?.error || "Ödev kaydedilemedi. Seçiminizi kontrol edip yeniden deneyebilirsiniz.");
     }
   }
 
@@ -107,7 +107,7 @@ export function ClassHomework({ classroomId, classroomName }) {
           onChange={(e) => setForm({ ...form, target_count: e.target.value })}
           className="w-20 border border-line rounded-lg px-3 py-2 text-sm bg-white"
         />
-        <button type="submit" className="press-btn !px-4 !py-2 text-sm" disabled={form.slugs.length === 0}>Ödevi bırak</button>
+        <button type="submit" className="press-btn !px-4 !py-2 text-sm" disabled={form.slugs.length === 0}>Ödevi Kaydedin</button>
         </div>
       </form>
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -121,7 +121,7 @@ export function ClassHomework({ classroomId, classroomName }) {
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 text-sm text-stone-600">
                 <span>Hedef: {item.target_count} {item.difficulty_label.toLowerCase()} {item.name_tr}</span>
                 <Link to={`/board/${item.slug}?difficulty=${item.difficulty}`} className="font-bold text-brand-700">
-                  Tahtada aç
+                  Tahtada Açın
                 </Link>
               </li>
             ))}
@@ -138,11 +138,11 @@ export function ClassHomework({ classroomId, classroomName }) {
               ))}
             </ul>
           )}
-          <p className="text-sm text-stone-600 mb-4">Ödevi süren {board.pending_count} kişi kaldı.</p>
+          <p className="text-sm text-stone-600 mb-4">Ödevi henüz tamamlamayan {board.pending_count} kişi var.</p>
           <p className="bg-white border border-line rounded-xl px-4 py-3 text-sm mb-3">{board.sentence}</p>
           <div className="flex flex-wrap items-center gap-4">
             <button type="button" onClick={handleCopy} className="text-sm font-bold text-brand-700">
-              {copied ? "Alındı" : "Metni al"}
+              {copied ? "Kopyalandı" : "Metni Kopyalayın"}
             </button>
           </div>
         </div>
@@ -177,14 +177,14 @@ export function StudentHomework() {
             </p>
             {!item.finished && (
               <Link to={`/games/${item.slug}`} className="press-btn mt-2 !px-4 !py-2 text-sm">
-                Bulmacaya geç
+                Bulmacaya Geçin
               </Link>
             )}
           </li>
         ))}
       </ul>
       <p className="text-sm text-stone-500 mt-4">
-        {finished ? "Ödev tamam." : "Tamamlandığında burada görünür."}
+        {finished ? "Ödev tamamlandı." : "Tamamlandığında burada görünür."}
       </p>
     </section>
   );

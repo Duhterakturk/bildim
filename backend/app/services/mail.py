@@ -18,9 +18,9 @@ def send_password_reset(to_email: str, link: str) -> bool:
     message["From"] = sender
     message["To"] = to_email
     message.set_content(
-        "Şifreni yenilemek için bu bağlantıyı aç. Bir saat geçerlidir.\n\n"
+        "Şifrenizi yenilemek için bu bağlantıyı açabilirsiniz. Bağlantı bir saat geçerlidir.\n\n"
         f"{link}\n\n"
-        "Bu isteği sen yapmadıysan e-postayı yok say."
+        "Bu isteği siz göndermediyseniz bu e-postayı yok sayabilirsiniz."
     )
 
     port = int(os.environ.get("SMTP_PORT", "587"))

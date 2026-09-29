@@ -148,14 +148,14 @@ export default function ProgressSummary({ progress: externalProgress, showExport
             disabled={exportingPdf}
             className="bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
           >
-            {exportingPdf ? "İndiriliyor..." : "PDF indir"}
+            {exportingPdf ? "İndiriliyor..." : "PDF İndirin"}
           </button>
           <button
             onClick={handleExport}
             disabled={exporting}
             className="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-semibold hover:bg-slate-300 disabled:opacity-50"
           >
-            {exporting ? "İndiriliyor..." : "Excel olarak indir"}
+            {exporting ? "İndiriliyor..." : "Excel Olarak İndirin"}
           </button>
         </div>
       )}

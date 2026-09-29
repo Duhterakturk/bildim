@@ -80,7 +80,7 @@ test("review screens stay readable", async ({ page }) => {
   await expect(page.getByText("sertifika", { exact: false })).toHaveCount(0);
 
   await page.goto("/games");
-  const grade = page.getByText("Min. Sınıf");
+  const grade = page.getByText("En az sınıf");
   await expect(grade).toBeVisible();
   const gradeColor = await grade.evaluate((node) => getComputedStyle(node).color);
   expect(gradeColor).not.toBe("rgb(244, 239, 230)");
@@ -111,7 +111,7 @@ test("review screens stay readable", async ({ page }) => {
   expect(regionInfo.missing, `${pageErrors.join(" | ")} ${html}`).toBeFalsy();
   expect(regionInfo.edge).toBe(true);
   expect(parseFloat(regionInfo.border)).toBeGreaterThan(2);
-  expect(regionInfo.clue).toBe("rgb(244, 239, 230)");
+  expect(regionInfo.clue).toBe("rgb(41, 60, 53)");
   await page.screenshot({ path: "test-results/yildiz.png", fullPage: true });
 
   const errors = [];

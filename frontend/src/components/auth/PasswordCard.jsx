@@ -25,7 +25,7 @@ export default function PasswordCard() {
       setNewPassword("");
       setMessage(t("auth.password_changed"));
     } catch (err) {
-      setError(err.response?.data?.error || "Şifre değişmedi");
+      setError(err.response?.data?.error || "Şifre değiştirilemedi. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.");
     }
   }
 
@@ -40,7 +40,7 @@ export default function PasswordCard() {
       setReminderMessage(t("auth.reminder_saved"));
       await refreshUser();
     } catch (err) {
-      setReminderError(err.response?.data?.error || "Kelime kaydedilmedi");
+      setReminderError(err.response?.data?.error || "Hatırlatma kelimesi kaydedilemedi. Yeniden deneyebilirsiniz.");
     }
   }
 

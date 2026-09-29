@@ -123,7 +123,7 @@ async function tap(page, key) {
 
 async function expectEraseShortcuts(page) {
   await boot(page, flowPuzzle);
-  await expect(page.getByText("Bir harfe dokunursan o harfin yolu silinir")).toBeVisible();
+  await expect(page.getByText("Bir harfe dokunursanız o harfin yolu silinir")).toBeVisible();
   await stroke(page, ["0-0", "0-3"]);
   await stroke(page, ["2-0", "2-2", "4-2"]);
   await expect(page.getByTestId("path-A")).toHaveAttribute("data-length", "4");

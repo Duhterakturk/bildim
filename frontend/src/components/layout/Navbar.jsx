@@ -103,7 +103,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Menüyü aç/kapat"
+          aria-label="Menüyü açın veya kapatın"
           aria-expanded={menuOpen}
           className="sm:hidden p-2 -mr-2 text-inherit"
         >

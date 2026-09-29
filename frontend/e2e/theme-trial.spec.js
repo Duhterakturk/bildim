@@ -73,14 +73,14 @@ test("trying a theme is temporary", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/dukkan");
   await page.getByTestId("card-theme-space").click();
-  await page.getByTestId("preview-dialog").getByRole("button", { name: "Dene" }).click();
+  await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
   await expect(page.locator("body")).toHaveClass(/theme-space/);
   await expect(page.getByTestId("theme-trial")).toContainText("30 yıldız daha lazım");
   await page.screenshot({ path: "test-results/theme-space-390.png", fullPage: true });
   await page.getByRole("button", { name: "Vazgeç" }).click();
   await expect(page.locator("body")).not.toHaveClass(/theme-space/);
   await page.getByTestId("card-theme-space").click();
-  await page.getByTestId("preview-dialog").getByRole("button", { name: "Dene" }).click();
+  await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
   await page.evaluate(() => {
     window.history.pushState({}, "", "/games/kare-karalamaca");
     window.dispatchEvent(new PopStateEvent("popstate"));
@@ -157,10 +157,10 @@ test("each photo theme keeps the board and titles readable", async ({ page }, in
   for (const [id, file] of Object.entries(photos)) {
     await page.getByTestId(id.startsWith("bg-") ? "tab-background" : "tab-theme").click();
     await page.getByTestId(`card-${id}`).click();
-    await page.getByTestId("preview-dialog").getByRole("button", { name: "Dene" }).click();
+    await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
     const lively = await page.getByTestId("theme-scene").locator("img").evaluate((img) => Number(getComputedStyle(img).opacity));
     expect(lively).toBeGreaterThanOrEqual(0.8);
-    if (width < 500) await page.getByRole("button", { name: "Menüyü aç/kapat" }).click();
+    if (width < 500) await page.getByRole("button", { name: "Menüyü açın veya kapatın" }).click();
     await page.getByRole("link", { name: "Oyunlar" }).click();
     await page.locator('a[href="/games/kare-karalamaca"]').click();
     await page.waitForURL("**/games/kare-karalamaca");

@@ -22,7 +22,7 @@ def mine():
 def student_list(student_id):
     viewer = db.session.get(User, get_jwt_identity())
     if not can_read(viewer, student_id):
-        return jsonify({"error": "Bu sertifikalara erişimin yok"}), 403
+        return jsonify({"error": "Bu sertifikalara erişiminiz yok."}), 403
     return jsonify(catalog_for(student_id))
 
 
@@ -32,7 +32,7 @@ def download(certificate_id):
     viewer = db.session.get(User, get_jwt_identity())
     row = db.session.get(Certificate, certificate_id)
     if row is None or not can_read(viewer, row.user_id):
-        return jsonify({"error": "Bu sertifikaya erişimin yok"}), 403
+        return jsonify({"error": "Bu sertifikaya erişiminiz yok."}), 403
     owner = db.session.get(User, row.user_id)
     try:
         payload = render_pdf(owner, row)

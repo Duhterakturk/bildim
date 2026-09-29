@@ -96,7 +96,7 @@ export default function HintBar({ slug }) {
     } catch (error) {
       const body = error.response?.data;
       if (typeof body?.hint_balance === "number") setBalance(body.hint_balance);
-      setNote(body?.error || (tr ? "İpucu şu an yok." : "A hint is not available just now."));
+      setNote(body?.error || (tr ? "Şu an bir ipucu yok. Bir süre sonra yeniden deneyebilirsiniz." : "A hint is not available just now. You can try again in a moment."));
     } finally {
       setBusy(false);
     }
