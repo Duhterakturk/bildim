@@ -80,7 +80,7 @@ test("review screens stay readable", async ({ page }) => {
   await expect(page.getByText("sertifika", { exact: false })).toHaveCount(0);
 
   await page.goto("/games");
-  const grade = page.getByText("En az sınıf");
+  const grade = page.getByText("Önerilen en düşük sınıf düzeyi");
   await expect(grade).toBeVisible();
   const gradeColor = await grade.evaluate((node) => getComputedStyle(node).color);
   expect(gradeColor).not.toBe("rgb(244, 239, 230)");

@@ -72,11 +72,11 @@ test("easy, medium and hard list the real star counts", async ({ page }) => {
     await expect(toast).toBeHidden({ timeout: 4000 });
   };
 
-  await expectPack("easy", ["Çözdün +1", "İpucusuz +1", "Hızlı +1"], "Bu bulmacadan 3 yıldız");
+  await expectPack("easy", ["Çözdünüz +1", "İpucusuz +1", "Hızlı +1"], "Bu bulmacadan 3 yıldız");
   await page.getByRole("button", { name: "Yeni Bulmaca" }).click();
-  await expectPack("medium", ["Çözdün +2", "İpucusuz +2", "Hızlı +2"], "Bu bulmacadan 6 yıldız");
+  await expectPack("medium", ["Çözdünüz +2", "İpucusuz +2", "Hızlı +2"], "Bu bulmacadan 6 yıldız");
   await page.getByRole("button", { name: "Yeni Bulmaca" }).click();
-  await expectPack("hard", ["Çözdün +3", "İpucusuz +3", "Hızlı +3"], "Bu bulmacadan 9 yıldız");
+  await expectPack("hard", ["Çözdünüz +3", "İpucusuz +3", "Hızlı +3"], "Bu bulmacadan 9 yıldız");
 });
 
 test("a normal solve closes the toast and a record fills the screen", async ({ page }) => {
@@ -91,7 +91,7 @@ test("a normal solve closes the toast and a record fills the screen", async ({ p
   await page.getByRole("button", { name: "Kontrol Et" }).click();
   const toast = page.getByTestId("star-toast");
   await expect(toast).toBeVisible();
-  await expect(toast).toContainText("Çözdün +1");
+  await expect(toast).toContainText("Çözdünüz +1");
   await page.waitForTimeout(1000);
   await expect(toast).toBeVisible();
   await expect(toast).toBeHidden({ timeout: 3000 });

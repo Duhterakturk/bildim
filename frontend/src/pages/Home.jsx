@@ -114,7 +114,7 @@ export default function Home() {
         ))}
       </div>
       <div className="relative z-10 min-h-[calc(100vh-4rem)] flex items-center justify-center px-6">
-        <h1 className="home-line font-hand text-5xl sm:text-7xl font-semibold text-center text-balance leading-[1.15] max-w-3xl">
+        <h1 className="home-line font-hand font-semibold text-center text-balance">
           <Link to="/games" className="hover:opacity-80">
             {t("home.title")}
           </Link>

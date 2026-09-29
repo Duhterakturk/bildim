@@ -5,7 +5,7 @@ Hepsi serbest lisanslıdır. Ticari kullanım ve değişiklik serbesttir; Pexels
 | Dosya | Konu | Kaynak | Lisans |
 | --- | --- | --- | --- |
 | space.webp | Baloncuk Bulutsusu | https://unsplash.com/photos/1462331940025-496dfbfc7564 | NASA, kamu malı (Unsplash) |
-| forest.webp | Sisli orman | https://www.pexels.com/photo/1671325/ | Pexels License |
+| forest.webp | Gün ışığında iğne yapraklı orman | https://www.pexels.com/photo/1179229/ | Pexels License |
 | sea.webp | Su altı, resif | https://www.pexels.com/photo/847393/ | Pexels License |
 | aurora.webp | Kuzey ışıkları | https://www.pexels.com/photo/1933239/ | Pexels License |
 | night.webp | Yıldızlı gece, dağ silueti | https://www.pexels.com/photo/355465/ | Pexels License |

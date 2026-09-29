@@ -141,11 +141,11 @@
   "games": {
     "title": "Games",
     "play": "Play",
-    "min_grade": "Min. grade",
+    "min_grade": "Suggested minimum grade",
     "how": "How to play",
     "close": "Close",
     "loadError": "Games could not be loaded. You can try again in a moment.",
-    "waking": "The server is getting ready. On a phone this can take a minute."
+    "waking": "The games are being prepared. On a phone this can take a minute."
   },
   "difficulty": {
     "easy": "Easy",
@@ -166,7 +166,7 @@
     "notesHint": "With Notes on, a digit stays small. The final number is written with Notes off.",
     "save": "Save Score",
     "saving": "Saving...",
-    "correct": "In place. The puzzle is complete.",
+    "correct": "Congratulations, you finished the puzzle!",
     "incorrect": "Not finished yet. You can check your solution again.",
     "incorrectCells": "Some cells are not in place yet. You can check your solution again.",
     "saved": "Score saved.",
@@ -174,8 +174,8 @@
     "offline": "The connection could not be made. You can try again.",
     "already": "This puzzle is already complete.",
     "retry": "Send Again",
-    "loading": "The puzzle is being prepared.",
-    "loadingSlow": "The server is getting ready and the puzzle is being prepared. This can take a minute.",
+    "loading": "Your puzzle is being prepared.",
+    "loadingSlow": "Your puzzle is being prepared. This can take a minute.",
     "unavailable": "The puzzle could not be opened just now. You can try again in a moment.",
     "right": "Right!",
     "wrong": "You can check your solution again.",
