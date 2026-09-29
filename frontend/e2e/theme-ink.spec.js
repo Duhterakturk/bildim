@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 
 const themes = {
-  "theme-space": { cell: "#1b2436", ink: "#f4efe6", line: "#8ea0c0", room: "#121826", file: "space.webp" },
-  "theme-night": { cell: "#16141c", ink: "#f6f1e8", line: "#a89880", room: "#0e0c12", file: "night.webp" },
-  "bg-ink": { cell: "#14161f", ink: "#f4efe6", line: "#a78bfa", room: "#1a1c28", file: "ink.webp" },
-  "theme-forest": { cell: "#e7f3e4", ink: "#14241a", line: "#3d6b4f", room: "#d5ead0", file: "forest.webp" },
-  "theme-candy": { cell: "#10241f", ink: "#e7fff4", line: "#7dcea0", room: "#0c1c18", file: "aurora.webp" },
+  "theme-space": { cell: "#f5f3fc", ink: "#35314f", line: "#827a9e", room: "#ece9f7", file: "space.webp" },
+  "theme-night": { cell: "#f4f5fc", ink: "#353e60", line: "#7e87a3", room: "#e8ecf6", file: "night.webp" },
+  "bg-ink": { cell: "#faf4fa", ink: "#35314f", line: "#967b96", room: "#f3e9f2", file: "ink.webp" },
+  "theme-forest": { cell: "#f4faf2", ink: "#244737", line: "#79927c", room: "#e8f1e3", file: "forest.webp" },
+  "theme-candy": { cell: "#f2faf7", ink: "#2a4c49", line: "#74948b", room: "#e4f2ee", file: "aurora.webp" },
 };
 
-const meadow = { cell: "#f7fee7", ink: "#14240c", line: "#3f6212", room: "#e5f6d8" };
+const meadow = { cell: "#f8faef", ink: "#40532a", line: "#879668", room: "#eef2df" };
 const zeros = Array.from({ length: 9 }, () => Array(9).fill(0));
 zeros[0][0] = 5;
 
@@ -71,7 +71,7 @@ async function install(page, activeId, extra = []) {
   });
 }
 
-test("dark themes keep digits readable and the panel leaves the photo", async ({ page }, info) => {
+test("soft themes keep digits readable and the panel leaves the photo", async ({ page }, info) => {
   test.setTimeout(120000);
   const width = info.project.name === "mobile" ? 390 : 1280;
   await page.setViewportSize({ width, height: info.project.name === "mobile" ? 844 : 800 });
@@ -113,12 +113,12 @@ test("an equipped background supplies the photo and the theme supplies the color
   await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/meadow.webp");
   await expect(page.locator("body")).toHaveClass(/theme-space/);
   const ink = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ink").trim());
-  expect(ink.toLowerCase()).toBe("#f4efe6");
+  expect(ink.toLowerCase()).toBe("#35314f");
   await page.screenshot({ path: "test-results/ink-space-meadow.png" });
   await page.goto("/dukkan");
   await page.getByTestId("card-theme-forest").click();
   await page.getByTestId("preview-dialog").getByRole("button", { name: "Dene" }).click();
   await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/meadow.webp");
   const tried = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ink").trim());
-  expect(tried.toLowerCase()).toBe("#14241a");
+  expect(tried.toLowerCase()).toBe("#244737");
 });

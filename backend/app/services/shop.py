@@ -16,16 +16,16 @@ class ShopError(Exception):
         self.status = status
 
 
-# Kontrast: açık zeminde koyu yazı, koyu zeminde açık yazı. Hepsi 4.5:1 üstü.
+# Açık, yumuşak zeminler; oyunlarda koyu yazı ve belirgin işaretler.
 CATALOG = [
-    {"id": "theme-space", "type": "theme", "slot": "theme", "name_tr": "Uzay", "name_en": "Space", "price": 30, "preview": {"cell": "#1b2436", "ink": "#f4efe6", "line": "#8ea0c0", "room": "#121826"}},
-    {"id": "theme-forest", "type": "theme", "slot": "theme", "name_tr": "Orman", "name_en": "Forest", "price": 30, "preview": {"cell": "#e7f3e4", "ink": "#14241a", "line": "#3d6b4f", "room": "#d5ead0"}},
-    {"id": "theme-sea", "type": "theme", "slot": "theme", "name_tr": "Deniz", "name_en": "Sea", "price": 30, "preview": {"cell": "#e4f2f8", "ink": "#0c2433", "line": "#2f6f8f", "room": "#d3e8f2"}},
-    {"id": "theme-candy", "type": "theme", "slot": "theme", "name_tr": "Kutup Işıkları", "name_en": "Northern Lights", "price": 40, "preview": {"cell": "#10241f", "ink": "#e7fff4", "line": "#7dcea0", "room": "#0c1c18"}},
-    {"id": "theme-night", "type": "theme", "slot": "theme", "name_tr": "Gece", "name_en": "Night", "price": 40, "preview": {"cell": "#16141c", "ink": "#f6f1e8", "line": "#a89880", "room": "#0e0c12"}},
-    {"id": "bg-dawn", "type": "background", "slot": "background", "name_tr": "Şafak", "name_en": "Dawn", "price": 20, "preview": {"cell": "#fff7ed", "ink": "#3b1d0a", "line": "#c2410c", "room": "#fde7d2"}},
-    {"id": "bg-meadow", "type": "background", "slot": "background", "name_tr": "Çayır", "name_en": "Meadow", "price": 20, "preview": {"cell": "#f7fee7", "ink": "#14240c", "line": "#3f6212", "room": "#e5f6d8"}},
-    {"id": "bg-ink", "type": "background", "slot": "background", "name_tr": "Mürekkep", "name_en": "Ink", "price": 20, "preview": {"cell": "#14161f", "ink": "#f4efe6", "line": "#a78bfa", "room": "#1a1c28"}},
+    {"id": "theme-space", "type": "theme", "slot": "theme", "name_tr": "Uzay", "name_en": "Space", "price": 30, "preview": {"cell": "#f5f3fc", "ink": "#35314f", "line": "#827a9e", "room": "#ece9f7"}},
+    {"id": "theme-forest", "type": "theme", "slot": "theme", "name_tr": "Orman", "name_en": "Forest", "price": 30, "preview": {"cell": "#f4faf2", "ink": "#244737", "line": "#79927c", "room": "#e8f1e3"}},
+    {"id": "theme-sea", "type": "theme", "slot": "theme", "name_tr": "Deniz", "name_en": "Sea", "price": 30, "preview": {"cell": "#f1f9fc", "ink": "#234958", "line": "#738f9b", "room": "#e3f0f5"}},
+    {"id": "theme-candy", "type": "theme", "slot": "theme", "name_tr": "Kutup Işıkları", "name_en": "Northern Lights", "price": 40, "preview": {"cell": "#f2faf7", "ink": "#2a4c49", "line": "#74948b", "room": "#e4f2ee"}},
+    {"id": "theme-night", "type": "theme", "slot": "theme", "name_tr": "Gece", "name_en": "Night", "price": 40, "preview": {"cell": "#f4f5fc", "ink": "#353e60", "line": "#7e87a3", "room": "#e8ecf6"}},
+    {"id": "bg-dawn", "type": "background", "slot": "background", "name_tr": "Şafak", "name_en": "Dawn", "price": 20, "preview": {"cell": "#fff8f1", "ink": "#684531", "line": "#aa876e", "room": "#f8ebdd"}},
+    {"id": "bg-meadow", "type": "background", "slot": "background", "name_tr": "Çayır", "name_en": "Meadow", "price": 20, "preview": {"cell": "#f8faef", "ink": "#40532a", "line": "#879668", "room": "#eef2df"}},
+    {"id": "bg-ink", "type": "background", "slot": "background", "name_tr": "Mürekkep", "name_en": "Ink", "price": 20, "preview": {"cell": "#faf4fa", "ink": "#35314f", "line": "#967b96", "room": "#f3e9f2"}},
     {"id": "owl-little", "type": "owl", "slot": "collection", "name_tr": "Kukumav", "name_en": "Little Owl", "price": 15, "rarity": "common", "photo": "little.webp", "fact_tr": "Gündüz de uyanık kalır ve ağaç kovuklarına ya da taş duvarlara yuva yapar.", "fact_en": "It often stays awake by day and nests in holes in trees or stone walls.", "preview": {}},
     {"id": "owl-pygmy", "type": "owl", "slot": "collection", "name_tr": "Cüce Baykuş", "name_en": "Eurasian Pygmy Owl", "price": 18, "rarity": "common", "photo": "pygmy.webp", "fact_tr": "Boyu yaklaşık 16–17 santimetredir ve ensesinde sahte göz lekeleri vardır.", "fact_en": "It is about 16–17 centimetres long, and it has false eye-spots on the back of its head.", "preview": {}},
     {"id": "owl-short-eared", "type": "owl", "slot": "collection", "name_tr": "Kır Baykuşu", "name_en": "Short-eared Owl", "price": 18, "rarity": "common", "photo": "short-eared.webp", "fact_tr": "Kulak tüyleri çok kısadır ve açık arazide gündüz de avlanır.", "fact_en": "Its ear tufts are very short, and it also hunts by day over open ground.", "preview": {}},

@@ -5,6 +5,36 @@ from flask_jwt_extended import create_access_token
 from tests.helpers import register_user, auth_headers
 
 
+def test_name_update_is_private_and_survives_login(client):
+    first = register_user(client, email="name-one@example.com").get_json()
+    second = register_user(client, email="name-two@example.com").get_json()
+    resp = client.patch("/api/auth/me", headers=auth_headers(first["access_token"]), json={
+        "full_name": "  Deniz   Kaya  ", "id": second["user"]["id"], "role": "teacher",
+    })
+    assert resp.status_code == 200
+    assert resp.get_json()["full_name"] == "Deniz Kaya"
+    assert resp.get_json()["role"] == "student"
+    assert "password" not in resp.get_json() and "password_hash" not in resp.get_json()
+    other = client.get("/api/auth/me", headers=auth_headers(second["access_token"])).get_json()
+    assert other["full_name"] == "Test User"
+    logged_in = client.post("/api/auth/login", json={"email": "name-one@example.com", "password": "Test1234"})
+    assert logged_in.get_json()["user"]["full_name"] == "Deniz Kaya"
+
+
+def test_name_update_rejects_missing_auth_invalid_names_and_password(client, student):
+    assert client.patch("/api/auth/me", json={"full_name": "Deniz"}).status_code == 401
+    for name in ("", "   ", "a" * 256, 123, None, "Test1234", "Test1234 Test1234"):
+        resp = client.patch("/api/auth/me", headers=auth_headers(student["token"]), json={"full_name": name})
+        assert resp.status_code == 400
+    unchanged = client.get("/api/auth/me", headers=auth_headers(student["token"])).get_json()
+    assert unchanged["full_name"] == "Test User"
+
+
+def test_registration_rejects_password_as_display_name(client):
+    for name in ("Test1234", "Test1234 Test1234"):
+        assert register_user(client, full_name=name).status_code == 400
+
+
 def test_register_creates_user_and_returns_tokens(client):
     resp = register_user(client, email="new@example.com")
     assert resp.status_code == 201

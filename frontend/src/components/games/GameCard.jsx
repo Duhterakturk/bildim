@@ -33,19 +33,19 @@ export default function GameCard({ game, index = 0, progress = null }) {
     >
       <Link to={`/games/${game.slug}`} className="block p-2.5">
         <GamePreview slug={game.slug} />
-        <h3 className="mt-2 pr-8 text-[15px] font-bold leading-tight text-[#f4efe6]">{name}</h3>
+        <h3 className="mt-2 pr-8 text-[15px] font-bold leading-tight text-inherit">{name}</h3>
         <p className="mt-1.5">
           <span className="game-pill">
             {t("games.min_grade")}: {game.min_grade_level}
           </span>
         </p>
         {state && (
-          <p className="mt-1.5 pr-8 text-[11px] leading-snug text-[#f4efe6]">
+          <p className="mt-1.5 pr-8 text-[11px] leading-snug text-inherit">
             {LEVELS.map((level) => levelText(t, level, state)).join("  ")}
           </p>
         )}
       </Link>
-      <HowTo slug={game.slug} className="absolute right-2.5 top-[128px] text-[#f4efe6]" />
+      <HowTo slug={game.slug} className="absolute right-2.5 top-[128px] text-inherit" />
     </div>
   );
 }

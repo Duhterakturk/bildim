@@ -1,15 +1,13 @@
 const ACCENT = {
-  "theme-space": "#c084fc",
-  "theme-forest": "#15803d",
-  "theme-sea": "#0284c7",
-  "theme-candy": "#34d399",
-  "theme-night": "#fbbf24",
-  "bg-dawn": "#ea580c",
-  "bg-meadow": "#65a30d",
-  "bg-ink": "#c4b5fd",
+  "theme-space": "#69549a",
+  "theme-forest": "#38654b",
+  "theme-sea": "#306779",
+  "theme-candy": "#366e64",
+  "theme-night": "#505f91",
+  "bg-dawn": "#995938",
+  "bg-meadow": "#576c37",
+  "bg-ink": "#805381",
 };
-
-const DARK = new Set(["theme-space", "theme-candy", "theme-night", "bg-ink"]);
 
 let savedItems = [];
 let equippedId = null;
@@ -57,7 +55,7 @@ export function activePhotoId() {
 function paint(preview, id) {
   const root = document.documentElement;
   [...document.body.classList].forEach((name) => {
-    if (name.startsWith("theme-") || name === "theme-light" || name === "theme-dark") {
+    if (name.startsWith("theme-") || Object.hasOwn(ACCENT, name)) {
       document.body.classList.remove(name);
     }
   });
@@ -67,10 +65,11 @@ function paint(preview, id) {
     return;
   }
   root.dataset.boardTheme = id;
-  document.body.classList.add(id, DARK.has(id) ? "theme-dark" : "theme-light");
+  document.body.classList.add(id, "theme-light");
   const colors = preview || {};
   for (const key of ["cell", "ink", "line", "room"]) {
     if (colors[key]) root.style.setProperty(`--${key}`, colors[key]);
+    else root.style.removeProperty(`--${key}`);
   }
   root.style.setProperty("--accent", ACCENT[id] || "#2461f7");
 }

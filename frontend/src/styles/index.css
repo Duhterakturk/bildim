@@ -2,12 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+  --cell: #fffdf8;
+  --ink: #293c35;
+  --line: #7c8c82;
+  --room: #f5f3ed;
+  --accent: #38654b;
+}
+
 body {
-  background-color: #0c0c0c;
-  color: #f4efe6;
+  background-color: var(--room);
+  color: var(--ink);
   font-family: Newsreader, Georgia, serif;
   line-height: 1.55;
 }
+
+/* Theme IDs such as bg-ink can also match a Tailwind background utility. */
+body.theme-light {
+  background-color: var(--room);
+  color: var(--ink);
+}
+
+.site-nav {
+  background: color-mix(in srgb, var(--cell) 96%, transparent);
+  color: var(--ink);
+  backdrop-filter: blur(12px);
+}
+
+/* Legacy game labels used a fixed light text color on the old dark canvas. */
+.play-room .text-\[\#f4efe6\] {
+  color: var(--ink);
+}
+
+.text-slate-400 { color: #66756d; }
 
 input,
 select,
@@ -27,7 +55,7 @@ textarea,
 .text-slate-600,
 .text-stone-500,
 .text-stone-600 {
-  color: #d5cfc4;
+  color: #53645d;
 }
 
 .bg-white .text-slate-500,
@@ -104,24 +132,55 @@ body:has([data-testid="star-toast"]) .play-room {
   height: 100%;
   object-fit: cover;
   transform: scale(1);
-  animation: kenburns 36s ease-in-out infinite alternate;
+  opacity: 0.24;
+  filter: saturate(0.55);
 }
+
+.theme-scene { background: var(--room); }
 
 .theme-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.45));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--room) 25%, transparent), color-mix(in srgb, var(--room) 75%, transparent));
 }
 
 html[data-board-theme] .play-scale {
-  background: color-mix(in srgb, var(--cell) 72%, transparent);
+  background: color-mix(in srgb, var(--cell) 96%, transparent);
   backdrop-filter: blur(6px);
   color: var(--ink);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
   border-radius: 16px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 28px rgba(45, 65, 55, 0.08);
   padding: 12px;
 }
+
+/* Marks must never blend into a theme's empty cells. */
+.play-room [data-book-cell="true"][data-state] {
+  border-color: var(--line);
+  background-color: var(--cell) !important;
+  color: var(--ink) !important;
+}
+.play-room [data-book-cell="true"][data-state="marked"] {
+  background-color: var(--ink) !important;
+  color: var(--cell) !important;
+  box-shadow: inset 0 0 0 2px var(--cell);
+}
+.play-room [data-book-cell="true"][data-state="crossed"] {
+  font-weight: 700;
+  font-size: 1rem;
+}
+.play-room button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.nonogram-clue {
+  background: color-mix(in srgb, var(--accent) 12%, var(--cell));
+  color: var(--ink);
+}
+.nonogram-clue.text-emerald-800 { color: #166534; }
+.nonogram-clue.text-red-600 { color: #b91c1c; }
+.play-room .border-brand-500 { border-color: var(--accent); }
 
 html[data-board-theme] .play-room input,
 html[data-board-theme] .play-room .cell-notes,
@@ -278,24 +337,24 @@ html[data-board-theme] .play-scale .text-slate-600 {
 
 .press-btn {
   display: inline-block;
-  background: #2461f7;
+  background: var(--accent);
   color: white;
   font-weight: 600;
   letter-spacing: 0.01em;
   padding: 0.9rem 1.75rem;
   border-radius: 14px;
-  box-shadow: 0 5px 0 #1638a6;
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 80%, #182c24);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 .press-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 0 #1638a6;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 80%, #182c24);
 }
 
 .press-btn:active {
   transform: translateY(4px);
-  box-shadow: 0 1px 0 #1638a6;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 80%, #182c24);
 }
 
 .board-card {
@@ -317,19 +376,19 @@ html[data-board-theme] .play-scale .text-slate-600 {
 }
 
 .game-card {
-  background: rgba(15, 15, 20, 0.72);
+  background: color-mix(in srgb, var(--cell) 96%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
   border-radius: 16px;
-  color: #f4efe6;
+  color: var(--ink);
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .game-card:hover,
 .game-card:active {
   transform: scale(1.02);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 24px rgba(45, 65, 55, 0.12);
 }
 
 .game-pill {
@@ -418,7 +477,7 @@ html[data-board-theme] .play-scale .text-slate-600 {
 .home-desk {
   position: relative;
   min-height: calc(100vh - 4rem);
-  background: #0c0c0c;
+  background: transparent;
 }
 
 .home-marks {
@@ -432,15 +491,8 @@ html[data-board-theme] .play-scale .text-slate-600 {
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
-  text-shadow:
-    2px 0 0 #0c0c0c,
-    -2px 0 0 #0c0c0c,
-    0 2px 0 #0c0c0c,
-    0 -2px 0 #0c0c0c,
-    2px 2px 0 #0c0c0c,
-    -2px 2px 0 #0c0c0c,
-    2px -2px 0 #0c0c0c,
-    -2px -2px 0 #0c0c0c;
+  color: var(--ink);
+  text-shadow: 0 2px 0 var(--room);
 }
 
 .home-mark {

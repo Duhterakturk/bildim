@@ -76,6 +76,11 @@
     "owl-expert": "Baykuş Uzmanı"
   },
   "profile": {
+    "editName": "Adını düzenle",
+    "nameHelp": "Profilinde görünecek adını ve soyadını yaz. Bu alana şifreni yazma.",
+    "saveName": "Adı kaydet",
+    "nameSaved": "Adın güncellendi.",
+    "nameError": "Adın kaydedilemedi. Tekrar dene.",
     "noTitle": "Unvan seçilmedi",
     "titles": "Unvanlar",
     "noTitlesYet": "Henüz unvan yok",

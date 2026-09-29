@@ -3,14 +3,13 @@ import { photoSrc } from "./ThemeScene";
 const DIGITS = ["5", "", "3", "", "", "1", "", "4", "2", "", "", "8", "", "6", "", "7"];
 
 export default function ThemePreview({ item, className = "w-full h-28" }) {
-  const { cell = "#fff", ink = "#1e1a16", line = "#94a3b8" } = item.preview || {};
+  const { cell = "#fffdf8", ink = "#293c35", line = "#7c8c82", room = "#f5f3ed" } = item.preview || {};
   const size = 22;
   const origin = 8;
   const src = photoSrc(item.id, true);
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`} data-testid="preview">
-      {src && <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />}
-      <div className="absolute inset-0 bg-black/40" />
+    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ backgroundColor: room }} data-testid="preview">
+      {src && <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 saturate-50" loading="lazy" decoding="async" />}
       <svg viewBox="0 0 120 110" className="relative h-full w-full" aria-hidden="true">
         {DIGITS.map((digit, index) => {
           const col = index % 4;
@@ -20,7 +19,7 @@ export default function ThemePreview({ item, className = "w-full h-28" }) {
           const selected = index === 5;
           return (
             <g key={index}>
-              <rect x={x} y={y} width={size} height={size} fill={selected ? line : cell} stroke={line} />
+              <rect x={x} y={y} width={size} height={size} fill={selected ? ink : cell} stroke={line} />
               {digit && (
                 <text x={x + size / 2} y={y + 15} textAnchor="middle" fontSize="12" fontWeight="700" fill={selected ? cell : ink}>
                   {digit}

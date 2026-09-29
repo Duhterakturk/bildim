@@ -76,6 +76,11 @@
     "owl-expert": "Owl Expert"
   },
   "profile": {
+    "editName": "Edit your name",
+    "nameHelp": "Enter the name you want on your profile. Do not enter your password here.",
+    "saveName": "Save name",
+    "nameSaved": "Your name was updated.",
+    "nameError": "Your name could not be saved. Try again.",
     "noTitle": "No title selected",
     "titles": "Titles",
     "noTitlesYet": "No titles yet",

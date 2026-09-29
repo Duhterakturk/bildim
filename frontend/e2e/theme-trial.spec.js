@@ -8,7 +8,7 @@ const space = {
   name_tr: "Uzay",
   name_en: "Space",
   price: 30,
-  preview: { cell: "#1b2436", ink: "#f4efe6", line: "#8ea0c0", room: "#121826" },
+  preview: { cell: "#f5f3fc", ink: "#35314f", line: "#827a9e", room: "#ece9f7" },
   owned: false,
   equipped: false,
 };
@@ -91,14 +91,14 @@ test("trying a theme is temporary", async ({ page }) => {
 });
 
 const previews = {
-  "theme-space": { cell: "#1b2436", ink: "#f4efe6", line: "#8ea0c0", room: "#121826" },
-  "theme-forest": { cell: "#e7f3e4", ink: "#14241a", line: "#3d6b4f", room: "#d5ead0" },
-  "theme-sea": { cell: "#e4f2f8", ink: "#0c2433", line: "#2f6f8f", room: "#d3e8f2" },
-  "theme-candy": { cell: "#10241f", ink: "#e7fff4", line: "#7dcea0", room: "#0c1c18" },
-  "theme-night": { cell: "#16141c", ink: "#f6f1e8", line: "#a89880", room: "#0e0c12" },
-  "bg-dawn": { cell: "#fff7ed", ink: "#3b1d0a", line: "#c2410c", room: "#fde7d2" },
-  "bg-meadow": { cell: "#f7fee7", ink: "#14240c", line: "#3f6212", room: "#e5f6d8" },
-  "bg-ink": { cell: "#14161f", ink: "#f4efe6", line: "#a78bfa", room: "#1a1c28" },
+  "theme-space": { cell: "#f5f3fc", ink: "#35314f", line: "#827a9e", room: "#ece9f7" },
+  "theme-forest": { cell: "#f4faf2", ink: "#244737", line: "#79927c", room: "#e8f1e3" },
+  "theme-sea": { cell: "#f1f9fc", ink: "#234958", line: "#738f9b", room: "#e3f0f5" },
+  "theme-candy": { cell: "#f2faf7", ink: "#2a4c49", line: "#74948b", room: "#e4f2ee" },
+  "theme-night": { cell: "#f4f5fc", ink: "#353e60", line: "#7e87a3", room: "#e8ecf6" },
+  "bg-dawn": { cell: "#fff8f1", ink: "#684531", line: "#aa876e", room: "#f8ebdd" },
+  "bg-meadow": { cell: "#f8faef", ink: "#40532a", line: "#879668", room: "#eef2df" },
+  "bg-ink": { cell: "#faf4fa", ink: "#35314f", line: "#967b96", room: "#f3e9f2" },
 };
 
 const photos = {

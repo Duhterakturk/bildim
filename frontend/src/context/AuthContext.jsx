@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { login as loginRequest, register as registerRequest, fetchMe } from "../api/auth";
+import { login as loginRequest, register as registerRequest, fetchMe, updateName } from "../api/auth";
 import {
   clearStoredSession,
   hasStoredSession,
@@ -102,8 +102,14 @@ export function AuthProvider({ children }) {
     return data;
   }
 
+  async function saveName(fullName) {
+    const data = await updateName(fullName);
+    remember(data);
+    return data;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, connecting, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, connecting, login, register, logout, refreshUser, saveName }}>
       {children}
     </AuthContext.Provider>
   );

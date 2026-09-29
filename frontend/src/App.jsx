@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/layout/Navbar";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import GuestRoute from "./components/common/GuestRoute";
 import BadgeToastHost from "./components/badges/BadgeToastHost";
 import StarCelebration from "./components/stars/StarCelebration";
 import BoardTheme from "./components/owl/BoardTheme";
@@ -46,8 +47,8 @@ function Shell() {
           <Route path="/games/:slug" element={<GamePage />} />
           <Route path="/dukkan" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
           <Route path="/profil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+          <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset" element={<Reset />} />
           <Route

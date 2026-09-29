@@ -96,7 +96,7 @@ export default function Shop() {
             type="button"
             data-testid={`tab-${key}`}
             onClick={() => setTab(key)}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${tab === key ? "bg-white text-slate-900" : "text-slate-300"}`}
+            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${tab === key ? "bg-white text-slate-900" : "text-slate-600"}`}
           >
             {t(`shop.tab.${key}`)}
           </button>

@@ -10,6 +10,11 @@ export async function login(payload) {
   return data;
 }
 
+export async function updateName(fullName) {
+  const { data } = await apiClient.patch("/auth/me", { full_name: fullName });
+  return data;
+}
+
 export async function fetchMe(attempts = 2) {
   return withWake(async () => {
     const { data } = await apiClient.get("/auth/me");

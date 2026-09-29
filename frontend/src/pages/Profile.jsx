@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import Owl from "../components/owl/Owl";
 import { chooseTitle, fetchProfile } from "../api/shop";
 import { downloadCertificate, fetchMyCertificates } from "../api/certificates";
+import NameCard from "../components/auth/NameCard";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -23,7 +24,8 @@ export default function Profile() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold">{user.full_name}</h1>
-        <Link to="/teacher" className="mt-4 inline-block font-semibold text-[#f4efe6] underline">{t("nav.teacher")}</Link>
+        <NameCard />
+        <Link to="/teacher" className="mt-4 inline-block font-semibold text-inherit underline">{t("nav.teacher")}</Link>
       </div>
     );
   }
@@ -45,7 +47,7 @@ export default function Profile() {
             total: profile.collection?.total ?? 12,
           })}
         </p>
-        <p className="text-xl font-bold mt-2">{profile.full_name}</p>
+        <p className="text-xl font-bold mt-2">{user.full_name}</p>
         <p className="text-slate-600" data-testid="active-title">
           {title ? t(`titles.${title.split(":")[1]}`) : t("profile.noTitle")}
         </p>
@@ -62,6 +64,7 @@ export default function Profile() {
         </div>
       </div>
 
+      <NameCard />
       <section className="bg-white text-slate-900 rounded-2xl p-6 mt-4">
         <h2 className="font-semibold mb-3">{t("profile.titles")}</h2>
         {profile.titles.length === 0 ? (

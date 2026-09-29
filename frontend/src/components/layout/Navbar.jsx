@@ -79,7 +79,7 @@ export default function Navbar() {
 
       <button
         onClick={toggleLanguage}
-        className="border border-white/30 rounded-lg px-2 py-1 text-xs uppercase mt-1 sm:mt-0 w-full sm:w-auto"
+        className="border border-slate-300 rounded-lg px-2 py-1 text-xs uppercase mt-1 sm:mt-0 w-full sm:w-auto"
       >
         {i18n.language === "tr" ? "EN" : "TR"}
       </button>
@@ -87,9 +87,9 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-black sticky top-0 z-10 border-b border-white/10 text-white">
+    <nav className="site-nav sticky top-0 z-10 border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl font-semibold text-white" onClick={() => setMenuOpen(false)}>
+        <Link to="/" className="font-display text-2xl font-semibold text-inherit" onClick={() => setMenuOpen(false)}>
           {t("app.name")}
         </Link>
 
@@ -105,7 +105,7 @@ export default function Navbar() {
           onClick={() => setMenuOpen((open) => !open)}
           aria-label="Menüyü aç/kapat"
           aria-expanded={menuOpen}
-          className="sm:hidden p-2 -mr-2 text-white"
+          className="sm:hidden p-2 -mr-2 text-inherit"
         >
           {menuOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,7 +121,7 @@ export default function Navbar() {
 
       {/* sm altı: açılır menü paneli */}
       {menuOpen && (
-        <div className="sm:hidden border-t border-white/10 px-4 py-2 text-sm font-medium">{links}</div>
+        <div className="sm:hidden border-t border-slate-200 px-4 py-2 text-sm font-medium">{links}</div>
       )}
     </nav>
   );

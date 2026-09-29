@@ -26,7 +26,7 @@ export default function Register() {
         ...form,
         grade_level: form.grade_level ? Number(form.grade_level) : null,
       });
-      navigate("/dashboard");
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || "Kayıt başarısız");
     }
@@ -36,11 +36,16 @@ export default function Register() {
     <div className="max-w-sm mx-auto px-4 py-16">
       <h1 className="text-2xl font-bold mb-6">{t("auth.register_button")}</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form method="post" onSubmit={handleSubmit} className="space-y-4">
+        <label htmlFor="full-name" className="block text-sm font-medium">{t("auth.full_name")}</label>
         <input
+          id="full-name"
+          name="full_name"
+          autoComplete="name"
           type="text"
           placeholder={t("auth.full_name")}
           required
+          maxLength={255}
           className="w-full border border-slate-200 rounded-lg px-3 py-2"
           value={form.full_name}
           onChange={(e) => setForm({ ...form, full_name: e.target.value })}
@@ -72,6 +77,9 @@ export default function Register() {
 
         <div>
           <input
+            id="reminder"
+            name="reminder"
+            aria-label={t("auth.reminder_label")}
             type="text"
             placeholder={t("auth.reminder_label")}
             required

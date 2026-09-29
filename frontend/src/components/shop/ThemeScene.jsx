@@ -25,7 +25,7 @@ export default function ThemeScene({ id, mini = false }) {
       <img
         src={photoSrc(id, mini)}
         alt=""
-        className="theme-photo"
+        className={mini ? "theme-photo theme-photo-mini" : "theme-photo"}
         loading={mini ? "lazy" : "eager"}
         decoding="async"
       />

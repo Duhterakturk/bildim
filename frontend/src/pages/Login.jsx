@@ -16,7 +16,7 @@ export default function Login() {
     setError(null);
     try {
       await login(form);
-      navigate("/dashboard");
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || "Giriş başarısız");
     }

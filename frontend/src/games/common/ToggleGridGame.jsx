@@ -198,11 +198,11 @@ export default function ToggleGridGame({
   const cellSize = book ? "" : cellSizeClass(gridCols);
   const bookCell = book ? { width: `min(2.5rem, calc((100vw - 2rem) / ${gridCols}))`, height: `min(2.5rem, calc((100vw - 2rem) / ${gridCols}))` } : undefined;
   const clueCell = book
-    ? "flex items-center justify-center text-xs font-bold text-center leading-tight bg-violet-100 text-violet-900"
+    ? "nonogram-clue flex items-center justify-center text-xs font-bold text-center leading-tight"
     : `${cellSize} board-clue flex items-center justify-center text-xs font-bold text-[#f4efe6] text-center leading-tight`;
 
   function toneClass(tone) {
-    if (tone === "done") return "text-violet-300";
+    if (tone === "done") return "text-emerald-800";
     if (tone === "over") return "text-red-600";
     return "";
   }
@@ -335,6 +335,10 @@ export default function ToggleGridGame({
                 <button
                   key={key}
                   type="button"
+                  data-book-cell={book ? "true" : undefined}
+                  data-state={isMarked ? "marked" : isCrossed ? "crossed" : "empty"}
+                  aria-label={`${r + 1}, ${c + 1}${isCrossed ? " ×" : ""}`}
+                  aria-pressed={isMarked}
                   onClick={() => toggleCell(r, c)}
                   style={bookCell}
                   className={[

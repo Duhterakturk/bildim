@@ -26,6 +26,17 @@ def test_theme_ink_stays_readable_on_the_cell():
         assert ratio >= 4.5, f"{item['id']} contrast {ratio:.2f} is below 4.5"
 
 
+def test_theme_surfaces_are_light_with_visible_grid_lines():
+    for item in CATALOG:
+        if item["type"] not in ("theme", "background"):
+            continue
+        palette = item["preview"]
+        for surface in ("cell", "room"):
+            # Avoid white text on a dark playing surface, even for Night/Space.
+            assert _ratio(palette[surface], "#000000") >= 14
+        assert _ratio(palette["cell"], palette["line"]) >= 3
+
+
 def test_stage_and_rank_follow_solved_counts():
     assert stage_for(0) == "egg"
     assert stage_for(9) == "egg"

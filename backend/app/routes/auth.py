@@ -23,13 +23,22 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 MIN_PASSWORD_LENGTH = 8
 
 
+def _name_candidates(full_name):
+    # Also catch a password accidentally repeated by autofill in the name field.
+    yield full_name
+    words = full_name.split()
+    if len(words) > 1 and len(set(words)) == 1:
+        yield words[0]
+
+
 @auth_bp.post("/register")
 @limiter.limit("10 per minute")
 def register():
     data = request.get_json(force=True) or {}
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
-    full_name = (data.get("full_name") or "").strip()
+    raw_name = data.get("full_name")
+    full_name = " ".join(raw_name.split()) if isinstance(raw_name, str) else ""
     role = data.get("role", UserRole.STUDENT.value)
     grade_level = data.get("grade_level")
 
@@ -41,6 +50,11 @@ def register():
 
     if len(password) < MIN_PASSWORD_LENGTH:
         return jsonify({"error": f"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır"}), 400
+
+    if len(full_name) > 255:
+        return jsonify({"error": "Ad soyad en fazla 255 karakter olabilir"}), 400
+    if password in _name_candidates(full_name):
+        return jsonify({"error": "Ad soyad alanına şifrenizi yazmayın"}), 400
 
     if role == UserRole.PARENT.value:
         return jsonify({"error": "Veli hesabı yok. Evde öğrenci hesabı açın."}), 400
@@ -101,6 +115,25 @@ def me():
     user = db.session.get(User, get_jwt_identity())
     if not user:
         return jsonify({"error": "Kullanıcı bulunamadı"}), 404
+    return jsonify(user.to_dict())
+
+
+@auth_bp.patch("/me")
+@jwt_required()
+@limiter.limit("10 per minute")
+def update_name():
+    user = db.session.get(User, get_jwt_identity())
+    if not user:
+        return jsonify({"error": "Kullanıcı bulunamadı"}), 404
+    data = request.get_json(silent=True) or {}
+    raw_name = data.get("full_name") if isinstance(data, dict) else None
+    full_name = " ".join(raw_name.split()) if isinstance(raw_name, str) else ""
+    if not full_name or len(full_name) > 255:
+        return jsonify({"error": "Ad soyad 1–255 karakter olmalıdır"}), 400
+    if any(user.check_password(candidate) for candidate in _name_candidates(full_name)):
+        return jsonify({"error": "Ad soyad alanına şifrenizi yazmayın"}), 400
+    user.full_name = full_name
+    db.session.commit()
     return jsonify(user.to_dict())
 
 
