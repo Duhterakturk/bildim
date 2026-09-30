@@ -276,7 +276,8 @@
         "title": "Solve at your pace",
         "text": "Try, think, and use a hint if needed. Check your solution when you are ready."
       }
-    }
+    },
+    "kicker": "Think. Try. Got it!"
   },
   "auth": {
     "email": "Email",

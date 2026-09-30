@@ -276,7 +276,8 @@
         "title": "Kendi hızında çöz",
         "text": "Dene, düşün, gerekirse ipucu al. Hazır olduğunda çözümünü kontrol et."
       }
-    }
+    },
+    "kicker": "Düşün. Dene. Bildim!"
   },
   "auth": {
     "email": "E-posta",

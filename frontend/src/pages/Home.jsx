@@ -14,7 +14,7 @@ function cells(list, ox, oy, size, fill) {
   ));
 }
 
-function HeroBoard() {
+function HeroBoard({ illustrated = false }) {
   const ox = 168;
   const oy = 36;
   const size = 46;
@@ -22,6 +22,20 @@ function HeroBoard() {
   const rows = 6;
   return (
     <svg className="workshop-art" viewBox="0 0 560 360" aria-hidden="true">
+      {illustrated && <g className="workshop-drawing">
+        <circle cx="290" cy="178" r="171" fill="#e1eadb" />
+        <circle cx="290" cy="178" r="153" fill="none" stroke="#a5b69a" strokeWidth="1" />
+        <path d="M76 243C12 82 178-34 349 16M417 38C556 112 524 278 395 340" fill="none" stroke="#c78336" strokeWidth="2" strokeDasharray="4 9" />
+        <g transform="translate(415 24) rotate(9)">
+          <rect width="85" height="85" rx="12" fill="#fffdf8" stroke="#c9bfa9" />
+          <path d="M28 8V77M56 8V77M8 28H77M8 56H77" stroke="#c9bfa9" />
+          <g fill="#315a46" fontSize="18" fontFamily="Manrope, sans-serif" textAnchor="middle"><text x="15" y="23">5</text><text x="42" y="51">3</text><text x="68" y="74">7</text></g>
+        </g>
+        <g transform="translate(72 267) rotate(-8)">
+          <rect width="77" height="67" rx="10" fill="#315a46" />
+          {[[12,12],[29,12],[46,12],[29,29],[46,46]].map(([x,y]) => <rect key={`${x}-${y}`} x={x} y={y} width="13" height="13" rx="2" fill="#f4cf8d" />)}
+        </g>
+      </g>}
       <rect x={ox} y={oy} width={cols * size} height={rows * size} fill="#fff9e9" stroke="#385242" strokeWidth="2" />
       {cells([[0, 0], [1, 0], [0, 1], [0, 2], [0, 3]], ox, oy, size, "#8da87d")}
       {cells([[3, 0], [3, 1], [3, 2], [3, 3], [3, 4]], ox, oy, size, "#e98a32")}
@@ -32,10 +46,10 @@ function HeroBoard() {
       {Array.from({ length: rows - 1 }, (_, i) => (
         <path key={`h${i}`} d={`M${ox} ${oy + (i + 1) * size}h${cols * size}`} stroke="#73816b" strokeWidth="1" />
       ))}
-      <g transform="translate(28 108) rotate(-10 42 42)" fill="#e98a32" stroke="#fff9e9" strokeWidth="2">
+      <g className={illustrated ? "workshop-piece-first" : undefined} transform="translate(28 108) rotate(-10 42 42)" fill="#e98a32" stroke="#fff9e9" strokeWidth="2">
         {cells([[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]], 0, 0, 30, "#e98a32")}
       </g>
-      <g transform="translate(412 168) rotate(8 42 28)" fill="#315a46" stroke="#fff9e9" strokeWidth="2">
+      <g className={illustrated ? "workshop-piece-second" : undefined} transform="translate(412 168) rotate(8 42 28)" fill="#315a46" stroke="#fff9e9" strokeWidth="2">
         {cells([[0, 0], [2, 0], [0, 1], [1, 1], [2, 1]], 0, 0, 30, "#315a46")}
       </g>
     </svg>
@@ -59,6 +73,7 @@ export default function Home() {
           />
 
         <div className="workshop-intro">
+          {!scene && <p className="workshop-kicker">{t("home.kicker")}</p>}
           <h1 id="home-title">{t("home.title")}</h1>
           <p className="workshop-description">{t("home.description")}</p>
           <div className="workshop-actions">
@@ -69,7 +84,7 @@ export default function Home() {
         </div>
         <div className="workshop-stage">
           <Link to="/games/pentominolar" className="workshop-feature workshop-board" aria-label={t("home.pentominoLink")}>
-            <HeroBoard />
+            <HeroBoard illustrated={!scene} />
             <span className="workshop-feature-caption">{t("home.pentominoLink")} <span aria-hidden="true">↗</span></span>
           </Link>
         </div>
