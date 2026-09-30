@@ -29,7 +29,7 @@ function contrast(fg, bg) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-test("home line stays readable on every scene", async ({ page }, info) => {
+test("home headline stays readable on every scene", async ({ page }, info) => {
   const tag = info.project.name;
   let active = "theme-forest";
   await page.addInitScript(() => localStorage.setItem("mindarena_access_token", "access"));
@@ -64,8 +64,9 @@ test("home line stays readable on every scene", async ({ page }, info) => {
   for (const id of Object.keys(scenes)) {
     active = id;
     await page.goto("/");
-    const line = page.getByRole("heading", { name: "Bugün bir bulmaca sizi bekliyor. Hazır mısınız?" });
+    const line = page.getByRole("heading", { name: "Bir bulmacayla başlayalım." });
     await expect(line).toBeVisible();
+    await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(page.getByTestId("theme-scene").locator("img")).toBeVisible();
     const box = await line.evaluate((node) => {
       const style = getComputedStyle(node);
@@ -75,12 +76,12 @@ test("home line stays readable on every scene", async ({ page }, info) => {
         width: node.getBoundingClientRect().width,
         page: root.scrollWidth > root.clientWidth + 1,
         ink: style.color,
-        surface: style.backgroundColor,
+        surface: getComputedStyle(node.closest(".home-workshop")).backgroundColor,
       };
     });
-    await page.screenshot({ path: `test-results/home-${id}-${tag}.png` });
+    await page.screenshot({ path: `test-results/home-${id}-${tag}.png`, fullPage: true, animations: "disabled" });
     expect(box.page, id).toBe(false);
-    expect(box.width, id).toBeLessThan(tag === "mobile" ? 320 : 520);
+    expect(box.width, id).toBeLessThan(tag === "mobile" ? 360 : 520);
     expect(box.radius, id).toBeLessThan(20);
     expect(contrast(box.ink, box.surface), `${id} ${box.ink} on ${box.surface}`).toBeGreaterThanOrEqual(4.5);
   }

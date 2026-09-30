@@ -1,5 +1,7 @@
 {
-  "app": { "name": "Bildim" },
+  "app": {
+    "name": "Bildim"
+  },
   "nav": {
     "home": "Home",
     "games": "Games",
@@ -13,7 +15,9 @@
     "teacher": "Teacher panel",
     "account": "My account"
   },
-  "owl": { "grew": "Your owl grew!" },
+  "owl": {
+    "grew": "Your owl grew!"
+  },
   "stages": {
     "egg": "Egg",
     "chick": "Owlet",
@@ -217,7 +221,47 @@
     }
   },
   "home": {
-    "title": "A puzzle is waiting for you today. Ready?"
+    "title": "Let’s start with a puzzle.",
+    "eyebrow": "MAKE ROOM TO THINK",
+    "description": "Numbers, shapes, and your own pace.",
+    "explore": "Explore games",
+    "how": "How to play",
+    "meta": "Ages 8 and up · 19 logic games",
+    "pieceTitle": "Every piece has its place.",
+    "pentominoLink": "Explore Pentominoes",
+    "choose": "Where would you like to start?",
+    "allGames": "All games",
+    "together": "Thinking is better together.",
+    "classDescription": "Games, assignments, and new discoveries for your classroom.",
+    "classLink": "Explore with your class",
+    "featured": {
+      "sudoku": {
+        "name": "Sudoku",
+        "description": "Find where the numbers belong."
+      },
+      "kare-karalamaca": {
+        "name": "Nonogram",
+        "description": "Reveal the picture from the clues."
+      },
+      "pentominolar": {
+        "name": "Pentominoes",
+        "description": "Bring the pieces together."
+      }
+    },
+    "steps": {
+      "choose": {
+        "title": "Choose a game",
+        "text": "Numbers or shapes? Start with something that sparks your curiosity."
+      },
+      "read": {
+        "title": "Discover the rules",
+        "text": "Open the game’s “How to play” guide to learn the rules."
+      },
+      "solve": {
+        "title": "Solve at your pace",
+        "text": "Try, think, and use a hint if needed. Check your solution when you are ready."
+      }
+    }
   },
   "auth": {
     "email": "Email",

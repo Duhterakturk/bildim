@@ -87,3 +87,23 @@ beyaz yazılı davranış ayrıca yapay koyu menü zeminiyle doğrulandı.
   tek işçiyle tekrar çalıştırıldığında 11/11 geçti; bunlar ilk başarısız olan
   dört testi de kapsar. Çit testi 300 zor bulmacanın tek çözümünü kontrol etti.
   Oyun üreticileri ve test eşikleri bu marka değişikliğinde değiştirilmedi.
+
+## Ana sayfa — 30 Eylül 2026
+
+Onaylanan “Bir bulmacayla başlayalım.” başlığıyla ana sayfa yenilendi.
+Krem yüzey, yeşil eylem düğmesi, kayısı renkli pentomino illüstrasyonu ve
+üç oyun önizlemesi tek bir kompozisyonda kullanılır. Önizlemeler oynanabilir
+tahta değildir; kartlar ilgili oyuna yönlendirir. Logo bileşeni değiştirilmedi.
+Tema seçimi ana yüzey ve metin renklerini etkilemeye devam eder.
+Sınıf daveti ziyaretçilere ve öğretmenlere gösterilir; öğretmeni doğrudan
+Hesabım içindeki Sınıflar bölümüne götürür. Öğrenci ve bireysel hesaplarda gizlidir.
+
+Doğrulama: ana sayfa, tema, dil ve logo kapsamındaki 36 tarayıcı senaryosu
+sonuçta başarılıdır. İlk koşudaki altı hata mobilde kapalı menüden oturum
+kontrolü yapan yeni testten kaynaklandı; görünür yıldız bakiyesine göre
+bekleme düzeltilerek ilgili sekiz senaryo yeniden geçti. Chromium, Firefox
+ve WebKit kullanıldı; 320, 820 ve 1440 piksel düzenleri, sekiz tema,
+rol bağlantıları, Türkçe varsayılan ve İngilizce tercih kontrol edildi.
+Bu testler API yanıtlarını taklit eder ve fiziksel Samsung/iPhone testi değildir.
+Masaüstü ve telefon ekran görüntüleri ayrıca görsel olarak incelendi.
+Üretim derlemesi geçti. PWA önbellek sürümü bildim-v13 oldu.

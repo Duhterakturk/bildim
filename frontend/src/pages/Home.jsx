@@ -1,127 +1,59 @@
 import { Link } from "react-router-dom";
-import { btnPrimary } from "../components/common/buttons";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import GamePreview from "../components/games/GamePreview";
 
-const MARKS = [
-  { top: "12%", left: "8%", delay: "0s", duration: "13s", rot: "-8deg", scale: 1, color: "#d9c7a3", node: "digit" },
-  { top: "18%", left: "72%", delay: "1.2s", duration: "15s", rot: "10deg", scale: 0.85, color: "#9bb7c9", node: "star" },
-  { top: "70%", left: "10%", delay: "0.6s", duration: "12s", rot: "6deg", scale: 1.05, color: "#c9a39a", node: "ship" },
-  { top: "74%", left: "78%", delay: "1.8s", duration: "14s", rot: "-12deg", scale: 0.9, color: "#a8c0b2", node: "grid" },
-  { top: "42%", left: "4%", delay: "2.1s", duration: "16s", rot: "4deg", scale: 0.75, color: "#e4ddd0", node: "ring" },
-  { top: "46%", left: "88%", delay: "0.4s", duration: "11s", rot: "-6deg", scale: 0.8, color: "#d9c7a3", node: "plus" },
-  { top: "88%", left: "38%", delay: "1.5s", duration: "13s", rot: "8deg", scale: 0.7, color: "#9bb7c9", node: "path" },
-  { top: "8%", left: "42%", delay: "2.4s", duration: "15s", rot: "-4deg", scale: 0.85, color: "#c9a39a", node: "brick" },
-  { top: "8%", left: "22%", delay: "0.8s", duration: "14s", rot: "12deg", scale: 0.7, color: "#9bb7c9", node: "star" },
-  { top: "14%", left: "90%", delay: "1.6s", duration: "12s", rot: "-10deg", scale: 0.65, color: "#e4ddd0", node: "digit" },
-  { top: "30%", left: "18%", delay: "2.2s", duration: "16s", rot: "7deg", scale: 0.6, color: "#a8c0b2", node: "ring" },
-  { top: "28%", left: "84%", delay: "0.3s", duration: "13s", rot: "-8deg", scale: 0.75, color: "#c9a39a", node: "brick" },
-  { top: "58%", left: "3%", delay: "1.1s", duration: "15s", rot: "5deg", scale: 0.7, color: "#d9c7a3", node: "grid" },
-  { top: "60%", left: "92%", delay: "2.6s", duration: "11s", rot: "-14deg", scale: 0.65, color: "#9bb7c9", node: "ship" },
-  { top: "86%", left: "16%", delay: "0.9s", duration: "14s", rot: "9deg", scale: 0.8, color: "#e4ddd0", node: "plus" },
-  { top: "90%", left: "64%", delay: "1.9s", duration: "16s", rot: "-5deg", scale: 0.75, color: "#c9a39a", node: "star" },
-  { top: "34%", left: "76%", delay: "2.8s", duration: "12s", rot: "11deg", scale: 0.55, color: "#a8c0b2", node: "path" },
-  { top: "78%", left: "48%", delay: "0.2s", duration: "15s", rot: "-7deg", scale: 0.6, color: "#d9c7a3", node: "ring" },
-];
-
-function Mark({ kind }) {
-  if (kind === "digit") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-9 h-9">
-        <rect x="4" y="4" width="40" height="40" rx="10" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <text x="24" y="31" textAnchor="middle" fontSize="18" fontFamily="Newsreader, Georgia, serif" fill="currentColor">7</text>
-      </svg>
-    );
-  }
-  if (kind === "star") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-8 h-8">
-        <path d="M24 6l4.8 11.2L41 19.2l-9 8.2L34.2 40 24 33.8 13.8 40 16 27.4 7 19.2l12.2-2z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (kind === "ship") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-10 h-8">
-        <path d="M8 30h32l-4 8H12z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M24 28V10M24 14h10l-10 8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (kind === "grid") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-8 h-8">
-        <rect x="8" y="8" width="14" height="14" rx="2" fill="currentColor" />
-        <rect x="26" y="8" width="14" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
-        <rect x="8" y="26" width="14" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
-        <rect x="26" y="26" width="14" height="14" rx="2" fill="currentColor" opacity="0.45" />
-      </svg>
-    );
-  }
-  if (kind === "ring") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-7 h-7">
-        <circle cx="24" cy="24" r="12" fill="none" stroke="currentColor" strokeWidth="2.5" />
-      </svg>
-    );
-  }
-  if (kind === "plus") {
-    return (
-      <svg viewBox="0 0 48 48" className="w-7 h-7">
-        <path d="M24 10v28M10 24h28" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (kind === "path") {
-    return (
-      <svg viewBox="0 0 64 24" className="w-12 h-5">
-        <circle cx="8" cy="12" r="4" fill="currentColor" />
-        <circle cx="32" cy="12" r="4" fill="currentColor" opacity="0.7" />
-        <circle cx="56" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 48 32" className="w-9 h-6">
-      <rect x="4" y="6" width="18" height="10" rx="1" fill="currentColor" />
-      <rect x="24" y="6" width="18" height="10" rx="1" fill="currentColor" opacity="0.55" />
-      <rect x="14" y="18" width="18" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
+const GAMES = ["sudoku", "kare-karalamaca", "pentominolar"];
+function PuzzleWorkshop() {
+  const pieces = [
+    { fill: "#8da87d", cells: [[0,0],[1,0],[0,1],[0,2],[0,3]] },
+    { fill: "#e98a32", cells: [[3,0],[3,1],[3,2],[3,3],[3,4]] },
+    { fill: "#315a46", cells: [[0,4],[1,4],[0,5],[1,5],[2,5]] },
+  ];
+  return <svg viewBox="0 0 540 330" aria-hidden="true" className="workshop-art">
+    <rect x="146" y="20" width="225" height="270" rx="3" fill="#fff9e9" stroke="#385242" strokeWidth="2" />
+    {pieces.map(({fill,cells},i) => <g key={i}>{cells.map(([x,y]) => <rect key={`${x}-${y}`} x={147+x*45} y={21+y*45} width="43" height="43" rx="2" fill={fill}/>)}</g>)}
+    {Array.from({length:4},(_,i)=><path key={`v${i}`} d={`M${191+i*45} 20v270`} stroke="#73816b" strokeWidth="1"/>)}
+    {Array.from({length:5},(_,i)=><path key={`h${i}`} d={`M146 ${65+i*45}h225`} stroke="#73816b" strokeWidth="1"/>)}
+    <g transform="translate(25 90) rotate(-8 40 40)" fill="#e98a32" stroke="#bc6a23" strokeWidth="1">
+      {[[1,0],[2,0],[0,1],[1,1],[1,2]].map(([x,y])=><rect key={`${x}-${y}`} x={x*30} y={y*30} width="29" height="29" rx="2"/>)}
+    </g>
+    <g transform="translate(408 173) rotate(8 40 40)" fill="#315a46" stroke="#264636" strokeWidth="1">
+      {[[0,0],[2,0],[0,1],[1,1],[2,1]].map(([x,y])=><rect key={`${x}-${y}`} x={x*30} y={y*30} width="29" height="29" rx="2"/>)}
+    </g>
+  </svg>;
 }
 
 export default function Home() {
   const { t } = useTranslation();
-
-  return (
-    <div className="home-desk">
-      <div className="home-marks pointer-events-none absolute inset-0" aria-hidden="true">
-        {MARKS.map((mark, index) => (
-          <span
-            key={index}
-            className="home-mark"
-            style={{
-              top: mark.top,
-              left: mark.left,
-              color: mark.color,
-              "--delay": mark.delay,
-              "--dur": mark.duration,
-              "--rot": mark.rot,
-            }}
-          >
-            <span style={{ zoom: mark.scale }}>
-              <Mark kind={mark.node} />
-            </span>
-          </span>
-        ))}
-      </div>
-      <div className="relative z-10 min-h-[calc(100vh-4rem)] flex items-center justify-center px-6">
-        <div className="flex flex-col items-center gap-4">
-          <h1 className="home-line font-hand font-semibold text-center text-balance">
-            {t("home.title")}
-          </h1>
-          <Link to="/games" className={btnPrimary}>{t("account.play")}</Link>
+  const { user } = useAuth();
+  return <div className="home-workshop">
+    <section className="workshop-hero" aria-labelledby="home-title">
+      <div className="workshop-intro">
+        <p className="workshop-eyebrow">{t("home.eyebrow")}</p>
+        <h1 id="home-title">{t("home.title")}</h1>
+        <p className="workshop-description">{t("home.description")}</p>
+        <div className="workshop-actions">
+          <Link className="workshop-primary" to="/games">{t("home.explore")} <span aria-hidden="true">→</span></Link>
+          <a className="workshop-text-link" href="#home-how">{t("home.how")}</a>
         </div>
+        <p className="workshop-meta">{t("home.meta")}</p>
       </div>
-    </div>
-  );
+      <Link to="/games/pentominolar" className="workshop-feature" aria-label={t("home.pentominoLink")}>
+        <p>{t("home.pieceTitle")}</p>
+        <PuzzleWorkshop />
+        <span className="workshop-feature-caption">{t("home.pentominoLink")} <span aria-hidden="true">↗</span></span>
+      </Link>
+    </section>
+    <section className="workshop-games" aria-labelledby="home-games-title">
+      <div className="workshop-section-head"><h2 id="home-games-title">{t("home.choose")}</h2><Link className="workshop-text-link" to="/games">{t("home.allGames")} <span aria-hidden="true">→</span></Link></div>
+      <div className="workshop-card-grid">{GAMES.map(slug=><Link className="workshop-card" to={`/games/${slug}`} key={slug}>
+        <div><h3>{t(`home.featured.${slug}.name`)}</h3><p>{t(`home.featured.${slug}.description`)}</p></div>
+        <GamePreview slug={slug}/>
+        <span className="workshop-card-arrow" aria-hidden="true">↗</span>
+      </Link>)}</div>
+    </section>
+    {(!user || user.role === "teacher") && <section className="workshop-together"><div><h2>{t("home.together")}</h2><p>{t("home.classDescription")}</p></div><Link className="workshop-text-link" to={user ? "/hesabim?bolum=siniflar" : "/register"}>{t("home.classLink")} <span aria-hidden="true">→</span></Link></section>}
+    <section className="workshop-how" id="home-how" aria-labelledby="home-how-title"><h2 id="home-how-title">{t("home.how")}</h2><ol>{["choose","read","solve"].map((step,i)=><li key={step}><span aria-hidden="true">0{i+1}</span><div><h3>{t(`home.steps.${step}.title`)}</h3><p>{t(`home.steps.${step}.text`)}</p></div></li>)}</ol></section>
+  </div>;
 }

@@ -10,9 +10,9 @@ export default defineConfig({
     reuseExistingServer: true,
   },
   projects: [
-    { name: "webkit-phone-brand", testMatch: "brand-surface.spec.js", use: { browserName: "webkit", viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
-    { name: "webkit-tablet-brand", testMatch: "brand-surface.spec.js", use: { browserName: "webkit", viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true } },
-    { name: "firefox-brand", testMatch: "brand-surface.spec.js", use: { browserName: "firefox", viewport: { width: 1280, height: 800 } } },
+    { name: "webkit-phone-brand", testMatch: ["brand-surface.spec.js", "home-workshop.spec.js"], use: { browserName: "webkit", viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: "webkit-tablet-brand", testMatch: ["brand-surface.spec.js", "home-workshop.spec.js"], use: { browserName: "webkit", viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true } },
+    { name: "firefox-brand", testMatch: ["brand-surface.spec.js", "home-workshop.spec.js"], use: { browserName: "firefox", viewport: { width: 1280, height: 800 } } },
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } } },
     { name: "mobile", use: { ...devices["Desktop Chrome"], viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],

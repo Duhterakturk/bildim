@@ -1,5 +1,7 @@
 {
-  "app": { "name": "Bildim" },
+  "app": {
+    "name": "Bildim"
+  },
   "nav": {
     "home": "Ana Sayfa",
     "games": "Oyunlar",
@@ -13,7 +15,9 @@
     "teacher": "Öğretmen Paneli",
     "account": "Hesabım"
   },
-  "owl": { "grew": "Baykuşunuz büyüdü!" },
+  "owl": {
+    "grew": "Baykuşunuz büyüdü!"
+  },
   "stages": {
     "egg": "Yumurta",
     "chick": "Yavru",
@@ -217,7 +221,47 @@
     }
   },
   "home": {
-    "title": "Bugün bir bulmaca sizi bekliyor. Hazır mısınız?"
+    "title": "Bir bulmacayla başlayalım.",
+    "eyebrow": "DÜŞÜNMEYE YER AÇ",
+    "description": "Sayılarla, şekillerle, kendi hızında.",
+    "explore": "Oyunları keşfet",
+    "how": "Nasıl oynanır?",
+    "meta": "8 yaş ve üzeri · 19 mantık oyunu",
+    "pieceTitle": "Her parçanın bir yeri var.",
+    "pentominoLink": "Pentominoları keşfet",
+    "choose": "Nereden başlamak istersin?",
+    "allGames": "Tüm oyunlar",
+    "together": "Birlikte düşünmek daha güzel.",
+    "classDescription": "Sınıfınız için oyunlar, ödevler ve birlikte keşfedilecek yollar.",
+    "classLink": "Sınıfınızla keşfedin",
+    "featured": {
+      "sudoku": {
+        "name": "Sudoku",
+        "description": "Sayıların yerini bul."
+      },
+      "kare-karalamaca": {
+        "name": "Kare Karalamaca",
+        "description": "İpuçlarından resmi çıkar."
+      },
+      "pentominolar": {
+        "name": "Pentominolar",
+        "description": "Parçaları bir araya getir."
+      }
+    },
+    "steps": {
+      "choose": {
+        "title": "Bir oyun seç",
+        "text": "Sayılar mı, şekiller mi? Merak ettiğin bir oyunla başla."
+      },
+      "read": {
+        "title": "Kuralı keşfet",
+        "text": "Oyunun “Nasıl oynanır?” bölümünden kurallara göz at."
+      },
+      "solve": {
+        "title": "Kendi hızında çöz",
+        "text": "Dene, düşün, gerekirse ipucu al. Hazır olduğunda çözümünü kontrol et."
+      }
+    }
   },
   "auth": {
     "email": "E-posta",
