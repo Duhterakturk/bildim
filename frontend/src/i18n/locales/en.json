@@ -8,8 +8,12 @@
     "correct": "Correct!",
     "wrong": "That answer is incorrect.",
     "answer": "Correct option",
-    "error": "Could not submit. Check your connection and try again."
-},
+    "error": "Could not submit. Check your connection and try again.",
+    "chooseMode": "Choose game mode",
+    "normalLabel": "Normal Play",
+    "activeMode": "Selected mode",
+    "selectMode": "Select this mode"
+  },
   "app": {
     "name": "Bildim"
   },

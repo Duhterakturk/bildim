@@ -28,7 +28,7 @@ for (const slug of ['carpmaca','colours','numbers']) {
   await expect(question.getByRole('button',{name:'Cevabı gönder'})).toBeDisabled();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.screenshot({path:`test-results/booklet-${slug}-${test.info().project.name}.png`,fullPage:true});
-  await page.getByRole('link',{name:'Normal oyuna dön'}).click();
+  await page.getByRole('link',{name:/Normal Oyun/}).click();
   await expect(question).toHaveCount(0);
   await expect(page.locator('[data-normal-check]')).toBeVisible();
   expect(issuedMode).toBeUndefined();

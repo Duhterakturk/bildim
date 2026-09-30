@@ -8,8 +8,12 @@
     "correct": "Doğru cevap!",
     "wrong": "Bu cevap doğru değil.",
     "answer": "Doğru seçenek",
-    "error": "Cevap gönderilemedi. Bağlantınızı kontrol edip tekrar deneyiniz."
-},
+    "error": "Cevap gönderilemedi. Bağlantınızı kontrol edip tekrar deneyiniz.",
+    "chooseMode": "Oyun modu seçimi",
+    "normalLabel": "Normal Oyun",
+    "activeMode": "Seçili mod",
+    "selectMode": "Bu modu seç"
+  },
   "app": {
     "name": "Bildim"
   },

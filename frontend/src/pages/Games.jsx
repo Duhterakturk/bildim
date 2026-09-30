@@ -1,3 +1,4 @@
+import GameModeSwitch from "../components/games/GameModeSwitch";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -63,7 +64,7 @@ export default function Games() {
         </Link>
       </div>
 
-      <Link to={tournament ? "/games" : "/games?mode=turnuva"} className="scene-chip mb-5 inline-flex rounded-lg px-3 py-2">{t(tournament ? "tournament.normal" : "tournament.title")}</Link>
+      <GameModeSwitch tournament={tournament} />
       {error && <p role="alert" className="text-red-500">{apiErrorText(error, t, i18n)}</p>}
 
       {loading && (

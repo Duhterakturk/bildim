@@ -1,5 +1,6 @@
+import GameModeSwitch from "../components/games/GameModeSwitch";
 import { Suspense } from "react";
-import { Link, useSearchParams, useParams } from "react-router-dom";
+import { useSearchParams, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getGameComponent } from "../games/registry";
 import HintBar from "../components/games/HintBar";
@@ -24,7 +25,7 @@ export default function GamePage() {
 
   return (
     <div key={`${slug}-${tournament}`} className={`play-room mx-auto max-w-5xl px-4 py-10 ${tournament ? "tournament-room" : ""}`}>
-      <Link className="scene-chip mb-4 inline-flex rounded-lg px-3 py-2" to={`/games/${slug}${tournament ? "" : "?mode=turnuva"}`}>{t(tournament ? "tournament.normal" : "tournament.title")}</Link>
+      <GameModeSwitch tournament={tournament} slug={slug} />
       {tournament && <TournamentQuestion />}
       <div className="play-scale">
         {tournament ? <HowTo slug={slug} /> : <HintBar slug={slug} />}
