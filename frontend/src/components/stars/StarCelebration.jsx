@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { STARS_EVENT } from "../../api/games";
@@ -106,10 +107,10 @@ export default function StarCelebration() {
   );
 
   if (!special) {
-    return (
-      <div className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center px-3" data-testid="star-toast">
-        <div className="flex max-w-lg items-center gap-3 rounded-full bg-white px-4 py-1.5 text-slate-900 shadow-xl">
-          <div className="flex text-xl leading-none">
+    const notification = (
+      <div className="my-4 flex w-full justify-center px-3" role="status" data-testid="star-toast">
+        <div className="flex w-full max-w-lg flex-wrap items-center justify-center gap-3 rounded-2xl bg-white px-4 py-1.5 text-slate-900 shadow-xl">
+          <div className="flex flex-wrap justify-center text-xl leading-none">
             {stars.pieces.map((piece, index) => (
               <span key={`${piece}-${index}`} className={index < shown ? "opacity-100" : "opacity-20"}>⭐</span>
             ))}
@@ -121,6 +122,8 @@ export default function StarCelebration() {
         </div>
       </div>
     );
+    const slot = document.getElementById("game-reward-slot");
+    return slot ? createPortal(notification, slot) : notification;
   }
 
   return (

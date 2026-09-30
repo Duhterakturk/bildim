@@ -68,7 +68,7 @@ test("easy, medium and hard list the real star counts", async ({ page }) => {
     const note = await toast.boundingBox();
     expect(note.y).toBeGreaterThan(board.y + board.height - 4);
     expect(note.y).toBeGreaterThan(buttons.y + buttons.height - 4);
-    await page.screenshot({ path: `test-results/stars-${level}.png` });
+    await page.screenshot({ path: `test-results/stars-${level}-${test.info().project.name}.png`, fullPage: true });
     await expect(toast).toBeHidden({ timeout: 4000 });
   };
 

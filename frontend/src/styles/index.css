@@ -183,9 +183,6 @@ html[data-board-theme] .press-btn {
   color: #fff;
 }
 
-body:has([data-testid="star-toast"]) .play-room {
-  transform: translateY(-4.25rem);
-}
 
 .theme-photo {
   width: 100%;

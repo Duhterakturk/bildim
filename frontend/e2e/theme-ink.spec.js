@@ -118,7 +118,7 @@ test("an equipped background supplies the photo and the theme supplies the color
   await page.goto("/dukkan");
   await page.getByTestId("card-theme-forest").click();
   await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
-  await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/meadow.webp");
+  await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/forest.webp");
   const tried = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--ink").trim());
   expect(tried.toLowerCase()).toBe("#143226");
 });

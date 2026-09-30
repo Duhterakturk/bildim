@@ -33,6 +33,7 @@ export default function GamePage() {
           <GameComponent />
         </Suspense>
       </div>
+      <div id="game-reward-slot" />
     </div>
   );
 }

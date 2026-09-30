@@ -564,5 +564,25 @@
     "grade_game": "Bu oyun skorlanamıyor.",
     "grade_ambiguous": "Bulmaca çok belirsiz.",
     "grade_rejected": "Skor kabul edilmedi. Çözümünüzü düzeltebilir veya kaydı doğrulamadan devam edebilirsiniz."
+  },
+  "coloursAccess": {
+    "colors": {
+      "orange": "Turuncu",
+      "purple": "Mor",
+      "pink": "Pembe",
+      "gray": "Gri",
+      "red": "Kırmızı",
+      "yellow": "Sarı",
+      "blue": "Mavi",
+      "green": "Yeşil",
+      "black": "Siyah"
+    },
+    "shapes": {
+      "circle": "daire",
+      "square": "kare",
+      "triangle": "üçgen"
+    },
+    "empty": "Boş",
+    "cell": "{{row}}. satır, {{col}}. sütun: {{piece}}"
   }
 }

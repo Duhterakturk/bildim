@@ -564,5 +564,25 @@
     "grade_game": "This game cannot be scored.",
     "grade_ambiguous": "The puzzle is too ambiguous.",
     "grade_rejected": "The score was not accepted. You can correct your solution, or continue without a confirmed save."
+  },
+  "coloursAccess": {
+    "colors": {
+      "orange": "orange",
+      "purple": "purple",
+      "pink": "pink",
+      "gray": "gray",
+      "red": "red",
+      "yellow": "yellow",
+      "blue": "blue",
+      "green": "green",
+      "black": "black"
+    },
+    "shapes": {
+      "circle": "circle",
+      "square": "square",
+      "triangle": "triangle"
+    },
+    "empty": "Empty",
+    "cell": "Row {{row}}, column {{col}}: {{piece}}"
   }
 }

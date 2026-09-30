@@ -9,7 +9,7 @@ async function mock(page, user, { failCode = "class_name_required" } = {}) {
     localStorage.setItem("mindarena_access_token", "access");
     localStorage.setItem("mindarena_refresh_token", "refresh");
     localStorage.setItem("mindarena_user", JSON.stringify(stored));
-    localStorage.setItem("mindarena_lang", "tr");
+    localStorage.setItem("bildim_language", "tr");
   }, user);
   await page.route(/\/api\/(?!.*\.js)/, async (route) => {
     const url = route.request().url();
@@ -32,7 +32,7 @@ async function mock(page, user, { failCode = "class_name_required" } = {}) {
         total_points: 1200,
       }] });
     }
-    if (url.includes("/assignment") && method === "GET") {
+    if (url.includes("/assignment") && !url.includes("/assignments/mine") && method === "GET") {
       return route.fulfill({ json: {
         assignments: [{
           id: 1,

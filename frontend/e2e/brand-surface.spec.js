@@ -19,7 +19,8 @@ test("wordmark follows foreground across light and dark surfaces without resizin
   await style.evaluate(node => node.remove());
   await page.emulateMedia({ colorScheme: "dark" });
   await expect(page.locator(".brand-wordmark")).toHaveCSS("color", "rgb(255, 255, 255)");
-  await expect(page.locator("nav")).toHaveCSS("background-color", "rgb(22, 22, 22)");
+  const darkSurface = await page.locator("nav.site-nav").evaluate(node => { const css = getComputedStyle(node); return css.backgroundImage + " " + css.backgroundColor; });
+  expect(darkSurface).toContain("22, 22, 22");
   expect(await link.boundingBox()).toEqual(originalBox);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

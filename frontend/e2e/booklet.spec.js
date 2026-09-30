@@ -32,5 +32,14 @@ for (const slug of ['carpmaca','colours','numbers']) {
   await expect(question).toHaveCount(0);
   await expect(page.locator('[data-normal-check]')).toBeVisible();
   expect(issuedMode).toBeUndefined();
+  if(slug==='colours') {
+   const red=page.getByRole('button',{name:'Kırmızı daire',exact:true});
+   await expect(red).toHaveAttribute('aria-pressed','false');
+   await red.click();
+   await expect(red).toHaveAttribute('aria-pressed','true');
+   const cell=page.getByRole('button',{name:'1. satır, 1. sütun: Boş',exact:true});
+   await cell.click();
+   await expect(page.getByRole('button',{name:'1. satır, 1. sütun: Kırmızı daire',exact:true})).toBeVisible();
+  }
  });
 }

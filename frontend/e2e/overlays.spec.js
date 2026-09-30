@@ -22,6 +22,7 @@ const futoshiki = {
 };
 
 async function hit(page, locator) {
+  await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   expect(box).toBeTruthy();
   return page.evaluate(({ x, y }) => {

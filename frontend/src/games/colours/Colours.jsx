@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { scoreStatus } from "../../api/client";
 import { checkPuzzle } from "../../api/games";
@@ -92,6 +93,8 @@ function emptyBoard() {
 }
 
 export default function Colours() {
+  const { t } = useTranslation();
+  const pieceLabel = piece => piece ? `${t(`coloursAccess.colors.${piece.color}`)} ${t(`coloursAccess.shapes.${piece.shape}`)}` : t("coloursAccess.empty");
   const copy = useGameText("colours");
   const play = usePlayCopy();
   const [difficulty, setDifficulty] = useStartingDifficulty();
@@ -205,6 +208,7 @@ export default function Colours() {
               <button
                 key={key}
                 type="button"
+                aria-label={t("coloursAccess.cell", { row: rowIndex + 1, col: colIndex + 1, piece: pieceLabel(piece) })}
                 onClick={() => place(rowIndex, colIndex)}
                 className={`flex h-12 w-12 items-center justify-center border border-slate-300 bg-white sm:h-14 sm:w-14 ${hintCell === key ? "ring-4 ring-[#2461f7] ring-inset" : ""}`}
               >
@@ -225,6 +229,9 @@ export default function Colours() {
                   key={`${piece.shape}-${piece.color}`}
                   type="button"
                   disabled={used}
+                  aria-label={pieceLabel(piece)}
+                  aria-pressed={active}
+                  title={pieceLabel(piece)}
                   onClick={() => setSelected(active ? null : piece)}
                   className={`flex h-11 w-11 items-center justify-center rounded-lg border bg-white sm:h-12 sm:w-12 ${used ? "opacity-30" : ""} ${active ? "border-[#2461f7] ring-2 ring-[#2461f7]" : "border-slate-300"}`}
                 >
