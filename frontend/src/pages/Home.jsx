@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import GamePreview from "../components/games/GamePreview";
@@ -10,6 +10,7 @@ const GAMES = ["sudoku", "kare-karalamaca", "pentominolar"];
 
 export default function Home() {
   const { t } = useTranslation();
+  const location = useLocation();
   const { user } = useAuth();
   const [photoId, setPhotoId] = useState(activePhotoId);
   useEffect(() => subscribeTrial(() => setPhotoId(activePhotoId())), []);
@@ -24,7 +25,7 @@ export default function Home() {
             aria-hidden="true"
           />
 
-        <div className="workshop-light-pass" aria-hidden="true" />
+        <div key={location.key} className="workshop-light-pass" aria-hidden="true" />
         <div className="workshop-intro">
           <h1 id="home-title">{t("home.title")}</h1>
           <p className="workshop-description">{t("home.description")}</p>
