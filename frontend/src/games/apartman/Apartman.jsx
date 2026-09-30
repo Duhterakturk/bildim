@@ -125,13 +125,13 @@ export default function Apartman() {
       >
         <div className={clueCell} />
         {clues.top.map((v, i) => (
-          <div key={`t-${i}`} className={clueCell}>{v}</div>
+          <div key={`t-${i}`} className={clueCell}>{v || ""}</div>
         ))}
         <div className={clueCell} />
 
         {board.map((row, r) => (
           <Fragment key={r}>
-            <div key={`l-${r}`} className={clueCell}>{clues.left[r]}</div>
+            <div key={`l-${r}`} className={clueCell}>{clues.left[r] || ""}</div>
             {row.map((val, c) => (
               <div key={`${r}-${c}`} className="relative">
                 <input
@@ -147,13 +147,13 @@ export default function Apartman() {
                 {!val && !givenMask[r][c] && <NotesOverlay digits={notes[r][c]} maxDigit={maxDigit} />}
               </div>
             ))}
-            <div key={`r-${r}`} className={clueCell}>{clues.right[r]}</div>
+            <div key={`r-${r}`} className={clueCell}>{clues.right[r] || ""}</div>
           </Fragment>
         ))}
 
         <div className={clueCell} />
         {clues.bottom.map((v, i) => (
-          <div key={`b-${i}`} className={clueCell}>{v}</div>
+          <div key={`b-${i}`} className={clueCell}>{v || ""}</div>
         ))}
         <div className={clueCell} />
       </div>

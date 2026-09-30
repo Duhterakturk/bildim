@@ -392,7 +392,7 @@ def _grade_apartman(difficulty, puzzle, answer):
     if not isinstance(puzzle, dict):
         raise GradeError("Bulmaca eksik")
     givens = _int_grid(puzzle.get("givens"), 4, 0, 4, "ipucu")
-    if _filled(givens) != APARTMAN_GIVENS[difficulty]:
+    if _filled(givens) not in (0, APARTMAN_GIVENS[difficulty]):
         raise GradeError("İpucu sayısı bu zorluğa uymuyor")
     clues = puzzle.get("clues") or {}
     solved = _int_grid(answer, 4, 1, 4)
@@ -409,7 +409,11 @@ def _grade_apartman(difficulty, puzzle, answer):
         "right": [_visible(list(reversed(row))) for row in solved],
     }
     for side, values in expected.items():
-        if list(clues.get(side) or []) != values:
+        edge = clues.get(side)
+        if not isinstance(edge, list) or len(edge) != 4 or any(
+            type(v) is not int or not 0 <= v <= 4 or (v and v != expected)
+            for v, expected in zip(edge, values)
+        ):
             raise GradeError("Çözüm kurallara uymuyor")
 
 

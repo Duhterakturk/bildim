@@ -40,3 +40,7 @@ Bu sürüm soru pratiğidir: sınıflar arası sıralama, öğretmenin sınav ol
 - Üretim derlemesi ve git diff boşluk kontrolü geçti.
 
 Bu çalışma tüm 19 oyun için yeniden bağımsız çözücü yazılan kapsamlı bir tek-çözüm denetimi veya yük testi değildir.
+
+
+## Apartman correction
+All levels now start with an empty 4x4 grid. Easy/medium/hard retain 12/9/6 exterior clues respectively, with uniqueness checked after each removal. This supersedes the earlier Apartman review, which missed prefilled cells. Independent enumeration of all 576 Latin squares verified 30 puzzles per level (90 total), correct-answer acceptance and single-cell-error rejection. Legacy issued puzzles remain gradable.
