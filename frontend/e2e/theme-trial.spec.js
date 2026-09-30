@@ -176,3 +176,54 @@ test("each photo theme keeps the board and titles readable", async ({ page }, in
   }
   expect(errors).toEqual([]);
 });
+
+test("theme trials override saved scenery and remain visible on the homepage", async ({ page }, info) => {
+  const background = { ...space, id: "bg-ink", type: "background", slot: "background", equipped: true, owned: true, preview: previews["bg-ink"] };
+  const items = Object.keys(photos).filter(id => id.startsWith("theme-")).map(id => ({ ...space, id, name_tr: id, preview: previews[id] }));
+  await page.addInitScript(() => localStorage.setItem("mindarena_access_token", "test-token"));
+  await page.route(/\/api\/(?!.*\.js)/, route => {
+    const url = route.request().url();
+    if (url.includes("/auth/me")) return route.fulfill({ json: user });
+    if (url.includes("/shop")) return route.fulfill({ json: { star_balance: 5, items: [...items, background] } });
+    return route.fulfill({ json: {} });
+  });
+  await page.goto("/dukkan");
+  for (const item of items) {
+    await page.getByTestId(`card-${item.id}`).click();
+    await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
+    await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", `/themes/${photos[item.id]}`);
+    await page.getByRole("link", { name: "Bildim", exact: true }).click();
+    await expect(page.getByTestId("theme-trial")).toBeVisible();
+    await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", new RegExp(photos[item.id].replace('.', '\\.')));
+    await expect(page.locator("main")).toHaveCSS("opacity", "1");
+    await page.screenshot({path: info.outputPath(`home-${item.id}.png`), fullPage: true, animations: "disabled"});
+    await page.getByTestId("theme-trial").getByRole("button", { name: "Vazgeç" }).click();
+    await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /ink\.webp/);
+    await page.goto("/dukkan");
+  }
+});
+
+test("equipping a theme ends an active preview and survives reload", async ({ page }) => {
+  let selected = null;
+  const items = [space, { ...space, id: "theme-forest", name_tr: "Orman", owned: true, preview: previews["theme-forest"] }];
+  await page.addInitScript(() => localStorage.setItem("mindarena_access_token", "test-token"));
+  await page.route(/\/api\/(?!.*\.js)/, route => {
+    const url = route.request().url();
+    if (url.includes("/auth/me")) return route.fulfill({ json: user });
+    if (url.includes("/shop")) {
+      if (url.endsWith("/equip")) selected = route.request().postDataJSON().item_id;
+      return route.fulfill({ json: { star_balance: 5, items: items.map(item => ({ ...item, equipped: item.id === selected })) } });
+    }
+    return route.fulfill({ json: {} });
+  });
+  await page.goto("/dukkan");
+  await page.getByTestId("card-theme-space").click();
+  await page.getByTestId("preview-dialog").getByRole("button", { name: "Deneyin" }).click();
+  await page.getByTestId("card-theme-forest").getByRole("button", { name: "Kullanın", exact: true }).click();
+  await expect(page.getByTestId("theme-trial")).toHaveCount(0);
+  await expect(page.locator("html")).toHaveAttribute("data-board-theme", "theme-forest");
+  await page.getByRole("link", { name: "Bildim", exact: true }).click();
+  await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /forest\.webp/);
+  await page.reload();
+  await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /forest\.webp/);
+});

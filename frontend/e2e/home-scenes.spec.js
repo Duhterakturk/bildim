@@ -66,6 +66,7 @@ test("home headline stays readable on every scene", async ({ page }, info) => {
     await page.goto("/");
     const line = page.getByRole("heading", { name: "Bir bulmacayla başlayalım." });
     await expect(line).toBeVisible();
+    await expect(page.locator(".workshop-feature")).toHaveClass(/workshop-feature-themed/);
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(page.getByTestId("theme-scene").locator("img")).toBeVisible();
     const box = await line.evaluate((node) => {

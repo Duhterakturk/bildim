@@ -1,7 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import GamePreview from "../components/games/GamePreview";
+
+import { activePhotoId, subscribeTrial } from "../components/shop/themeTrial";
+import { photoSrc } from "../components/shop/ThemeScene";
 
 const GAMES = ["sudoku", "kare-karalamaca", "pentominolar"];
 function PuzzleWorkshop() {
@@ -27,6 +31,9 @@ function PuzzleWorkshop() {
 export default function Home() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [photoId, setPhotoId] = useState(activePhotoId);
+  useEffect(() => subscribeTrial(() => setPhotoId(activePhotoId())), []);
+  const scene = photoSrc(photoId);
   return <div className="home-workshop">
     <section className="workshop-hero" aria-labelledby="home-title">
       <div className="workshop-intro">
@@ -39,7 +46,7 @@ export default function Home() {
         </div>
         <p className="workshop-meta">{t("home.meta")}</p>
       </div>
-      <Link to="/games/pentominolar" className="workshop-feature" aria-label={t("home.pentominoLink")}>
+      <Link to="/games/pentominolar" className={`workshop-feature${scene ? " workshop-feature-themed" : ""}`} style={scene ? { backgroundImage: `url("${scene}")` } : undefined} aria-label={t("home.pentominoLink")}>
         <p>{t("home.pieceTitle")}</p>
         <PuzzleWorkshop />
         <span className="workshop-feature-caption">{t("home.pentominoLink")} <span aria-hidden="true">↗</span></span>

@@ -45,10 +45,9 @@ function colorItem() {
 }
 
 export function activePhotoId() {
-  if (trial?.type === "background") return trial.id;
+  if (trial?.type === "background" || trial?.type === "theme") return trial.id;
   const background = equippedBackground();
   if (background) return background.id;
-  if (trial?.type === "theme") return trial.id;
   return equippedTheme()?.id || null;
 }
 
@@ -102,5 +101,5 @@ export function clearTrial() {
 }
 
 export function trialKeeps(pathname) {
-  return pathname === "/dukkan" || pathname === "/games" || /^\/games\/[^/]+$/.test(pathname);
+  return pathname === "/" || pathname === "/dukkan" || pathname === "/games" || /^\/games\/[^/]+$/.test(pathname);
 }

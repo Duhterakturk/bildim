@@ -738,3 +738,18 @@ h1, h2, h3 { letter-spacing: -0.025em; }
  .workshop-section-head { flex-wrap: wrap; gap: 0; }
  .workshop-card { grid-template-columns: 1fr 96px; padding: 14px; }
 }
+
+/* Selected scenery stays visible within the homepage composition. Text has
+   an opaque surface so bright and dark photographs cannot obscure it. */
+.workshop-feature-themed { background-size: cover; background-position: center; }
+.workshop-feature-themed > p, .workshop-feature-themed .workshop-feature-caption {
+  width: fit-content; background: var(--cell); color: var(--ink);
+  padding: 8px 12px; border-radius: 8px;
+}
+.workshop-feature-themed .workshop-feature-caption { margin-left: auto; }
+.workshop-feature-themed .workshop-art {
+  background: color-mix(in srgb, var(--cell) 78%, transparent);
+  border-radius: 12px; margin: 12px 0;
+}
+html[data-board-theme] .workshop-primary { background: var(--accent); }
+html[data-board-theme] .workshop-primary:hover { filter: brightness(.9); }

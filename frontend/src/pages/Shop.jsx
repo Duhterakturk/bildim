@@ -4,7 +4,7 @@ import Modal from "../components/common/Modal";
 import Owl from "../components/owl/Owl";
 import ThemePreview from "../components/shop/ThemePreview";
 import { buyItem, equipItem, fetchProfile, fetchShop } from "../api/shop";
-import { startTrial } from "../components/shop/themeTrial";
+import { clearTrial, startTrial } from "../components/shop/themeTrial";
 import { apiErrorText, apiFailure } from "../i18n/apiError";
 
 const TABS = ["theme", "collection", "background"];
@@ -73,6 +73,7 @@ export default function Shop() {
     setError(null);
     try {
       const next = await equipItem(id);
+      clearTrial();
       setState(next);
       setOpen((current) => next.items.find((item) => item.id === current?.id) || null);
     } catch (err) {

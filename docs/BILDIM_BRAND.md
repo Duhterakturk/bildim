@@ -107,3 +107,17 @@ rol bağlantıları, Türkçe varsayılan ve İngilizce tercih kontrol edildi.
 Bu testler API yanıtlarını taklit eder ve fiziksel Samsung/iPhone testi değildir.
 Masaüstü ve telefon ekran görüntüleri ayrıca görsel olarak incelendi.
 Üretim derlemesi geçti. PWA önbellek sürümü bildim-v13 oldu.
+
+### Tema denemesi düzeltmesi
+
+Ana sayfa artık 60 saniyelik tema denemesini iptal etmez. Denenen tema,
+önceden kullanılan arka planın üzerinde öncelik alır; vazgeçilince kayıtlı
+seçime dönülür. Ana sayfadaki bulmaca görsel alanı seçilen fotoğrafı gösterir;
+yazılar opak yüzeylerle korunur. Kullanın işlemi başarılı olduğunda geçici
+deneme biter ve kayıtlı seçim hemen uygulanır.
+
+14 masaüstü/mobil tarayıcı testi geçti: sekiz tema/arka plan görünümü,
+oyun tahtası okunurluğu, ana sayfada deneme, iptal, kayıtlı arka planla
+çakışma ve kullanımdan sonra sayfa yenileme. API yanıtları taklit edildi.
+Orman temasının masaüstü ve telefon ekran görüntüleri incelendi.
+Üretim derlemesi başarılı; önbellek sürümü bildim-v14.
