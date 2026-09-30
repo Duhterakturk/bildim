@@ -10,6 +10,7 @@ export function usePlayCopy() {
     clock(seconds) {
       return t("play.time", { clock: formatClock(seconds) });
     },
+    pathDrawing: t("play.pathDrawing"),
     check: t("play.check"),
     newPuzzle: t("play.new"),
     clear: t("play.clear"),

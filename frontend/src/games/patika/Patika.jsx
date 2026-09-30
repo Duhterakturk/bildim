@@ -36,6 +36,7 @@ export default function Patika() {
 
   useEffect(() => {
     if (!attemptId) return undefined;
+    drag.current = null;
     setEdges(new Set());
     setStatus("playing");
     setSeconds(0);
@@ -69,11 +70,25 @@ export default function Patika() {
     setStatus("playing");
   }
 
-  function addEdge(a, b) {
-    if (!white(a) || !white(b) || !adjacent(a, b)) return;
-    if (boardClosed(status, savePhase)) return;
-    setEdges((prev) => new Set(prev).add(edgeKey(a, b)));
+  function drawTo(cell) {
+    const stroke = drag.current;
+    if (!stroke || !white(cell) || !adjacent(stroke.cell, cell) || boardClosed(status, savePhase)) return;
+    const edge = edgeKey(stroke.cell, cell);
+    setEdges((prev) => {
+      const next = new Set(prev);
+      if (next.has(edge)) next.delete(edge);
+      else next.add(edge);
+      return next;
+    });
+    stroke.cell = cell;
     setStatus("playing");
+  }
+
+  function pointerCell(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const col = Math.floor((event.clientX - rect.left) / rect.width * size);
+    const row = Math.floor((event.clientY - rect.top) / rect.height * size);
+    return row >= 0 && col >= 0 && row < size && col < size ? cellKey(row, col) : null;
   }
 
   function newGame(next) {
@@ -100,7 +115,7 @@ export default function Patika() {
 
   if (phase !== "ready" || !size) return <PuzzlePending phase={phase} onRetry={reload} />;
 
-  const tracks = size * 2 - 1;
+
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -109,62 +124,62 @@ export default function Patika() {
       <p className="play-rules text-slate-500 text-sm mb-2 max-w-md text-center">{copy.rules}</p>
       <p className="text-slate-500 text-sm mb-4">{play.clock(seconds)}</p>
 
-      <div className="mb-4 touch-none">
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: Array.from({ length: tracks }, (_, index) => (index % 2 === 0 ? "2.1rem" : "0.65rem")).join(" "),
-            gridTemplateRows: Array.from({ length: tracks }, (_, index) => (index % 2 === 0 ? "2.1rem" : "0.65rem")).join(" "),
-          }}
-        >
-          {Array.from({ length: tracks * tracks }, (_, index) => {
-            const row = Math.floor(index / tracks);
-            const col = index % tracks;
-            if (row % 2 === 0 && col % 2 === 0) {
-              const cell = cellKey(row / 2, col / 2);
-              const closed = blacks.has(cell);
-              return (
-                <button
-                  key={cell}
-                  type="button"
-                  onPointerDown={() => { drag.current = closed ? null : cell; }}
-                  onPointerEnter={() => {
-                    if (!drag.current || drag.current === cell) return;
-                    addEdge(drag.current, cell);
-                    drag.current = cell;
-                  }}
-                  onPointerUp={() => { drag.current = null; }}
-                  className={`rounded-sm ${closed ? "bg-slate-800" : "bg-white border border-slate-300"}`}
-                />
-              );
-            }
-            if (row % 2 === 0 && col % 2 === 1) {
-              const left = cellKey(row / 2, (col - 1) / 2);
-              const right = cellKey(row / 2, (col + 1) / 2);
-              if (!white(left) || !white(right)) return <div key={`${row}-${col}`} />;
-              const edge = edgeKey(left, right);
-              const on = edges.has(edge);
-              return (
-                <button key={edge} type="button" onClick={() => toggle(edge)} className="flex items-center justify-center">
-                  <span className={`h-1.5 w-full rounded-full ${on ? "bg-[#2461f7]" : "bg-slate-200"}`} />
-                </button>
-              );
-            }
-            if (row % 2 === 1 && col % 2 === 0) {
-              const up = cellKey((row - 1) / 2, col / 2);
-              const down = cellKey((row + 1) / 2, col / 2);
-              if (!white(up) || !white(down)) return <div key={`${row}-${col}`} />;
-              const edge = edgeKey(up, down);
-              const on = edges.has(edge);
-              return (
-                <button key={edge} type="button" onClick={() => toggle(edge)} className="flex items-center justify-center">
-                  <span className={`h-full w-1.5 rounded-full ${on ? "bg-[#2461f7]" : "bg-slate-200"}`} />
-                </button>
-              );
-            }
-            return <div key={`${row}-${col}`} />;
+      <p className="text-sm text-center mb-3">{play.pathDrawing}</p>
+      <div
+        data-testid="patika-board"
+        className="relative mb-4 touch-none select-none"
+        style={{ width: "min(100%, 440px)", aspectRatio: "1", background: "#fff", border: "2px solid #111" }}
+        onPointerDown={(event) => {
+          if (event.button !== 0 || boardClosed(status, savePhase)) return;
+          const cell = pointerCell(event);
+          if (!cell || !white(cell)) return;
+          event.preventDefault();
+          drag.current = { cell, pointerId: event.pointerId };
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }}
+        onPointerMove={(event) => {
+          if (drag.current?.pointerId !== event.pointerId) return;
+          const cell = pointerCell(event);
+          if (!cell) return;
+          const [r, c] = cell.split("-").map(Number);
+          const [sr, sc] = drag.current.cell.split("-").map(Number);
+          if (r !== sr && c !== sc) return;
+          const distance = Math.abs(r - sr) + Math.abs(c - sc);
+          for (let step = 1; step <= distance; step++) {
+            const next = cellKey(sr + Math.sign(r - sr) * step, sc + Math.sign(c - sc) * step);
+            if (!white(next)) break;
+            drawTo(next);
+          }
+        }}
+        onPointerUp={() => { drag.current = null; }}
+        onPointerCancel={() => { drag.current = null; }}
+        onLostPointerCapture={() => { drag.current = null; }}
+      >
+        <div className="absolute inset-0 grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+          {Array.from({ length: size * size }, (_, index) => {
+            const row = Math.floor(index / size), col = index % size;
+            const cell = cellKey(row, col);
+            return <button key={cell} type="button" data-cell={cell}
+              aria-label={`${row + 1}, ${col + 1}`} disabled={blacks.has(cell)}
+              style={{ background: blacks.has(cell) ? "#111" : "#fff", border: "1px solid #aaa" }}
+              onKeyDown={(event) => {
+                const delta = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[event.key];
+                if (!delta) return;
+                event.preventDefault();
+                const r = row + delta[0], c = col + delta[1], next = cellKey(r, c);
+                if (r < 0 || c < 0 || r >= size || c >= size || !white(next)) return;
+                toggle(edgeKey(cell, next));
+                event.currentTarget.parentElement.querySelector(`[data-cell="${next}"]`)?.focus();
+              }} />;
           })}
         </div>
+        <svg className="absolute inset-0 pointer-events-none" width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+          {[...edges].map((edge) => {
+            const [a, b] = edge.split("|");
+            const [ar, ac] = a.split("-").map(Number), [br, bc] = b.split("-").map(Number);
+            return <line key={edge} data-edge={edge} x1={ac + .5} y1={ar + .5} x2={bc + .5} y2={br + .5} stroke="#111" strokeWidth=".12" strokeLinecap="round" />;
+          })}
+        </svg>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
