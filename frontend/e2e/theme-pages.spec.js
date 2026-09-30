@@ -32,6 +32,7 @@ test("general pages keep each theme's photo", async ({ page }, info) => {
     for (const path of ["/", "/games", "/dukkan", "/profil"]) {
       await page.goto(path);
       await expect(page.getByTestId("theme-scene").locator("img")).toBeVisible();
+      await page.getByTestId("theme-scene").locator("img").evaluate((img) => img.decode());
       const opacity = await page.getByTestId("theme-scene").locator("img").evaluate((img) => Number(getComputedStyle(img).opacity));
       expect(opacity).toBeGreaterThanOrEqual(0.8);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBeTruthy();

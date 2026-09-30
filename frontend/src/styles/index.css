@@ -834,3 +834,30 @@ html[data-board-theme] .workshop-primary:hover { filter: brightness(.92); }
   mask-image: linear-gradient(90deg, transparent 0%, #000 48%), linear-gradient(180deg, #0002 0, #0004 74px, #000 200px, #000 72%, transparent 100%);
  }
 }
+
+/* Continue the selected scene through navigation on every standard page.
+   The fixed photograph already starts behind the header; fade its top instead
+   of covering it with a separate opaque navigation strip. */
+body:has(.theme-scene):not(:has(.home-workshop)) .theme-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 230px;
+  pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cell) 92%, transparent), color-mix(in srgb, var(--cell) 82%, transparent) 74px, transparent 100%);
+}
+body:has(.theme-scene):not(:has(.home-workshop)) .site-nav:not(.is-scrolled) {
+  background: transparent;
+  border-color: transparent;
+}
+/* Expanded phone menus need a stable reading surface over all photographs. */
+body:has(.theme-scene) .site-nav > .border-t {
+  background: var(--cell);
+  color: #000;
+}
+@media (prefers-color-scheme: dark) {
+  body:has(.theme-scene):not(:has(.home-workshop)) .theme-scene::after {
+    background: linear-gradient(180deg, #161616f5, #161616e6 74px, transparent 100%);
+  }
+  body:has(.theme-scene) .site-nav > .border-t { background: #161616; color: #fff; }
+}
