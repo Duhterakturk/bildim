@@ -80,6 +80,7 @@ export default function Patika() {
       else next.add(edge);
       return next;
     });
+    stroke.changed = true;
     stroke.cell = cell;
     setStatus("playing");
   }
@@ -134,11 +135,12 @@ export default function Patika() {
           const cell = pointerCell(event);
           if (!cell || !white(cell)) return;
           event.preventDefault();
-          drag.current = { cell, pointerId: event.pointerId };
+          drag.current = { cell, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
           event.currentTarget.setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
           if (drag.current?.pointerId !== event.pointerId) return;
+          if (Math.hypot(event.clientX - drag.current.x, event.clientY - drag.current.y) > 6) drag.current.moved = true;
           const cell = pointerCell(event);
           if (!cell) return;
           const [r, c] = cell.split("-").map(Number);
@@ -151,7 +153,26 @@ export default function Patika() {
             drawTo(next);
           }
         }}
-        onPointerUp={() => { drag.current = null; }}
+        onPointerUp={(event) => {
+          const stroke = drag.current;
+          drag.current = null;
+          if (!stroke || stroke.pointerId !== event.pointerId || stroke.moved || stroke.changed || boardClosed(status, savePhase)) return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width * size;
+          const y = (event.clientY - rect.top) / rect.height * size;
+          let nearest = null, distance = .28;
+          for (const edge of edges) {
+            const [a, b] = edge.split("|").map(cell => cell.split("-").map(Number));
+            const ax = a[1] + .5, ay = a[0] + .5, dx = b[1] - a[1], dy = b[0] - a[0];
+            const t = Math.max(0, Math.min(1, (x - ax) * dx + (y - ay) * dy));
+            const d = Math.hypot(x - ax - t * dx, y - ay - t * dy);
+            if (d < distance) { nearest = edge; distance = d; }
+          }
+          if (nearest) {
+            setEdges(prev => { const next = new Set(prev); next.delete(nearest); return next; });
+            setStatus("playing");
+          }
+        }}
         onPointerCancel={() => { drag.current = null; }}
         onLostPointerCapture={() => { drag.current = null; }}
       >

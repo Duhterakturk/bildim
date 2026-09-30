@@ -320,7 +320,7 @@
     "opened": "{{level}} level unlocked!"
   },
   "play": {
-    "pathDrawing": "Drag through white cells to draw. Trace an existing line to erase it. You can also use the arrow keys.",
+    "pathDrawing": "Drag through white cells to draw. Tap a line segment or trace over it to erase it. You can also use the arrow keys.",
     "time": "Time: {{clock}}",
     "check": "Check",
     "new": "New Puzzle",

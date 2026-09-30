@@ -43,8 +43,25 @@ test('Patika draws a continuous black path and retraces to erase', async ({ page
   await expect(board.locator('line')).toHaveCount(6);
   await page.keyboard.press('ArrowLeft');
   await expect(board.locator('line')).toHaveCount(5);
+  await board.locator('[data-cell="0-0"]').scrollIntoViewIfNeeded();
+  await cdp.send("Emulation.setPageScaleFactor", {pageScaleFactor: 1});
+  await board.locator('[data-cell="0-0"]').evaluate(el => el.scrollIntoView({block: "center"}));
+  const fresh = await board.boundingBox();
+  await page.mouse.click(fresh.x + fresh.width / 8, fresh.y + fresh.height * .5 / 8);
+  await expect(board.locator('[data-edge="0-0|0-1"]')).toHaveCount(0);
+  await expect(board.locator('[data-edge="0-1|0-2"]')).toHaveCount(1);
+  await board.locator('[data-cell="2-1"]').evaluate(el => el.scrollIntoView({block: "center"}));
+  const tapRect = await board.boundingBox();
+  const tap = {x: tapRect.x + tapRect.width * 2 / 8, y: tapRect.y + tapRect.height * 2.5 / 8};
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [tap] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(board.locator('[data-edge="2-1|2-2"]')).toHaveCount(0);
+  await expect(board.locator('line')).toHaveCount(3);
   await page.screenshot({path:`test-results/patika-drawing-${test.info().project.name}.png`});
 });
+
+
+
 
 
 

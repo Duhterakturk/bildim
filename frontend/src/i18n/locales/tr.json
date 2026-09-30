@@ -320,7 +320,7 @@
     "opened": "{{level}} seviye açıldı!"
   },
   "play": {
-    "pathDrawing": "Beyaz karelerin üzerinden sürükleyerek çiziniz. Çizginin üzerinden tekrar geçerek silebilirsiniz. Klavyede yön tuşlarını kullanabilirsiniz.",
+    "pathDrawing": "Beyaz karelerin üzerinden sürükleyerek çiziniz. Çizginin bir parçasına dokunarak veya üzerinden tekrar geçerek silebilirsiniz. Klavyede yön tuşlarını kullanabilirsiniz.",
     "time": "Süre: {{clock}}",
     "check": "Kontrol Et",
     "new": "Yeni Bulmaca",
