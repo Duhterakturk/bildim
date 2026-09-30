@@ -119,7 +119,7 @@ test("each photo theme keeps the board and titles readable", async ({ page }, in
     id,
     type: id.startsWith("bg-") ? "background" : "theme",
     slot: id.startsWith("bg-") ? "background" : "theme",
-    name_tr: id === "theme-candy" ? "Kutup Işıkları" : id,
+    name_tr: id === "theme-candy" ? "Kuzey Işıkları" : id,
     name_en: id === "theme-candy" ? "Northern Lights" : id,
     price: 20,
     preview: previews[id],
