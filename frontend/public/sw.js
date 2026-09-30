@@ -5,13 +5,13 @@
 // varlıklarını (hashli JS/CSS, ikonlar) önbelleğe alıp tekrar ziyarette ve
 // zayıf bağlantıda hızlandırmak. `/api/*` istekleri KASITLI olarak asla
 // önbelleğe alınmaz — skor/oturum verisi her zaman güncel olmalı.
-const CACHE_VERSION = "bildim-v25";
+const CACHE_VERSION = "bildim-v26";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/bildim-192.png", "/icons/bildim-512.png"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL).catch(() => {}))
+    caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL)).catch(() => {})
   );
 });
 
@@ -20,27 +20,44 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_VERSION).map((key) => caches.delete(key))))
+      .catch(() => {})
       .then(() => self.clients.claim())
   );
 });
 
+// Storage may be unavailable in private mode or when the device is full.
+async function readCache(request) {
+  try { return await caches.match(request); } catch { return undefined; }
+}
+async function refresh(request, key = request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE_VERSION).then((cache) => cache.put(key, copy)).catch(() => {});
+    }
+    return response;
+  } catch { return null; }
+}
+function unavailable(navigation = false) {
+  const body = navigation
+    ? '<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bildim — Bağlantı bekleniyor</title><body><main><h1>Bağlantı kurulamadı</h1><p>İnternet bağlantınızı kontrol edip yeniden deneyebilirsiniz.</p><a href="">Yeniden dene</a></main></body></html>'
+    : 'Bağlantı kurulamadı';
+  return new Response(body, { status: 503, headers: {
+    'Content-Type': navigation ? 'text/html; charset=utf-8' : 'text/plain; charset=utf-8',
+    'Cache-Control': 'no-store'
+  } });
+}
 async function openShell(request) {
-  const cached = caches.match("/");
-  const network = fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE_VERSION).then((cache) => cache.put("/", copy)).catch(() => {});
-      }
-      return response;
-    })
-    .catch(() => null);
+  const cached = readCache('/');
+  const network = refresh(request, '/');
+  let timer;
   const hurried = new Promise((resolve) => {
-    setTimeout(() => cached.then(resolve), 2500);
+    timer = setTimeout(() => cached.then(resolve), 2500);
   });
   const winner = await Promise.race([network, hurried]);
-  if (winner) return winner;
-  return (await network) || (await cached) || fetch(request);
+  clearTimeout(timer);
+  return winner || (await cached) || (await network) || unavailable(true);
 }
 
 self.addEventListener("fetch", (event) => {
@@ -57,17 +74,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
+    readCache(request).then((cached) => {
+      const network = refresh(request);
+      return cached || network.then((response) => response || unavailable());
     })
   );
 });
