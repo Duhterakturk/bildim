@@ -67,3 +67,9 @@ main > .max-w-2xl > form, main > .max-w-4xl .shadow-sm, main > .max-w-5xl .shado
 .brand-exclamation { display: inline-block; margin-left: .035em; color: #cf3938; font-size: .92em; letter-spacing: 0; }
 @media (prefers-color-scheme: dark) { .brand-exclamation { color: #ff7770; } }
 .brand-wordmark { width: auto; white-space: nowrap; }
+
+/* Soft theme-colored light replaces boxed page labels. */
+.scene-label { position: relative; isolation: isolate; background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; max-width: 100%; overflow-wrap: anywhere; }
+.scene-label::before { content: ""; position: absolute; z-index: -1; pointer-events: none; inset: -.7em -1.1em; background: radial-gradient(ellipse, var(--cell) 20%, color-mix(in srgb, var(--cell) 88%, transparent) 45%, transparent 73%); filter: blur(9px); }
+.scene-heading-row { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+.scene-balance { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; color: var(--ink); background: color-mix(in srgb, var(--cell) 76%, transparent); border: 1px solid color-mix(in srgb, var(--line) 24%, transparent); backdrop-filter: blur(12px); font-size: 14px; font-weight: 600; }

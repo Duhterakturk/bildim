@@ -99,8 +99,10 @@ export default function Shop() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="scene-label text-2xl font-bold mb-1">{t("shop.title")}</h1>
-      <p className="scene-label mb-4" data-testid="shop-balance">⭐ {state.star_balance}</p>
+      <header className="scene-heading-row">
+      <h1 className="scene-label text-2xl font-bold">{t("shop.title")}</h1>
+      <p className="scene-balance" data-testid="shop-balance">⭐ {state.star_balance}</p>
+      </header>
       <div className="mb-4 flex justify-center">
         <Owl stage={stage} className="w-28" data-shop-owl="1" />
       </div>
