@@ -5,8 +5,8 @@
 // varlıklarını (hashli JS/CSS, ikonlar) önbelleğe alıp tekrar ziyarette ve
 // zayıf bağlantıda hızlandırmak. `/api/*` istekleri KASITLI olarak asla
 // önbelleğe alınmaz — skor/oturum verisi her zaman güncel olmalı.
-const CACHE_VERSION = "bildim-v26";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/bildim-192.png", "/icons/bildim-512.png"];
+const CACHE_VERSION = "bildim-v27";
+const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/bildim-brain-192.png", "/icons/bildim-brain-512.png"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

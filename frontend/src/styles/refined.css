@@ -59,3 +59,6 @@ main > .max-w-2xl > form, main > .max-w-4xl .shadow-sm, main > .max-w-5xl .shado
 @media (max-width: 360px) { .brand-link { --brand-scale: 1.12; } .home-workshop { padding-inline: 18px; } .workshop-actions { gap: 9px; } .workshop-primary { padding-inline: 18px; } }
 
 .home-workshop { overflow: clip; }
+
+/* Supplied brain emblem, independent of the responsive wordmark. */
+.brand-logo.brand-emblem { clip-path: none; object-fit: contain; width: calc(46px * var(--brand-scale)); height: calc(44px * var(--brand-scale)); left: 0; top: 0; }
