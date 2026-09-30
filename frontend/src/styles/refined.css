@@ -62,3 +62,8 @@ main > .max-w-2xl > form, main > .max-w-4xl .shadow-sm, main > .max-w-5xl .shado
 
 /* Supplied brain emblem, independent of the responsive wordmark. */
 .brand-logo.brand-emblem { clip-path: none; object-fit: contain; width: calc(46px * var(--brand-scale)); height: calc(44px * var(--brand-scale)); left: 0; top: 0; }
+
+/* Match the coral brain and keep punctuation on the wordmark baseline. */
+.brand-exclamation { display: inline-block; margin-left: .035em; color: #cf3938; font-size: .92em; letter-spacing: 0; }
+@media (prefers-color-scheme: dark) { .brand-exclamation { color: #ff7770; } }
+.brand-wordmark { width: auto; white-space: nowrap; }
