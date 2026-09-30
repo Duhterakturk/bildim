@@ -8,6 +8,40 @@ import { photoSrc } from "../components/shop/ThemeScene";
 
 const GAMES = ["sudoku", "kare-karalamaca", "pentominolar"];
 
+function cells(list, ox, oy, size, fill) {
+  return list.map(([col, row]) => (
+    <rect key={`${ox}-${col}-${row}`} x={ox + col * size} y={oy + row * size} width={size - 2} height={size - 2} rx="2" fill={fill} />
+  ));
+}
+
+function HeroBoard() {
+  const ox = 168;
+  const oy = 36;
+  const size = 46;
+  const cols = 5;
+  const rows = 6;
+  return (
+    <svg className="workshop-art" viewBox="0 0 560 360" aria-hidden="true">
+      <rect x={ox} y={oy} width={cols * size} height={rows * size} fill="#fff9e9" stroke="#385242" strokeWidth="2" />
+      {cells([[0, 0], [1, 0], [0, 1], [0, 2], [0, 3]], ox, oy, size, "#8da87d")}
+      {cells([[3, 0], [3, 1], [3, 2], [3, 3], [3, 4]], ox, oy, size, "#e98a32")}
+      {cells([[0, 4], [1, 4], [0, 5], [1, 5], [2, 5]], ox, oy, size, "#315a46")}
+      {Array.from({ length: cols - 1 }, (_, i) => (
+        <path key={`v${i}`} d={`M${ox + (i + 1) * size} ${oy}v${rows * size}`} stroke="#73816b" strokeWidth="1" />
+      ))}
+      {Array.from({ length: rows - 1 }, (_, i) => (
+        <path key={`h${i}`} d={`M${ox} ${oy + (i + 1) * size}h${cols * size}`} stroke="#73816b" strokeWidth="1" />
+      ))}
+      <g transform="translate(28 108) rotate(-10 42 42)" fill="#e98a32" stroke="#fff9e9" strokeWidth="2">
+        {cells([[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]], 0, 0, 30, "#e98a32")}
+      </g>
+      <g transform="translate(412 168) rotate(8 42 28)" fill="#315a46" stroke="#fff9e9" strokeWidth="2">
+        {cells([[0, 0], [2, 0], [0, 1], [1, 1], [2, 1]], 0, 0, 30, "#315a46")}
+      </g>
+    </svg>
+  );
+}
+
 export default function Home() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -35,7 +69,7 @@ export default function Home() {
             aria-hidden="true"
           />
           <Link to="/games/pentominolar" className="workshop-feature workshop-board" aria-label={t("home.pentominoLink")}>
-            <GamePreview slug="pentominolar" />
+            <HeroBoard />
             <span className="workshop-feature-caption">{t("home.pentominoLink")} <span aria-hidden="true">↗</span></span>
           </Link>
         </div>

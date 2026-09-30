@@ -703,9 +703,9 @@ main:has(.home-workshop) {
   font-size: clamp(32px, 3.15vw, 46px);
   line-height: 1.12;
   font-weight: 700;
-  max-width: 480px;
+  max-width: 8.8em;
   letter-spacing: -.04em;
-  text-wrap: balance;
+  text-wrap: wrap;
 }
 .workshop-description { font-size: 18px; line-height: 1.65; margin-top: 18px; max-width: 370px; }
 .workshop-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 26px; }
@@ -716,15 +716,13 @@ main:has(.home-workshop) {
 .workshop-stage { position: relative; min-height: 400px; display: flex; align-items: center; justify-content: center; }
 .workshop-scene {
   position: absolute;
-  inset: 4% -6% 0 0;
-  background: linear-gradient(115deg, #f8e6c6 0%, #f4d3a2 58%, #efc48a 100%);
+  inset: -14% -10% -24% -22%;
+  background-image: linear-gradient(115deg, #f8e6c6 0%, #f4d3a2 58%, #efc48a 100%);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, transparent 0%, #000 14%, #000 68%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, transparent 0%, #000 14%, #000 68%, transparent 100%);
-  mask-composite: intersect;
+  -webkit-mask-image: radial-gradient(ellipse 76% 68% at 56% 40%, #000 0%, #000 38%, transparent 76%);
+  mask-image: radial-gradient(ellipse 76% 68% at 56% 40%, #000 0%, #000 38%, transparent 76%);
   pointer-events: none;
 }
 .home-workshop[data-scene="theme-forest"] .workshop-scene { background-position: 58% 40%; }
@@ -735,27 +733,32 @@ main:has(.home-workshop) {
 .home-workshop[data-scene="bg-dawn"] .workshop-scene { background-position: center 48%; }
 .home-workshop[data-scene="bg-meadow"] .workshop-scene { background-position: center 62%; }
 .home-workshop[data-scene="bg-ink"] .workshop-scene { background-position: center 40%; }
+@media (min-width: 821px) {
+  .workshop-scene {
+    inset: -12% -8% -22% 6%;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 34%),
+      radial-gradient(ellipse 82% 74% at 64% 46%, #000 0%, #000 42%, transparent 78%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 34%),
+      radial-gradient(ellipse 82% 74% at 64% 46%, #000 0%, #000 42%, transparent 78%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+}
 .workshop-feature {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: min(100%, 320px);
-  padding: 14px 16px 2px;
+  align-items: stretch;
+  width: min(100%, 520px);
   color: var(--ink);
   text-decoration: none;
-  background: #fffdf8;
-  border-radius: 18px;
-  box-shadow: 0 16px 36px color-mix(in srgb, var(--ink) 14%, transparent);
+  background: none;
 }
-.workshop-board > div:first-child {
-  width: 100%;
-  height: 168px;
-  background: transparent;
-  box-shadow: none;
-}
-.workshop-feature-caption { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 44px; width: 100%; font-size: 13px; font-weight: 600; }
+.workshop-art { display: block; width: 100%; height: auto; }
+.workshop-feature-caption { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 44px; margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--ink); }
 .workshop-games { margin-top: 12px; padding-top: 28px; }
 .workshop-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
 .workshop-section-head h2, .workshop-together h2, .workshop-how h2 { font-size: clamp(21px, 2.3vw, 29px); line-height: 1.3; font-weight: 700; }
@@ -801,7 +804,6 @@ main:has(.home-workshop) {
  .workshop-intro h1 { font-size: 30px; max-width: 280px; }
  .workshop-section-head { flex-wrap: wrap; gap: 0; }
  .workshop-card { grid-template-columns: 1fr 96px; padding: 14px; }
- .workshop-board > div:first-child { height: 168px; }
 }
 html[data-board-theme] .workshop-primary { background: var(--accent); }
 html[data-board-theme] .workshop-primary:hover { filter: brightness(.92); }
