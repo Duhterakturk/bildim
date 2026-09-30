@@ -17,7 +17,7 @@ export const STARS_EVENT = "mindarena:stars";
 
 export async function openPuzzle(slug, difficulty = "easy") {
   return withWake(async () => {
-    const { data } = await apiClient.post("/puzzles", { slug, difficulty });
+    const { data } = await apiClient.post("/puzzles", { slug, difficulty, mode: new URLSearchParams(window.location.search).get("mode") === "turnuva" ? "tournament" : undefined });
     return data;
   });
 }
@@ -28,11 +28,11 @@ function publishHintBalance(data) {
   }
 }
 
-export async function checkPuzzle(attemptId, answer) {
+export async function checkPuzzle(attemptId, answer, fullResponse = false) {
   const { data } = await apiClient.post(`/puzzles/${attemptId}/check`, { answer });
   publishHintBalance(data);
   if (data?.stars) window.dispatchEvent(new CustomEvent(STARS_EVENT, { detail: data.stars }));
-  return data.correct;
+  return fullResponse ? data : data.correct;
 }
 
 export async function openCellHint(attemptId, round) {

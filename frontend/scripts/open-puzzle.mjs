@@ -103,7 +103,7 @@ function open(slug, difficulty) {
     }
     case "carpmaca": {
       const puzzle = carpmaca(difficulty);
-      const pub = { rowHeaders: puzzle.rowHeaders, colHeaders: puzzle.colHeaders, givens: puzzle.puzzle };
+      const pub = { variant: puzzle.variant, maxValue: puzzle.maxValue, rowHeaders: puzzle.rowHeaders, colHeaders: puzzle.colHeaders, givens: puzzle.puzzle };
       return sealed(pub, pub, puzzle.solution);
     }
     case "futoshiki": {

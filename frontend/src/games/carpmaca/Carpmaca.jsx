@@ -69,6 +69,7 @@ export default function Carpmaca() {
   function handleCellChange(row, col, value) {
     if (givenMask[row][col] || boardClosed(status, savePhase)) return;
     const digits = value.replace(/[^0-9]/g, "").slice(0, 3);
+    if (game.variant === "two-per-line" && Number(digits) > game.maxValue) return;
     const next = cloneBoard(displayBoard);
     next[row][col] = digits ? Number(digits) : 0;
     setBoard(next);
@@ -107,7 +108,7 @@ export default function Carpmaca() {
         className="inline-grid max-w-full overflow-x-auto"
         style={{ gridTemplateColumns: `repeat(${colHeaders.length + 1}, minmax(0, 1fr))` }}
       >
-        <div className={headerCell}>×</div>
+        <div className={headerCell}>{game.variant === "two-per-line" ? `1–${game.maxValue}` : "×"}</div>
         {colHeaders.map((v, i) => (
           <div key={`ch-${i}`} className={headerCell}>{v}</div>
         ))}
@@ -118,6 +119,8 @@ export default function Carpmaca() {
             {row.map((val, c) => (
               <input
                 key={`${r}-${c}`}
+                aria-label={`${r + 1}, ${c + 1}`}
+                inputMode="numeric"
                 value={val || ""}
                 onChange={(e) => handleCellChange(r, c, e.target.value)}
                 readOnly={givenMask[r][c] || boardClosed(status, savePhase)}
@@ -134,7 +137,7 @@ export default function Carpmaca() {
       <div className="flex flex-wrap justify-center gap-3 mt-6">
         <button
           type="button"
-          onClick={checkSolution}
+          data-normal-check onClick={checkSolution}
           disabled={status === "correct" || status === "submitted"}
           className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-600 disabled:opacity-50"
         >

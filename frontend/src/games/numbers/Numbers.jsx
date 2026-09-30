@@ -26,6 +26,7 @@ function starLetters(clue) {
 }
 
 function clueText(clue) {
+  if (clue.kind === "placement") return `${clue.values.join(", ")} ${clue.exclude ? "✕" : "→ ★"}`;
   if (clue.kind === "relation") return clue.op === "*" ? "★×★=★" : "★+★=★";
   if (clue.kind === "total") return `${clue.cells.map(() => "★").join("+")}=${clue.target}`;
   const right = String(clue.right).replaceAll("*", "×");
@@ -40,7 +41,7 @@ function StarCard({ clue }) {
       <div className="inline-grid grid-cols-3 gap-0.5">
         {LETTERS.split("").map((letter, index) => (
           <div key={letter} className="flex h-3 w-3 items-center justify-center border border-slate-300 bg-white text-[8px] leading-none text-slate-900">
-            {marked.has(letter) ? "★" : ""}
+            {marked.has(letter) ? (clue.exclude ? "×" : "★") : ""}
           </div>
         ))}
       </div>
@@ -153,7 +154,7 @@ export default function Numbers() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
+        <button type="button" data-normal-check onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         {gate.pending ? (
           <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
         ) : (

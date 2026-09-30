@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { fetchGames } from "../api/games";
 import { fetchAllUnlocked } from "../api/difficulty";
@@ -8,6 +8,8 @@ import { apiErrorText } from "../i18n/apiError";
 import GameCard from "../components/games/GameCard";
 
 export default function Games() {
+  const [params] = useSearchParams();
+  const tournament = params.get("mode") === "turnuva";
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const userId = user?.id;
@@ -55,12 +57,13 @@ export default function Games() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="flex items-end justify-between gap-4 mb-6">
-        <h1 className="scene-label font-display text-4xl font-semibold">{t("games.title")}</h1>
+        <h1 className="scene-label font-display text-4xl font-semibold">{t(tournament ? "tournament.title" : "games.title")}</h1>
         <Link to="/exam" className="press-btn text-sm" style={{ padding: "0.55rem 1rem" }}>
           {t("exam.title")}
         </Link>
       </div>
 
+      <Link to={tournament ? "/games" : "/games?mode=turnuva"} className="scene-chip mb-5 inline-flex rounded-lg px-3 py-2">{t(tournament ? "tournament.normal" : "tournament.title")}</Link>
       {error && <p role="alert" className="text-red-500">{apiErrorText(error, t, i18n)}</p>}
 
       {loading && (
@@ -85,7 +88,7 @@ export default function Games() {
       {!loading && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-5">
           {games.map((game, index) => (
-            <GameCard key={game.slug} game={game} index={index} progress={progress} />
+            <GameCard tournament={tournament} key={game.slug} game={game} index={index} progress={progress} />
           ))}
         </div>
       )}

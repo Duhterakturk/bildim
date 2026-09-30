@@ -1,4 +1,15 @@
 {
+  "tournament": {
+    "title": "Tournament Mode",
+    "normal": "Back to normal play",
+    "help": "The small diagram marks the same positions on the puzzle below. Use the board as scratch space and select an option. Each question allows one submission; practice does not affect normal game stars.",
+    "options": "Answer options",
+    "submit": "Submit answer",
+    "correct": "Correct!",
+    "wrong": "That answer is incorrect.",
+    "answer": "Correct option",
+    "error": "Could not submit. Check your connection and try again."
+},
   "app": {
     "name": "Bildim"
   },
@@ -430,17 +441,17 @@
     "patika": "Black cells are closed. One loop passes through every white cell once. It moves only up, down, left, or right, stays out of black cells, and does not cross itself. It returns to where it started.",
     "abc-baglama": "Join the matching letters. Lines do not cross and move only horizontally or vertically. Every cell on the board must be used. If you tap a letter, that letter's path is cleared; if you tap the middle of a path, the path shortens there.",
     "islem-karesi": "Each row and each column reaches the result on the right or below, using the signs between the numbers. Multiplication and division come before addition and subtraction. The numbers are 1–9, each once. Every division comes out exact, with no remainder.",
-    "kendoku": "Each row and column contains 1–{{n}} once. Cages use addition, subtraction, multiplication, or division.",
+    "kendoku": "Place 1–{{n}} once in each row and column. Each cage must reach its target using its operation. For subtraction and division, the larger number need not appear first or above.",
     "kendokuAny": "Each row and column contains each digit from 1 up to the board size once. Cages use addition, subtraction, multiplication, or division.",
     "yildiz-savaslari": "One star stands in each row, column, and colored region. Stars do not touch, even diagonally.",
-    "kare-karalamaca": "Row and column numbers are the lengths of consecutive shaded groups.",
-    "carpmaca": "Each cell is the product of its row header and column header.",
+    "kare-karalamaca": "The clues give the lengths of consecutive shaded groups in order. Leave at least one empty cell between groups. Read row clues from left to right and column clues from top to bottom.",
+    "carpmaca": "Place exactly two numbers in each row and column; leave other cells empty. Use the range shown at the top left. Their products must match the row and column clues. Keep the given numbers.",
     "futoshiki": "Each row and column contains 1–{{n}} once. The < and > signs order neighboring cells.",
     "futoshikiAny": "Each row and column contains each digit from 1 up to the board size once. The < and > signs order neighboring cells.",
     "pentominolar": "The five-square pieces cover the outlined area with no gaps or overlaps. Pieces can be rotated and flipped.",
     "metaforms": "Each piece is used once. The mark on the left names the subject. A clue shows a section of the board: the whole pattern, including the white cells, fits inside the 3×3 board. The pattern is only slid; it is not rotated or flipped. A hatched cell is where the subject sits. A cross means the subject is not in that cell. An empty shape is at least one piece of that shape. A colored pencil is at least one piece of that color. A blank white cell stands for one cell, and any piece may sit there.",
-    "numbers": "Each cell is a number from 1 to 9, used once. A single star means that cell equals the written sum. Several stars mean the equation is read by its letters. A starred sum or product equals the number beside it. ★+★=★ and ★×★=★ have no order: any two add or multiply to the third. Division comes out even.",
-    "colours": "All nine pieces fill the 3×3 grid, each once, with no empty cell. The items on the left match the checked cells one to one, in any order. Those items do not sit in a crossed cell. A question mark in a square is any square, and in a circle any circle. A colored stroke is any piece of that color."
+    "numbers": "Place 1–9 once each in the 3×3 grid. Listed numbers occupy starred cells in any order and cannot occupy crossed cells. Star sums equal the target. For ★+★=★ and ★×★=★, two of the marked numbers add or multiply to the third.",
+    "colours": "Place the nine differently coloured circles once each in the 3×3 grid. Listed colours occupy the checked cells in any order. Crossed cells cannot contain the listed colours. Use all clues together."
   },
   "common": {
     "loading": "Loading..."

@@ -1,4 +1,15 @@
 {
+  "tournament": {
+    "title": "Turnuva Modu",
+    "normal": "Normal oyuna dön",
+    "help": "Küçük şemadaki işaretler, aşağıdaki oyun tahtasının aynı konumlarını gösterir. Tahtayı taslak olarak kullanıp şıkkınızı seçiniz. Her soruda tek cevap hakkı vardır; bu deneme normal oyun yıldızlarını etkilemez.",
+    "options": "Cevap seçenekleri",
+    "submit": "Cevabı gönder",
+    "correct": "Doğru cevap!",
+    "wrong": "Bu cevap doğru değil.",
+    "answer": "Doğru seçenek",
+    "error": "Cevap gönderilemedi. Bağlantınızı kontrol edip tekrar deneyiniz."
+},
   "app": {
     "name": "Bildim"
   },
@@ -430,17 +441,17 @@
     "patika": "Siyah kareler kapalıdır. Beyaz karelerden tek bir kapalı halka geçer. Halka her beyaz kareye bir kez girer, yalnız yatay ve dikey komşuya ilerler, siyah kareye girmez ve kendini kesmez. Başladığı kareye geri döner.",
     "abc-baglama": "Aynı harfleri birbirine bağlayın. Çizgiler kesişmez, yalnızca yatay ve dikey gider. Tahtadaki bütün kareler kullanılmalı. Bir harfe dokunursanız o harfin yolu silinir; yolun ortasına dokunursanız yol oradan kısalır.",
     "islem-karesi": "Her satır ve her sütun, aradaki işlemlerle sağdaki ve alttaki sonuca ulaşır. Çarpma ve bölme önce yapılır. Sayılar 1-9 arasındadır ve tekrar etmez. Bölmeler her zaman tam çıkar, küsurat olmaz.",
-    "kendoku": "Her satır ve sütun 1-{{n}} rakamlarını birer kez içerir. Kafesler toplama, çıkarma, çarpma veya bölme ister.",
+    "kendoku": "Her satır ve sütuna 1–{{n}} sayılarını birer kez yerleştiriniz. Kalın çizgili her bölgedeki sayılar, belirtilen işlemle hedef sonucu vermelidir. Çıkarma ve bölmede büyük sayının önce veya üstte bulunması gerekmez.",
     "kendokuAny": "Her satır ve sütun, 1'den tahta boyutuna kadar olan rakamları birer kez içerir. Kafesler toplama, çıkarma, çarpma veya bölme ister.",
     "yildiz-savaslari": "Her satırda, her sütunda ve her renkli bölgede bir yıldız durur. İki yıldız yatay, dikey veya çapraz komşu olmaz.",
-    "kare-karalamaca": "Satır ve sütun sayıları, boyalı karelerin art arda gelen gruplarını gösterir.",
-    "carpmaca": "Her hücre, satır başlığı ile sütun başlığının çarpımıdır.",
+    "kare-karalamaca": "Satır ve sütun kenarındaki sayılar, karalanacak ardışık kare gruplarının uzunluklarını sırasıyla gösterir. İki grup arasında en az bir boş kare bırakınız. Satır ipuçları soldan sağa, sütun ipuçları yukarıdan aşağıya okunur.",
+    "carpmaca": "Her satıra ve her sütuna yalnızca iki sayı yerleştiriniz; diğer kareleri boş bırakınız. Sayılar sol üstteki aralıkta olmalıdır. Her satırdaki iki sayının çarpımı soldaki, her sütundaki iki sayının çarpımı üstteki sayıya eşit olmalıdır. Verilen sayılar değiştirilemez.",
     "futoshiki": "Her satır ve sütun 1-{{n}} rakamlarını birer kez içerir. < ve > işaretleri komşu hücrelerin sırasını gösterir.",
     "futoshikiAny": "Her satır ve sütun, 1'den tahta boyutuna kadar olan rakamları birer kez içerir. < ve > işaretleri komşu hücrelerin sırasını gösterir.",
     "pentominolar": "Beş karelik parçalar çerçeveli alanı boşluksuz ve taşmadan örter. Parçalar döndürülebilir ve ters çevrilebilir.",
     "metaforms": "Her parça bir kez kullanılır. Soldaki işaret özneyi söyler. İpucu, tahtanın bir bölümünü gösterir: desenin tamamı (beyaz kareler dahil) 3×3 tahtanın içine sığar. Desen yalnızca kaydırılır; döndürülmez, ters çevrilmez. Taralı kare öznenin yeridir. Çarpı, öznenin o karede olmadığını söyler. İçi boş şekil o şekildeki parçalardan en az biridir. Renkli kalem o renkteki parçalardan en az biridir. Boş beyaz kare bir kareyi temsil eder, orada herhangi bir parça olabilir.",
-    "numbers": "Her kareye 1’den 9’a kadar sayılar birer kez girer. Tek yıldızlı harf işleminde yıldızlı kare, yazılan işleme eşittir. Birden çok yıldız varsa denklem harflerle okunur. Yıldızlı toplam ya da çarpım bir sayıya eşitse o yıldızlar bu sayıyı verir. ★+★=★ ve ★×★=★ işaretinde sıra yoktur; herhangi ikisinin toplamı ya da çarpımı üçüncüsüne eşitse yeter. Bölme tam bölünür.",
-    "colours": "Dokuz parçanın hepsi 3×3 kareye birer kez girer, boş kare kalmaz. Soldaki öğeler tikli karelere birebir yerleşir, sıra serbesttir. Çarpılı karelerde bu öğeler bulunmaz. İçinde soru işareti olan kare herhangi bir karedir, daire herhangi bir dairedir. Renkli çizgi o renkten herhangi bir parçadır."
+    "numbers": "1–9 sayılarını 3×3 tahtaya birer kez yerleştiriniz. Bir ipucunda listelenen sayılar yıldızlı karelere herhangi bir sırayla yerleşir; çarpılı karelere gelemez. Yıldızlı toplam verilen sonuca eşittir. ★+★=★ ve ★×★=★ ipuçlarında herhangi iki sayının toplamı veya çarpımı üçüncüsünü verir.",
+    "colours": "Dokuz farklı renkteki daireyi 3×3 tahtaya birer kez yerleştiriniz. İpucunun yanındaki renkler tikli karelere, sıraları serbest olacak şekilde yerleşir. Çarpılı karelerde belirtilen renkler bulunamaz. Bütün ipuçlarını birlikte değerlendiriniz."
   },
   "common": {
     "loading": "Yükleniyor..."

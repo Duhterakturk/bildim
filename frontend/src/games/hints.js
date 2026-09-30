@@ -17,8 +17,8 @@ export const HINTS = {
     en: { hint: "A 4 on the edge means the buildings rise in order from that side.", example: "A left clue of 4 means the row is 1, 2, 3, 4." },
   },
   cit: {
-    tr: { hint: "3, o karenin üç kenarında çizgi olduğunu söyler. Çizgi sonunda tek bir halka olmalı.", example: "Köşedeki 2, iki dış kenarın çizileceğini haber verir." },
-    en: { hint: "A 3 means three sides of that cell are on the loop. The line closes once.", example: "A 2 in a corner often uses the two outer edges." },
+    tr: { hint: "3, o karenin üç kenarında çizgi olduğunu söyler. Çizgi sonunda tek bir halka olmalı.", example: "0 bulunan bir hücrenin hiçbir kenarı çizilmez." },
+    en: { hint: "A 3 means three sides of that cell are on the loop. The line closes once.", example: "A cell marked 0 has no drawn edges." },
   },
   "amiral-batti": {
     tr: { hint: "Üstteki gemilerin hepsi yerleştirilir. 0 yazan satır boş kalır. Gemiler yatay, dikey ve çapraz değmez.", example: "Satırda 1 yazıyorsa o satırda tek bir gemi karesi vardır." },
@@ -29,8 +29,8 @@ export const HINTS = {
     en: { hint: "The path comes down from the top. One circle stands on each row, and a step only touches the neighbor below. Each number appears once.", example: "Once the top 3 is used, another 3 stays off the path." },
   },
   patika: {
-    tr: { hint: "Her beyaz karenin halkada iki komşusu vardır. Çıkmaz bir kare halkaya girmez.", example: "İki beyaz kare yan yanaysa aralarındaki çizgi halkaya ait olabilir." },
-    en: { hint: "Each white cell has two neighbors on the loop. A dead end stays off the loop.", example: "When two white cells sit side by side, the line between them may belong to the loop." },
+    tr: { hint: "Her beyaz karenin halkada iki komşusu vardır. Bütün beyaz kareler aynı kapalı halkada yer almalıdır.", example: "İki beyaz kare yan yanaysa aralarındaki çizgi halkaya ait olabilir." },
+    en: { hint: "Each white cell has two neighbors on the loop. Every white cell must belong to the same closed loop.", example: "When two white cells sit side by side, the line between them may belong to the loop." },
   },
   "abc-baglama": {
     tr: { hint: "Aynı harfi birbirine bağlayın. Çizgi yalnız yatay ve dikey gider, kesişmez. Bütün kareler dolu olmalı. Bir harfe dokunursanız o harfin yolu silinir; yolun ortasına dokunursanız yol oradan kısalır.", example: "A’dan komşu karelere ilerleyip diğer A’da bitirebilirsiniz." },
@@ -53,8 +53,8 @@ export const HINTS = {
     en: { hint: "The numbers are the lengths of shaded groups, with a gap between them.", example: "A 5 in a row of five cells means the whole row is shaded." },
   },
   carpmaca: {
-    tr: { hint: "Hücre, satırdaki sayı ile sütundaki sayının çarpımıdır.", example: "Satır 3, sütun 4 ise hücre 12’dir." },
-    en: { hint: "A cell is the row heading times the column heading.", example: "Row 3 and column 4 make 12." },
+    tr: { hint: "Her satır ve sütunda yalnız iki sayı bulunur. Önce kenar sayısının olası çarpanlarını düşününüz.", example: "Satırın sonucu 12 ve sayı aralığı 1–8 ise 2 ile 6 veya 3 ile 4 kullanılabilir." },
+    en: { hint: "Each row and column contains exactly two numbers. Start with factor pairs.", example: "For a product of 12 in the range 1–8, try 2 and 6 or 3 and 4." },
   },
   futoshiki: {
     tr: { hint: "Küçük ağız küçük sayıyı gösterir. İşarete komşu iki kare önce okunur.", example: "1 < boş ise boş kare 1 olamaz. En az 2’dir." },
@@ -73,8 +73,8 @@ export const HINTS = {
     en: { hint: "A given number is the start. When two stars add up to a total, the blank is what remains.", example: "If one star is 4 and the sum is 11, the other is 7." },
   },
   colours: {
-    tr: { hint: "Tikli kareler listedeki öğeleri alır. Çarpılı karede o öğe durmaz.", example: "İki mavi çizgi, iki tikli kareye iki mavi parça ister." },
-    en: { hint: "Checked cells take the listed items. A crossed cell does not hold those items.", example: "Two blue strokes ask for two blue pieces in the checked cells." },
+    tr: { hint: "Tikli kareler listedeki öğeleri alır. Çarpılı karede o öğe durmaz.", example: "Mavi ve sarı iki tikli karedeyse, bu iki kareyi bu renkler paylaşır." },
+    en: { hint: "Checked cells take the listed items. A crossed cell does not hold those items.", example: "If blue and yellow are listed beside two checked cells, those cells contain blue and yellow." },
   },
 };
 

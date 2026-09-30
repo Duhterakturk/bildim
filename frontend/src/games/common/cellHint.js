@@ -29,7 +29,7 @@ export function publishAttempt(issue) {
   if (!currentHints.length && issue?.hint) currentHints = [issue.hint];
   currentHint = currentHints[currentHints.length - 1] || null;
   currentAttempt = issue
-    ? { id: issue.id, hint: currentHint, hints: currentHints, hint_balance: issue.hint_balance ?? null, size: boardSize(issue.puzzle) }
+    ? { tournament: issue.puzzle?.tournament, id: issue.id, hint: currentHint, hints: currentHints, hint_balance: issue.hint_balance ?? null, size: boardSize(issue.puzzle) }
     : null;
   window.dispatchEvent(new CustomEvent("mindarena:attempt", { detail: currentAttempt }));
   if (typeof issue?.hint_balance === "number") {

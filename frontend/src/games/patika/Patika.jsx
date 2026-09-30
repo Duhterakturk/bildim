@@ -204,7 +204,7 @@ export default function Patika() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
+        <button type="button" data-normal-check onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         {gate.pending ? (
           <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
         ) : (

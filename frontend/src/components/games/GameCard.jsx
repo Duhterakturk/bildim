@@ -18,7 +18,7 @@ function levelText(t, level, state) {
   return `${name} ✓`;
 }
 
-export default function GameCard({ game, index = 0, progress = null }) {
+export default function GameCard({ game, index = 0, progress = null, tournament = false }) {
   const { t, i18n } = useTranslation();
   const name = i18n.language?.startsWith("en") ? (game.name_en || game.name_tr) : (game.name_tr || game.name_en);
   const state = progress?.games?.[game.slug]
@@ -31,7 +31,7 @@ export default function GameCard({ game, index = 0, progress = null }) {
       style={{ animationDelay: `${Math.min(index, 12) * 35}ms` }}
       data-testid={`game-card-${game.slug}`}
     >
-      <Link to={`/games/${game.slug}`} className="block p-2.5">
+      <Link to={`/games/${game.slug}${tournament ? "?mode=turnuva" : ""}`} className="block p-2.5">
         <GamePreview slug={game.slug} />
         <h3 className="mt-2 pr-8 text-[15px] font-bold leading-tight text-inherit">{name}</h3>
         <p className="mt-1.5">

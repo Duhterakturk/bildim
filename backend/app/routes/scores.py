@@ -28,6 +28,8 @@ def submit_score():
     attempt = db.session.get(PuzzleAttempt, data.get("attempt_id"))
     if attempt is None or attempt.user_id != user_id:
         return fail("puzzle_missing", "Bulmaca bulunamadı", 404)
+    if attempt.proof_puzzle.get("tournament") is not None:
+        return fail("score_rejected", "Turnuva denemesi normal oyun puanına eklenmez.", 400)
     if attempt.consumed_at is not None:
         return fail("score_already", "Bu bulmacanın skoru zaten yazıldı", 409)
 

@@ -879,3 +879,5 @@ body:has(.home-workshop):has([data-testid="theme-trial"]) .site-nav:not(.is-scro
 @media (max-width: 820px) and (prefers-color-scheme: dark) {
   body:has(.home-workshop) .site-nav:not(.is-scrolled) { background: #161616e8; }
 }
+
+.tournament-room [data-normal-check] { display: none; }

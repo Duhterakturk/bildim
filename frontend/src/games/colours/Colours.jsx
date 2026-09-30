@@ -12,6 +12,7 @@ import { PuzzlePending, useIssuedPuzzle } from "../common/useIssuedPuzzle";
 import { useStartingDifficulty } from "../common/useStartingDifficulty";
 
 const INK = {
+  orange: "#f97316", purple: "#6d28d9", pink: "#db2777", gray: "#9ca3af",
   red: "#e11d48",
   yellow: "#eab308",
   blue: "#2461f7",
@@ -49,7 +50,7 @@ function Glyph({ shape, color, size = 28 }) {
 
 function ItemMark({ item }) {
   if (item.endsWith("?")) {
-    const ink = INK[{ G: "green", B: "blue", Y: "yellow", R: "red", K: "black" }[item[0]]];
+    const ink = INK[{ G: "green", B: "blue", Y: "yellow", R: "red", K: "black", O: "orange", P: "purple", M: "pink", A: "gray" }[item[0]]];
     return (
       <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
         <line x1="6" y1="26" x2="26" y2="6" stroke={ink} strokeWidth="4" strokeLinecap="round" />
@@ -64,7 +65,7 @@ function ItemMark({ item }) {
       </span>
     );
   }
-  const color = { G: "green", B: "blue", Y: "yellow", R: "red", K: "black" }[item[0]];
+  const color = { G: "green", B: "blue", Y: "yellow", R: "red", K: "black", O: "orange", P: "purple", M: "pink", A: "gray" }[item[0]];
   return <Glyph shape={item[1] === "S" ? "square" : "circle"} color={color} size={18} />;
 }
 
@@ -236,7 +237,7 @@ export default function Colours() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button type="button" onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
+        <button type="button" data-normal-check onClick={checkSolution} disabled={status === "correct" || status === "submitted"} className="inline-flex min-h-[44px] items-center justify-center bg-brand-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{play.check}</button>
         {gate.pending ? (
           <DiscardNotice pending={gate.pending} onConfirm={gate.confirm} onCancel={gate.cancel} />
         ) : (

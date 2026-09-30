@@ -1,8 +1,8 @@
 // İşlem karesi: sayılar aradaki işlemle satırın sağına ve sütunun altına eşitlenir.
 // Çarpma ve bölme, toplama ve çıkarmadan önce yapılır. 1-9 her sayıda bir kez durur.
 
-const SIZE = { easy: 2, medium: 3, hard: 3 };
-const KEEP = { easy: 1, medium: 3, hard: 2 };
+const SIZE = { easy: 3, medium: 3, hard: 3 };
+const KEEP = { easy: 5, medium: 3, hard: 2 };
 const OPS = ["+", "+", "×", "−"];
 
 function shuffle(list, random) {

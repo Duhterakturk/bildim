@@ -216,13 +216,13 @@ function Carpmaca() {
   const x = 28;
   const y = 14;
   const size = 22;
-  const headers = [2, 3, 4];
-  const rows = [3, 4, 5];
-  const given = { "0-0": 6, "1-2": 16, "2-1": 15 };
+  const headers = [8, 18, 15];
+  const rows = [6, 12, 30];
+  const given = { "0-0": 2, "1-2": 3, "2-1": 6 };
   return (
     <Sheet>
       <rect x={x} y={y} width={size} height={size} fill="#1e293b" />
-      {label(x + size / 2, y + size / 2, "×", 11, "#fff")}
+      {label(x + size / 2, y + size / 2, "1–6", 8, "#fff")}
       {headers.map((value, index) => (
         <g key={`c-${value}`}>
           <rect x={x + (index + 1) * size} y={y} width={size} height={size} fill="#1e293b" />
@@ -515,8 +515,8 @@ function Colours() {
     <Sheet>
       <rect x="24" y="22" width="112" height="66" rx="8" fill="#fff" stroke="#cbd5e1" />
       <circle cx="46" cy="40" r="7" fill="#2461f7" />
-      <rect x="39" y="52" width="14" height="14" rx="1" fill="#eab308" />
-      <line x1="40" y1="78" x2="52" y2="66" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="46" cy="59" r="7" fill="#eab308" />
+      <circle cx="46" cy="76" r="7" fill="#16a34a" />
       {marks.map((row, r) => row.map((mark, c) => (
         <g key={`${r}-${c}`}>
           <rect x={68 + c * 18} y={32 + r * 16} width="16" height="14" fill="#fff" stroke="#cbd5e1" />

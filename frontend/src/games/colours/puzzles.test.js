@@ -29,7 +29,7 @@ describe("colours", () => {
         expect(Date.now() - started).toBeLessThan(2000);
         const codes = puzzle.solution.map((row) => row.map(pieceCode));
         expect(new Set(codes.flat()).size).toBe(9);
-        expect(solve(puzzle.clues)).toEqual([codes]);
+        expect(solve(puzzle.clues, puzzle.pieces.map(pieceCode))).toEqual([codes]);
         const signature = JSON.stringify(puzzle.clues) + JSON.stringify(codes);
         expect(signature).not.toBe(previous);
         previous = signature;

@@ -5,9 +5,10 @@
 
 export const PIECE_CODES = ["GS", "BS", "YS", "RS", "YC", "KC", "GC", "RC", "BC"];
 
-const COLOR_OF = { G: "green", B: "blue", Y: "yellow", R: "red", K: "black" };
+export const BOOKLET_CODES = ["GC", "BC", "YC", "RC", "KC", "OC", "PC", "MC", "AC"];
+const COLOR_OF = { O: "orange", P: "purple", M: "pink", A: "gray", G: "green", B: "blue", Y: "yellow", R: "red", K: "black" };
 const SHAPE_OF = { S: "square", C: "circle" };
-const CODE_COLOR = { green: "G", blue: "B", yellow: "Y", red: "R", black: "K" };
+const CODE_COLOR = { orange: "O", purple: "P", pink: "M", gray: "A", green: "G", blue: "B", yellow: "Y", red: "R", black: "K" };
 const CODE_SHAPE = { square: "S", circle: "C" };
 
 export const QUESTION_3 = {
@@ -117,7 +118,7 @@ function colourOrder(clues) {
   return [0, 1, 2, 3, 4, 5, 6, 7, 8].sort((left, right) => weight[right] - weight[left] || left - right);
 }
 
-export function solve(clues) {
+export function solve(clues, palette = PIECE_CODES) {
   const grid = [null, null, null].map(() => [null, null, null]);
   const found = [];
   const order = colourOrder(clues);
@@ -131,7 +132,7 @@ export function solve(clues) {
     }
     const row = Math.floor(order[index] / 3);
     const col = order[index] % 3;
-    for (const code of PIECE_CODES) {
+    for (const code of palette) {
       if (used.has(code)) continue;
       grid[row][col] = code;
       used.add(code);
@@ -203,14 +204,14 @@ function colourPool(grid) {
   const cells = [0, 1, 2].flatMap((row) => [0, 1, 2].map((col) => [row, col]));
   cells.forEach((cell) => {
     const code = grid[cell[0]][cell[1]];
-    ["exact", "shape", "color"].forEach((mode) => {
+    ["exact"].forEach((mode) => {
       add({ items: [itemOf(code, mode)], marks: paint([cell], "V") });
     });
   });
   for (let row = 0; row < 3; row += 1) {
     const line = [[row, 0], [row, 1], [row, 2]];
     [[line[0], line[1]], [line[1], line[2]], [line[0], line[2]], line].forEach((group) => {
-      ["exact", "shape", "color"].forEach((mode) => {
+      ["exact"].forEach((mode) => {
         add({ items: group.map(([r, c]) => itemOf(grid[r][c], mode)), marks: paint(group, "V") });
       });
     });
@@ -218,7 +219,7 @@ function colourPool(grid) {
   for (let col = 0; col < 3; col += 1) {
     const line = [[0, col], [1, col], [2, col]];
     [[line[0], line[1]], [line[1], line[2]], line].forEach((group) => {
-      ["exact", "shape", "color"].forEach((mode) => {
+      ["exact"].forEach((mode) => {
         add({ items: group.map(([r, c]) => itemOf(grid[r][c], mode)), marks: paint(group, "V") });
       });
     });
@@ -228,8 +229,8 @@ function colourPool(grid) {
       for (let end = start + 1; end <= line.length; end += 1) {
         const seg = line.slice(start, end);
         const present = seg.map(([row, col]) => grid[row][col]);
-        PIECE_CODES.forEach((code) => {
-          [code, `?${code[1]}`, `${code[0]}?`].forEach((item) => {
+        BOOKLET_CODES.forEach((code) => {
+          [code].forEach((item) => {
             if (present.every((piece) => !matches(piece, item))) add({ items: [item], marks: paint(seg, "X") });
           });
         });
@@ -256,7 +257,7 @@ function assemble(pool, sparePool, random, difficulty) {
   for (const clue of pool) {
     if (known && known.length === 1) break;
     if (!underCap(clues, clue, cap)) continue;
-    const found = solve(clues.concat(clue));
+    const found = solve(clues.concat(clue), BOOKLET_CODES);
     if (!found.length) continue;
     if (known && found.length === known.length && sameFound(found, known)) continue;
     clues.push(clue);
@@ -273,7 +274,7 @@ function assemble(pool, sparePool, random, difficulty) {
   const dropped = [];
   for (let index = 0; index < kept.length;) {
     const next = kept.filter((_, item) => item !== index);
-    if (solve(next).length === 1) {
+    if (solve(next, BOOKLET_CODES).length === 1) {
       dropped.push(kept[index]);
       kept.splice(index, 1);
     } else {
@@ -295,7 +296,7 @@ function assemble(pool, sparePool, random, difficulty) {
 export function generate(difficulty = "easy", random = Math.random) {
   const cap = DIRECT_CAP[difficulty] ?? 0;
   for (let attempt = 0; attempt < 12; attempt += 1) {
-    const order = shuffle(PIECE_CODES, random);
+    const order = shuffle(BOOKLET_CODES, random);
     const solution = [order.slice(0, 3), order.slice(3, 6), order.slice(6)];
     const pool = colourPool(solution);
     const pins = shuffle(pool.filter(directColour), random).slice(0, cap);
@@ -305,7 +306,7 @@ export function generate(difficulty = "easy", random = Math.random) {
     const chosen = assemble([...strong, ...weak.slice(0, 10), ...pins], weak.slice(10), random, difficulty);
     if (!chosen) continue;
     return {
-      pieces: PIECE_CODES.map(pieceFromCode),
+      pieces: BOOKLET_CODES.map(pieceFromCode),
       clues: chosen,
       solution: rowsOf(solution),
     };

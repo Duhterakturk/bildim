@@ -43,6 +43,10 @@ function unordered(values, op) {
 }
 
 export function holds(grid, clue) {
+  if (clue.kind === "placement") {
+    const values = clue.cells.map(letter => cellValue(grid, letter));
+    return values.every(Boolean) && (clue.exclude ? values.every(v => !clue.values.includes(v)) : [...values].sort().join() === [...clue.values].sort().join());
+  }
   if (clue.kind === "equation") {
     const left = evalSide(grid, clue.left);
     const right = evalSide(grid, clue.right);
@@ -81,6 +85,10 @@ function readSide(cells, side) {
 }
 
 function compiled(clue) {
+  if (clue.kind === "placement") return cells => {
+    const values = clue.cells.map(letter => cells[slot(letter)]).filter(Boolean);
+    return clue.exclude ? values.every(v => !clue.values.includes(v)) : values.every(v => clue.values.includes(v));
+  };
   if (clue.kind === "equation") {
     const left = sideOf(clue.left);
     const right = sideOf(clue.right);
@@ -236,7 +244,12 @@ export function generate(difficulty = "easy", random = Math.random) {
   for (let attempt = 0; attempt < 24; attempt += 1) {
     const digits = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9], random);
     const solution = [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6)];
-    const pool = shuffle(cluePool(solution), random);
+    const groups = [["A","B","C"],["D","E","F"],["G","H","I"],["A","D","G"],["B","E","H"],["C","F","I"]];
+    const placements = groups.flatMap(cells => {
+      const values = cells.map(letter => cellValue(solution, letter));
+      return [{kind:"placement",cells,values}, {kind:"placement",cells,values:digits.filter(v=>!values.includes(v)).slice(0,2),exclude:true}];
+    });
+    const pool = shuffle([...cluePool(solution).filter(c => c.kind !== "equation"), ...placements], random);
     const clues = [];
     let unique = false;
     for (const clue of pool) {

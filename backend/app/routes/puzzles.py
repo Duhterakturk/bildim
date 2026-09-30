@@ -38,6 +38,12 @@ def open_puzzle():
     except IssueError as exc:
         return jsonify({"error": str(exc)}), 503
 
+    if data.get("mode") == "tournament":
+        from app.services.tournament import make_question
+        question, correct_option = make_question(game.slug, public, proof)
+        public["tournament"] = question
+        proof["tournament"] = {"correct": correct_option}
+
     attempt = PuzzleAttempt(
         user_id=user_id,
         game_id=game.id,
@@ -71,6 +77,16 @@ def check_puzzle(attempt_id):
     if not _can_see(attempt):
         return jsonify({"error": "Bulmaca bulunamadı"}), 404
     answer = (request.get_json(silent=True) or {}).get("answer")
+    tournament = attempt.proof_puzzle.get("tournament")
+    if tournament is not None:
+        if not isinstance(answer, dict) or type(answer.get("option")) is not int:
+            return jsonify({"error": "Bir seçenek seçiniz."}), 400
+        options = attempt.public_puzzle["tournament"]["options"]
+        if not 0 <= answer["option"] < len(options):
+            return jsonify({"error": "Seçenek geçersiz."}), 400
+        attempt.consumed_at = datetime.utcnow()
+        db.session.commit()
+        return jsonify({"correct": answer["option"] == tournament["correct"], "correct_option": tournament["correct"]})
     try:
         correct = accepts(attempt.game.slug, attempt.difficulty, attempt.proof_puzzle, answer)
     except GradeError:
@@ -96,6 +112,8 @@ def reveal_cell(attempt_id):
         return jsonify({"error": "Bulmaca bulunamadı"}), 404
     if not attempt.user_id:
         return jsonify({"error": "İpuçları giriş yaptıktan sonra kullanılabilir.", "code": "hint_login"}), 403
+    if attempt.proof_puzzle.get("tournament") is not None:
+        return jsonify({"error": "Turnuva sorusunda ipucu kullanılmaz."}), 400
     user = db.session.get(User, attempt.user_id)
     if user is None or not spend(user):
         return jsonify({

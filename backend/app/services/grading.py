@@ -1088,6 +1088,25 @@ def _count_nonogram(row_clues, col_clues, limit=2):
 
 
 def _grade_products(difficulty, puzzle, answer):
+    if isinstance(puzzle, dict) and puzzle.get("variant") == "two-per-line":
+        size = {"easy": 4, "medium": 5, "hard": 6}[difficulty]
+        maximum = size * 2
+        if puzzle.get("maxValue") != maximum:
+            raise GradeError("Sayı aralığı geçersiz")
+        grid = _int_grid(answer, size, 0, maximum)
+        given = _int_grid(puzzle.get("givens"), size, 0, maximum, "ipucu")
+        rows, cols = puzzle.get("rowHeaders"), puzzle.get("colHeaders")
+        if not isinstance(rows, list) or not isinstance(cols, list) or len(rows) != size or len(cols) != size:
+            raise GradeError("Başlıklar geçersiz")
+        for r in range(size):
+            for c in range(size):
+                if given[r][c] and given[r][c] != grid[r][c]:
+                    raise GradeError("Verilen sayı değişmiş")
+        for values, target in [(grid[r], rows[r]) for r in range(size)] + [([grid[r][c] for r in range(size)], cols[c]) for c in range(size)]:
+            values = [v for v in values if v]
+            if len(values) != 2 or values[0] * values[1] != target:
+                raise GradeError("Her satır ve sütunda iki sayı olmalı ve çarpımları başlıkla eşleşmeli")
+        return
     size, lo, hi, givens = PRODUCTS[difficulty]
     if not isinstance(puzzle, dict):
         raise GradeError("Bulmaca eksik")
@@ -1346,6 +1365,9 @@ def _number_holds(grid, clue):
     values = [_number_at(grid, cell) for cell in cells]
     if any(value is None for value in values):
         return False
+    if kind == "placement":
+        allowed = clue.get("values") or []
+        return all(v not in allowed for v in values) if clue.get("exclude") else sorted(values) == sorted(allowed)
     if kind == "total":
         return sum(values) == clue.get("target")
     if kind == "relation" and len(values) == 3:
@@ -1381,6 +1403,7 @@ def _grade_colours(_difficulty, puzzle, answer):
     grid = _as_grid(answer)
     if not isinstance(grid, list) or len(grid) != 3 or not isinstance(clues, list) or not clues:
         raise GradeError("Izgara boyutu uyuşmuyor")
+    allowed = {_colour_code(piece) for piece in puzzle.get("pieces", [])} or _COLOUR_CODES
     seen = set()
     for row in grid:
         if not isinstance(row, list) or len(row) != 3:
@@ -1389,7 +1412,7 @@ def _grade_colours(_difficulty, puzzle, answer):
             if not isinstance(cell, dict):
                 raise GradeError("Parça eksik")
             code = _colour_code(cell)
-            if code not in _COLOUR_CODES or code in seen:
+            if code not in allowed or code in seen:
                 raise GradeError("Parça geçersiz")
             seen.add(code)
     if len(seen) != 9:
@@ -1403,7 +1426,7 @@ _COLOUR_CODES = {"GS", "BS", "YS", "RS", "YC", "KC", "GC", "RC", "BC"}
 
 
 def _colour_code(piece):
-    color = {"green": "G", "blue": "B", "yellow": "Y", "red": "R", "black": "K"}.get(piece.get("color"))
+    color = {"green": "G", "blue": "B", "yellow": "Y", "red": "R", "black": "K", "orange": "O", "purple": "P", "pink": "M", "gray": "A"}.get(piece.get("color"))
     shape = {"square": "S", "circle": "C"}.get(piece.get("shape"))
     if not color or not shape:
         return None
