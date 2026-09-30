@@ -861,3 +861,21 @@ body:has(.theme-scene) .site-nav > .border-t {
   }
   body:has(.theme-scene) .site-nav > .border-t { background: #161616; color: #fff; }
 }
+
+/* Background previews and narrow home layouts share the photo behind navigation. */
+body:has(.home-workshop):has([data-testid="theme-trial"]) .site-nav:not(.is-scrolled) {
+  background: color-mix(in srgb, var(--cell) 85%, transparent);
+  border-color: transparent;
+}
+@media (max-width: 820px) {
+  body:has(.home-workshop) .site-nav:not(.is-scrolled) {
+    background: color-mix(in srgb, var(--cell) 85%, transparent);
+    border-color: transparent;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  body:has(.home-workshop):has([data-testid="theme-trial"]) .site-nav:not(.is-scrolled) { background: #161616e8; }
+}
+@media (max-width: 820px) and (prefers-color-scheme: dark) {
+  body:has(.home-workshop) .site-nav:not(.is-scrolled) { background: #161616e8; }
+}
