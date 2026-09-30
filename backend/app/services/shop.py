@@ -114,7 +114,8 @@ def purchase(user, item_id):
     if wear:
         for other in UserItem.query.filter_by(user_id=user.id, equipped=True).all():
             other_item = item_by_id(other.item_id)
-            if other_item and other_item["slot"] == item["slot"]:
+            if other_item and (other_item["slot"] == item["slot"] or
+                               (item["type"] == "theme" and other_item["type"] == "background")):
                 other.equipped = False
     db.session.add(row)
     db.session.flush()
@@ -156,12 +157,20 @@ def equip(user, item_id):
     if row is None:
         raise ShopError("Bu ürün hesabınızda yok.", 404, "shop_not_owned")
     item = item_by_id(item_id)
-    if row.equipped:
+    active = UserItem.query.filter_by(user_id=user.id, equipped=True).all()
+    # Reapplying a theme hidden by a separately selected background restores
+    # its photograph. A visible active theme still toggles off normally.
+    obscured = item and item["type"] == "theme" and any(
+        item_by_id(other.item_id) and item_by_id(other.item_id)["type"] == "background"
+        for other in active
+    )
+    if row.equipped and not obscured:
         row.equipped = False
         return row
-    for other in UserItem.query.filter_by(user_id=user.id, equipped=True).all():
+    for other in active:
         other_item = item_by_id(other.item_id)
-        if other_item and item and other_item["slot"] == item["slot"]:
+        if other_item and item and (other_item["slot"] == item["slot"] or
+                                   (item["type"] == "theme" and other_item["type"] == "background")):
             other.equipped = False
     row.equipped = True
     return row

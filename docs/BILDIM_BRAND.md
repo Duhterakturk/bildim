@@ -121,3 +121,15 @@ oyun tahtası okunurluğu, ana sayfada deneme, iptal, kayıtlı arka planla
 çakışma ve kullanımdan sonra sayfa yenileme. API yanıtları taklit edildi.
 Orman temasının masaüstü ve telefon ekran görüntüleri incelendi.
 Üretim derlemesi başarılı; önbellek sürümü bildim-v14.
+
+### Kalıcı tema seçimi ve referans kompozisyonu
+Tema satın almak/uygulamak ayrı arka planı devreden çıkarır. Daha sonra
+özellikle bir arka plan seçmek mümkündür. Arka plan tarafından örtülmüş
+aktif temaya yeniden basmak temayı kapatmak yerine kendi fotoğrafını geri
+getirir; dükkân bu durumda Kullanın gösterir. Ürün sahipliği ve bakiye korunur.
+Ana bölüm tam genişlikte tek fotoğraf geçişi, büyük tahta ve yatay oyun
+kartlarıyla onaylı kompozisyona yaklaştırıldı. Logo değiştirilmedi.
+9 backend dükkân testi geçti. Tema/ana sayfa tarayıcı senaryoları geçti;
+320 px'teki 4 px taşma giderildikten sonra beş tarayıcı/ekran projesindeki
+responsive test tekrar geçti. Eski Mürekkep + Orman durumu için iki yeni
+arayüz testi geçti. Üretim derlemesi başarılı. Testler izole veriler kullanır.

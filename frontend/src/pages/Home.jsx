@@ -51,8 +51,14 @@ export default function Home() {
   return (
     <div className="home-workshop" data-scene={photoId || undefined}>
       <section className="workshop-hero" aria-labelledby="home-title">
+          <div
+            className="workshop-scene"
+            data-testid="home-scene"
+            style={scene ? { backgroundImage: `url("${scene}")` } : undefined}
+            aria-hidden="true"
+          />
+
         <div className="workshop-intro">
-          <p className="workshop-eyebrow">{t("home.eyebrow")}</p>
           <h1 id="home-title">{t("home.title")}</h1>
           <p className="workshop-description">{t("home.description")}</p>
           <div className="workshop-actions">
@@ -62,12 +68,6 @@ export default function Home() {
           <p className="workshop-meta">{t("home.meta")}</p>
         </div>
         <div className="workshop-stage">
-          <div
-            className="workshop-scene"
-            data-testid="home-scene"
-            style={scene ? { backgroundImage: `url("${scene}")` } : undefined}
-            aria-hidden="true"
-          />
           <Link to="/games/pentominolar" className="workshop-feature workshop-board" aria-label={t("home.pentominoLink")}>
             <HeroBoard />
             <span className="workshop-feature-caption">{t("home.pentominoLink")} <span aria-hidden="true">↗</span></span>

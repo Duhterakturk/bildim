@@ -170,3 +170,34 @@ def test_the_owl_expert_certificate_arrives_with_the_twelfth_card(app, student):
         db.session.commit()
         row = Certificate.query.filter_by(user_id=user_id, kind="owl-expert").one()
         assert row.kind == "owl-expert"
+
+def test_theme_selection_replaces_background_and_survives_session(app, student):
+    from app.extensions import db
+    from app.models.shop import UserItem
+    from app.services.shop import equip
+
+    user_id = student['user']['id']
+    with app.app_context():
+        user = db_user(user_id)
+        user.star_balance = 200
+        ink = purchase(user, 'bg-ink')
+        forest = purchase(user, 'theme-forest')
+        assert forest.equipped and not ink.equipped
+        balance = user.star_balance
+        equip(user, 'bg-ink')
+        assert ink.equipped and forest.equipped
+        # Restore an already owned theme whose photograph is obscured.
+        equip(user, 'theme-forest')
+        assert forest.equipped and not ink.equipped
+        db.session.commit()
+        db.session.remove()
+        rows = {r.item_id: r for r in UserItem.query.filter_by(user_id=user_id).all()}
+        assert rows['theme-forest'].equipped and not rows['bg-ink'].equipped
+        user = db_user(user_id)
+        assert user.star_balance == balance
+        assert len(rows) == 2
+        equip(user, 'theme-forest')
+        assert not rows['theme-forest'].equipped
+        equip(user, 'bg-ink')
+        equip(user, 'theme-forest')
+        assert rows['theme-forest'].equipped and not rows['bg-ink'].equipped

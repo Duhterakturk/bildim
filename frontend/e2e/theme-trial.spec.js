@@ -227,3 +227,30 @@ test("equipping a theme ends an active preview and survives reload", async ({ pa
   await page.reload();
   await expect(page.locator(".workshop-scene")).toHaveCSS("background-image", /forest\.webp/);
 });
+
+test("an owned forest theme hidden by ink offers Apply and restores its photo", async ({ page }) => {
+  let inkActive = true;
+  await page.addInitScript(() => localStorage.setItem("mindarena_access_token", "test-token"));
+  await page.route(/\/api\/(?!.*\.js)/, route => {
+    const url = route.request().url();
+    if (url.includes("/auth/me")) return route.fulfill({ json: user });
+    if (url.includes("/shop")) {
+      if (url.endsWith("/equip")) {
+        expect(route.request().postDataJSON().item_id).toBe("theme-forest");
+        inkActive = false;
+      }
+      return route.fulfill({ json: { star_balance: 5, items: [
+        {...space, id:"theme-forest", name_tr:"Orman", owned:true, equipped:true, preview:previews["theme-forest"]},
+        {...space, id:"bg-ink", type:"background", slot:"background", owned:true, equipped:inkActive, preview:previews["bg-ink"]}
+      ] } });
+    }
+    return route.fulfill({ json: {} });
+  });
+  await page.goto("/dukkan");
+  const forest = page.getByTestId("card-theme-forest");
+  await forest.getByRole("button", {name:"Kullanın", exact:true}).click();
+  await expect(forest.getByRole("button", {name:"Kullanılıyor", exact:true})).toBeVisible();
+  await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/forest.webp");
+  await page.reload();
+  await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", "/themes/forest.webp");
+});

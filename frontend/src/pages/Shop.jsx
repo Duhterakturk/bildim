@@ -60,6 +60,7 @@ export default function Shop() {
     setError(null);
     try {
       const next = await buyItem(id);
+      if (next.items?.some(item => item.id === id && ["theme", "background"].includes(item.type))) clearTrial();
       setState(next);
       window.dispatchEvent(new CustomEvent("mindarena:stars", { detail: { star_balance: next.star_balance } }));
       setOpen((current) => next.items.find((item) => item.id === current?.id) || null);
@@ -88,6 +89,10 @@ export default function Shop() {
 
   if (!state) return <p className="px-4 py-10 text-slate-400">{t("shop.loading")}</p>;
 
+  // A separately selected background can hide an equipped theme's photo.
+  // Offer Apply in that case so the label matches what the user sees.
+  const backgroundActive = state.items.some(item => item.type === "background" && item.equipped);
+  const visiblyActive = item => item.equipped && !(item.type === "theme" && backgroundActive);
   const stage = profile?.stage || "egg";
   const items = state.items.filter((item) => (tab === "collection" ? item.type === "owl" : item.type === tab));
   const short = open && !open.owned ? Math.max(0, open.price - state.star_balance) : 0;
@@ -159,7 +164,7 @@ export default function Shop() {
                           wear(item.id);
                         }}
                       >
-                        {item.equipped ? t("shop.inUse") : t("shop.use")}
+                        {visiblyActive(item) ? t("shop.inUse") : t("shop.use")}
                       </button>
                     )}
                   </p>
@@ -226,7 +231,7 @@ export default function Shop() {
             {open.owned ? (
               open.type !== "owl" && (
                 <button type="button" className="rounded-lg bg-brand-500 px-4 py-2 font-semibold text-white" onClick={() => wear(open.id)}>
-                  {open.equipped ? t("shop.inUse") : t("shop.use")}
+                  {visiblyActive(open) ? t("shop.inUse") : t("shop.use")}
                 </button>
               )
             ) : (
