@@ -10,6 +10,12 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 8);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
   const [starBalance, setStarBalance] = useState(user?.star_balance ?? 0);
 
   useEffect(() => {
@@ -81,7 +87,7 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="site-nav sticky top-0 z-10 border-b border-slate-200">
+    <nav className={`site-nav sticky top-0 z-10 border-b border-slate-200${scrolled ? " is-scrolled" : ""}`}>
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="brand-link" aria-label={t("app.name")} onClick={() => setMenuOpen(false)}>
           <BrandLogo />
