@@ -194,11 +194,11 @@ test("theme trials override saved scenery and remain visible on the homepage", a
     await expect(page.getByTestId("theme-scene").locator("img")).toHaveAttribute("src", `/themes/${photos[item.id]}`);
     await page.getByRole("link", { name: "Bildim", exact: true }).click();
     await expect(page.getByTestId("theme-trial")).toBeVisible();
-    await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", new RegExp(photos[item.id].replace('.', '\\.')));
+    await expect(page.locator(".workshop-scene")).toHaveCSS("background-image", new RegExp(photos[item.id].replace('.', '\\.')));
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await page.screenshot({path: info.outputPath(`home-${item.id}.png`), fullPage: true, animations: "disabled"});
     await page.getByTestId("theme-trial").getByRole("button", { name: "Vazgeç" }).click();
-    await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /ink\.webp/);
+    await expect(page.locator(".workshop-scene")).toHaveCSS("background-image", /ink\.webp/);
     await page.goto("/dukkan");
   }
 });
@@ -223,7 +223,7 @@ test("equipping a theme ends an active preview and survives reload", async ({ pa
   await expect(page.getByTestId("theme-trial")).toHaveCount(0);
   await expect(page.locator("html")).toHaveAttribute("data-board-theme", "theme-forest");
   await page.getByRole("link", { name: "Bildim", exact: true }).click();
-  await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /forest\.webp/);
+  await expect(page.locator(".workshop-scene")).toHaveCSS("background-image", /forest\.webp/);
   await page.reload();
-  await expect(page.locator(".workshop-feature")).toHaveCSS("background-image", /forest\.webp/);
+  await expect(page.locator(".workshop-scene")).toHaveCSS("background-image", /forest\.webp/);
 });
