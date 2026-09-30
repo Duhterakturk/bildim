@@ -13,8 +13,8 @@ import { PuzzlePending, useIssuedPuzzle } from "../common/useIssuedPuzzle";
 import { useStartingDifficulty } from "../common/useStartingDifficulty";
 
 const INK = {
-  orange: "#f97316", purple: "#6d28d9", pink: "#db2777", gray: "#9ca3af",
-  red: "#e11d48",
+  orange: "#f97316", purple: "#6d28d9", pink: "#ff80bf", gray: "#9ca3af",
+  red: "#b00020",
   yellow: "#eab308",
   blue: "#2461f7",
   green: "#16a34a",
