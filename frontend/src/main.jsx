@@ -4,6 +4,7 @@ import { wakeApi } from "./api/client";
 import App from "./App";
 import "./i18n";
 import "./styles/index.css";
+import "./styles/refined.css";
 
 wakeApi();
 setInterval(wakeApi, 4 * 60 * 1000);

@@ -1,0 +1,61 @@
+/* Shared material language: warm paper, petrol ink and quiet metallic edges. */
+:root { --surface-edge: color-mix(in srgb, var(--line) 32%, var(--cell)); --surface-shadow: 0 14px 35px color-mix(in srgb, var(--ink) 9%, transparent); }
+body { background-image: radial-gradient(ellipse at 90% 0%, #dccbad30, transparent 60%); background-attachment: fixed; }
+.brand-link { --brand-scale: 1.5; flex-basis: calc(150px * var(--brand-scale)); width: calc(150px * var(--brand-scale)); height: calc(44px * var(--brand-scale)); }
+.brand-logo { width: calc(180px * var(--brand-scale)); left: calc(-17px * var(--brand-scale)); top: calc(-6px * var(--brand-scale)); }
+.brand-wordmark { left: calc(45px * var(--brand-scale)); top: calc(3px * var(--brand-scale)); width: calc(92px * var(--brand-scale)); font-size: calc(33px * var(--brand-scale)); letter-spacing: calc(-1.7px * var(--brand-scale)); line-height: calc(40px * var(--brand-scale)); }
+.site-nav > div:first-child { max-width: 1440px; padding-inline: clamp(20px, 4vw, 64px); }
+.site-nav.is-scrolled { box-shadow: 0 4px 24px #152f3210; backdrop-filter: blur(12px); }
+.site-nav a[href="/register"] { padding: 11px 23px; border-radius: 7px; }
+.home-workshop { --home-paper: var(--cell); max-width: 1600px; padding-inline: clamp(24px, 4vw, 64px); }
+.workshop-hero { min-height: 570px; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
+.workshop-intro h1 { font-size: clamp(38px, 4.4vw, 66px); font-weight: 800; letter-spacing: -.055em; }
+.workshop-description { font-size: clamp(17px, 1.6vw, 22px); line-height: 1.55; }
+.workshop-intro { z-index: 2; padding-block: 54px; }
+.workshop-stage { min-height: 450px; margin-left: -36px; }
+.workshop-sculpture { display: block; width: 112%; max-width: none; height: auto; margin-left: -6%; }
+.workshop-feature { overflow: visible; }
+.workshop-scene { background-image: radial-gradient(ellipse at 75% 55%, #d9c6a966, transparent 65%), linear-gradient(130deg, #fbf9f3, #eee8dc); }
+.workshop-primary, .home-workshop:not([data-scene]) .workshop-primary { background: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 80%, #fff); box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 16%, transparent); border-radius: 7px; padding: 15px 26px; }
+.workshop-primary:hover { background: var(--accent); filter: brightness(1.12); }
+.workshop-light-pass { pointer-events: none; position: absolute; inset: -90px calc(-1 * clamp(24px, 4vw, 64px)) 0; overflow: hidden; z-index: 1; }
+.workshop-light-pass::after { content: ""; position: absolute; inset: -70% -35%; background: linear-gradient(115deg, transparent 42%, #fff4d716 45%, #fffdf6b0 48%, #ffffffc0 49%, #fff4dc36 52%, transparent 57%); opacity: 0; transform: translateX(-65%); }
+@keyframes bildim-light-pass { 0% { opacity: 0; transform: translateX(-65%); } 24% { opacity: .7; } 75% { opacity: .5; } 100% { opacity: 0; transform: translateX(65%); } }
+@media (prefers-reduced-motion: no-preference) { .workshop-light-pass::after { animation: bildim-light-pass 3.2s .2s ease-in-out both; } }
+.workshop-games { border-color: #c6ad7c66; }
+.workshop-card { background: color-mix(in srgb, var(--cell) 97%, transparent); border: 1px solid var(--surface-edge); border-radius: 10px; box-shadow: 0 7px 24px #1b333308; }
+.workshop-card:hover { box-shadow: var(--surface-shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--cell)); }
+.workshop-together { background: linear-gradient(115deg, color-mix(in srgb, var(--accent) 8%, var(--cell)), var(--cell)); color: var(--ink); border: 1px solid var(--surface-edge); border-radius: 10px; }
+.workshop-how li > span { color: #8b6935; }
+.game-card, .board-card, [data-testid^="card-theme-"], [data-testid^="card-bg-"] { border: 1px solid var(--surface-edge); border-radius: 12px; background: color-mix(in srgb, var(--cell) 97%, transparent); box-shadow: inset 0 1px 0 #ffffffa8, var(--surface-shadow); }
+.game-card:hover, .board-card:hover { transform: translateY(-2px); box-shadow: 0 18px 35px color-mix(in srgb, var(--ink) 13%, transparent); }
+.press-btn { border-radius: 8px; box-shadow: 0 5px 16px color-mix(in srgb, var(--accent) 16%, transparent); }
+.press-btn:hover { box-shadow: 0 7px 20px color-mix(in srgb, var(--accent) 22%, transparent); }
+.press-btn:active { transform: translateY(1px); }
+.scene-label { border-radius: 8px; border: 1px solid var(--surface-edge); box-shadow: 0 5px 18px #102f3510; }
+.scene-chip { border: 1px solid var(--surface-edge); box-shadow: 0 3px 12px #102f3510; }
+.game-mode-button.mode-normal { background: #184954; }
+.game-mode-button.mode-tournament { background: #664263; }
+.game-mode-switch .game-mode-button { border-radius: 10px; box-shadow: 0 5px 16px #152f3218; }
+.game-mode-switch .game-mode-button:hover { box-shadow: 0 8px 20px #152f3226; }
+.theme-photo { filter: saturate(.9) contrast(1.03); }
+.theme-shade { background: linear-gradient(135deg, color-mix(in srgb, var(--cell) 50%, transparent), transparent 48%, color-mix(in srgb, var(--ink) 14%, transparent)); }
+html[data-board-theme] .play-scale { border-radius: 12px; box-shadow: inset 0 1px 0 #ffffffb0, 0 16px 40px color-mix(in srgb, var(--ink) 12%, transparent); }
+/* Paper-like panels on accounts/forms; exclude game cells and modal controls. */
+main > .max-w-2xl > form, main > .max-w-4xl .shadow-sm, main > .max-w-5xl .shadow-sm { border-color: var(--surface-edge); box-shadow: var(--surface-shadow); }
+@media (min-width: 821px) and (max-width: 1050px) { .brand-link { --brand-scale: 1.3; } .site-nav > div:first-child { padding-inline: 24px; } .site-nav .gap-4 { gap: 12px; } .workshop-intro h1 { font-size: 43px; } }
+@media (max-width: 820px) {
+ .brand-link { --brand-scale: 1.25; }
+ .site-nav > div:first-child { padding-inline: 20px; }
+ .workshop-hero { grid-template-columns: 1fr; min-height: 0; }
+ .workshop-intro { padding: 8px 0 0; }
+ .workshop-intro h1 { font-size: clamp(34px, 7vw, 48px); max-width: 10em; }
+ .workshop-description { font-size: 17px; }
+ .workshop-stage { min-height: 0; margin: 14px 0 8px; }
+ .workshop-sculpture { width: 100%; margin-left: 0; }
+ .workshop-scene { inset: 220px -24px 0; }
+ .workshop-light-pass { inset: 0 -24px; }
+}
+@media (max-width: 360px) { .brand-link { --brand-scale: 1.12; } .home-workshop { padding-inline: 18px; } .workshop-actions { gap: 9px; } .workshop-primary { padding-inline: 18px; } }
+
+.home-workshop { overflow: clip; }

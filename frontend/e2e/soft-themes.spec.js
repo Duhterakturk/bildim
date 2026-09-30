@@ -36,8 +36,8 @@ for (const theme of themes) {
     await expect(page.locator("html")).toHaveAttribute("data-board-theme", theme.id);
     await expect(page.locator(".brand-wordmark")).toHaveCSS("color", "rgb(0, 0, 0)");
     const brand = await page.getByRole("link", { name: "Bildim", exact: true }).boundingBox();
-    expect(brand.width).toBeLessThanOrEqual(150);
-    expect(brand.height).toBeLessThanOrEqual(44);
+    expect(brand.width).toBeLessThanOrEqual(225);
+    expect(brand.height).toBeLessThanOrEqual(66);
     const cells = page.locator('[data-book-cell="true"]');
     await expect(cells).toHaveCount(49);
     for (const i of [0, 1, 2, 7, 9, 14, 15, 16]) await cells.nth(i).click();
