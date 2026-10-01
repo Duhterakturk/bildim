@@ -19,9 +19,13 @@ export default function DifficultyPicker({ gameSlug, value, onChange, disabled =
   const [state, setState] = useState(DEFAULT_STATE);
   const [opened, setOpened] = useState("");
   const known = useRef(null);
+  const changeRef = useRef(onChange);
+  changeRef.current = onChange;
+  const [advance, setAdvance] = useState(null);
 
   useEffect(() => {
     known.current = null;
+    setAdvance(null);
     setOpened("");
     if (!localStorage.getItem("mindarena_access_token")) return undefined;
 
@@ -34,6 +38,7 @@ export default function DifficultyPicker({ gameSlug, value, onChange, disabled =
         if (previous) {
           const fresh = ["medium", "hard"].find((level) => !previous.unlocked[level] && next.unlocked[level]);
           if (fresh) {
+            setAdvance(fresh);
             setOpened(t("difficulty.opened", { level: t(`difficulty.${fresh}`) }));
             window.dispatchEvent(new CustomEvent("mindarena:level-opened", { detail: { level: fresh } }));
           }
@@ -59,6 +64,18 @@ export default function DifficultyPicker({ gameSlug, value, onChange, disabled =
     return () => window.clearTimeout(timer);
   }, [opened]);
 
+  // Wait for score saving to finish, then let the normal game change handler
+  // open the unlocked level. A manual selection cancels this pending advance.
+  useEffect(() => {
+    if (!advance || disabled) return undefined;
+    if (value === advance) { setAdvance(null); return undefined; }
+    const timer = window.setTimeout(() => {
+      setAdvance(null);
+      changeRef.current(advance);
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [advance, disabled, value]);
+
   const order = ["easy", "medium", "hard"];
 
   return (
@@ -83,7 +100,7 @@ export default function DifficultyPicker({ gameSlug, value, onChange, disabled =
             type="button"
             disabled={disabled || !isUnlocked}
             title={lockHint}
-            onClick={() => !disabled && isUnlocked && onChange(level)}
+            onClick={() => { if (!disabled && isUnlocked) { setAdvance(null); onChange(level); } }}
             className={[
               "min-h-[44px] px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1",
               !isUnlocked
