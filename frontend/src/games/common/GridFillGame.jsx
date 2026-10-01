@@ -160,6 +160,9 @@ export default function GridFillGame({
               style={{ backgroundColor: "var(--cell, #fff)" }}
             >
               <input
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                 value={val || ""}
                 onChange={(e) => handleCellChange(r, c, e.target.value)}
                 readOnly={givenMask[r][c] || boardClosed(status, savePhase)}

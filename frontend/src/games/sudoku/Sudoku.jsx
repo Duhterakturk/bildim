@@ -122,6 +122,9 @@ export default function Sudoku() {
           row.map((val, c) => (
             <div key={`${r}-${c}`} className="relative">
               <input
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                 value={val || ""}
                 onFocus={() => setSelected([r, c])}
                 onChange={(e) => handleCellChange(r, c, e.target.value)}

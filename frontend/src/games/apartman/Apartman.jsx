@@ -135,6 +135,9 @@ export default function Apartman() {
             {row.map((val, c) => (
               <div key={`${r}-${c}`} className="relative">
                 <input
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                   value={val || ""}
                   onChange={(e) => handleCellChange(r, c, e.target.value)}
                   readOnly={givenMask[r][c] || boardClosed(status, savePhase)}
