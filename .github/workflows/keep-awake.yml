@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping health
-        run: curl -fsS --retry 3 --retry-all-errors --retry-delay 5 --max-time 120 https://duhterakturk-mindarena-api.onrender.com/api/health
+               run: curl -fsS --retry 3 --retry-all-errors --retry-delay 5 --max-time 120 https://mindarena-api.onrender.com/api/health
